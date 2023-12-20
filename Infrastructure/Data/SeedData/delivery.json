@@ -1,0 +1,26 @@
+[
+    {
+        "ShortName": "Standard",
+        "DeliveryTime": "3-5 business days",
+        "Description": "Regular shipping service",
+        "Price": 5.99
+    },
+    {
+        "ShortName": "Express",
+        "DeliveryTime": "1-2 business days",
+        "Description": "Fast and expedited shipping",
+        "Price": 12.99
+    },
+    {
+        "ShortName": "Same-Day",
+        "DeliveryTime": "Within the same day",
+        "Description": "Get your order on the same day",
+        "Price": 19.99
+    },
+    {
+        "ShortName": "Pickup",
+        "DeliveryTime": "At your convenience",
+        "Description": "Customer pickup from store",
+        "Price": 0.00
+    }
+]

@@ -1,0 +1,114 @@
+[
+    {
+        "Name": "Premium Shampoo",
+        "Description": "Specially formulated for men's hair care",
+        "Price": 12.99,
+        "ProductTypeId": 1,
+        "ProductBrandId": 1
+    },
+    {
+        "Name": "Classic Straight Razor",
+        "Description": "Vintage-style straight razor for a clean shave",
+        "Price": 29.99,
+        "ProductTypeId": 2,
+        "ProductBrandId": 4
+    },
+    {
+        "Name": "Hair Styling Gel",
+        "Description": "Firm hold for all-day styling",
+        "Price": 8.49,
+        "ProductTypeId": 3,
+        "ProductBrandId": 3
+    },
+    {
+        "Name": "Beard Oil Blend",
+        "Description": "Nourishing oil for a well-groomed beard",
+        "Price": 14.99,
+        "ProductTypeId": 4,
+        "ProductBrandId": 6
+    },
+    {
+        "Name": "Precision Trimmer",
+        "Description": "Trim and shape with precision",
+        "Price": 42.99,
+        "ProductTypeId": 3,
+        "ProductBrandId": 2
+    },
+    {
+        "Name": "Moisturizing Aftershave",
+        "Description": "Soothes and moisturizes after shaving",
+        "Price": 18.99,
+        "ProductTypeId": 4,
+        "ProductBrandId": 5
+    },
+    {
+        "Name": "Barber's Kit",
+        "Description": "Complete kit for grooming at home",
+        "Price": 59.99,
+        "ProductTypeId": 2,
+        "ProductBrandId": 1
+    },
+    {
+        "Name": "Hair Styling Spray",
+        "Description": "Lightweight spray for flexible styling",
+        "Price": 11.49,
+        "ProductTypeId": 3,
+        "ProductBrandId": 3
+    },
+    {
+        "Name": "Beard Comb Set",
+        "Description": "Set of combs for beard maintenance",
+        "Price": 9.99,
+        "ProductTypeId": 2,
+        "ProductBrandId": 6
+    },
+    {
+        "Name": "Skin Renewal Cream",
+        "Description": "Revitalizes and hydrates the skin",
+        "Price": 24.99,
+        "ProductTypeId": 4,
+        "ProductBrandId": 5
+    },
+    {
+        "Name": "Shaving Cream",
+        "Description": "Rich lather for a smooth shave",
+        "Price": 7.99,
+        "ProductTypeId": 2,
+        "ProductBrandId": 4
+    },
+    {
+        "Name": "Hair Clippers Set",
+        "Description": "Professional-grade clippers for home use",
+        "Price": 49.99,
+        "ProductTypeId": 3,
+        "ProductBrandId": 2
+    },
+    {
+        "Name": "Beard Grooming Kit",
+        "Description": "Comprehensive kit for beard care",
+        "Price": 34.99,
+        "ProductTypeId": 2,
+        "ProductBrandId": 5
+    },
+    {
+        "Name": "Texturizing Paste",
+        "Description": "Adds texture and definition to hair",
+        "Price": 10.99,
+        "ProductTypeId": 3,
+        "ProductBrandId": 3
+    },
+    {
+        "Name": "Skin Cleansing Scrub",
+        "Description": "Gentle scrub for clean and clear skin",
+        "Price": 16.99,
+        "ProductTypeId": 4,
+        "ProductBrandId": 6
+    },
+    {
+        "Name": "Barber's Apron",
+        "Description": "Stylish and functional apron for barbers",
+        "Price": 22.99,
+        "ProductTypeId": 1,
+        "ProductBrandId": 1
+    }
+]

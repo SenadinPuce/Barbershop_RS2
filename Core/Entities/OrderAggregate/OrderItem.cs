@@ -1,6 +1,6 @@
 namespace Core.Entities.OrderAggregate
 {
-    public class OrderItem
+    public partial class OrderItem
     {
         public OrderItem()
         {

@@ -1,6 +1,6 @@
 namespace Core.Entities
 {
-    public class User
+    public partial class User
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -10,10 +10,13 @@ namespace Core.Entities
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
+
         public int? PhotoId { get; set; }
-        public Photo Photo { get; set; }
+        public virtual Photo Photo { get; set; }
+
         public int? AddressId { get; set; }
-        public Address Address { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public virtual Address Address { get; set; }
+        
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 namespace Core.Entities.OrderAggregate
 {
-    public class DeliveryMethod
+    public partial class DeliveryMethod
     {
         public int Id { get; set; }
         public string ShortName { get; set; }
