@@ -16,7 +16,7 @@ namespace Infrastructure.Data.Config
 
             builder.HasOne(x => x.Barber).WithMany().HasForeignKey(x => x.BarberId).OnDelete(DeleteBehavior.NoAction).IsRequired();
             builder.HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.SetNull);
-            builder.HasOne(x => x.Service).WithOne().HasForeignKey<Appointment>(x => x.ServiceId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(x => x.Service).WithOne().HasForeignKey<Appointment>(x => x.ServiceId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Core.Entities
         public string Comment { get; set; }
 
         public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual AppUser User { get; set; }
         
         public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
     }

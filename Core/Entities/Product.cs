@@ -13,6 +13,6 @@ namespace Core.Entities
         public int ProductBrandId { get; set; }
         public virtual ProductBrand ProductBrand { get; set; }
         
-        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<ProductPhoto> Photos { get; set; }
     }
 }

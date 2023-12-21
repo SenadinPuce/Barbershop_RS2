@@ -7,5 +7,6 @@ namespace Core.Entities
         public string FileName { get; set; }
         public bool IsMain { get; set; }
 
+        public virtual ICollection<ProductPhoto> Products { get; set; }
     }
 }

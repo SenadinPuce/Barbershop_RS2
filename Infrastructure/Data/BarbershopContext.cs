@@ -1,11 +1,15 @@
 using System.Reflection;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class BarbershopContext : DbContext
+    public class BarbershopContext : IdentityDbContext<AppUser, AppRole, int,
+        IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public BarbershopContext(DbContextOptions options) : base(options)
         {
@@ -22,10 +26,7 @@ namespace Infrastructure.Data
         public DbSet<OrderItem> OrderItem { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

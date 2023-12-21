@@ -7,7 +7,7 @@ namespace Core.Entities.OrderAggregate
 		}
 
 		public Order(ICollection<OrderItem> orderItems, Address shipToAddress,
-		   DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId, User client)
+		   DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId, AppUser client)
 		{
 			ShipToAddress = shipToAddress;
 			Client = client;
@@ -20,7 +20,7 @@ namespace Core.Entities.OrderAggregate
 		public int Id { get; set; }
 
 		public int ClientId { get; set; }
-		public virtual User Client { get; set; }
+		public virtual AppUser Client { get; set; }
 
 		public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
