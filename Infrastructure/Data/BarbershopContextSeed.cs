@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace Infrastructure.Data
 {
@@ -28,8 +29,23 @@ namespace Infrastructure.Data
             if (!context.Products.Any())
             {
                 var productsData = File.ReadAllText(path + @"/Data/SeedData/products.json");
-                var products = JsonSerializer.Deserialize<List<Product>>(productsData);
-                context.Products.AddRange(products);
+                var products = JsonSerializer.Deserialize<List<ProductSeedModel>>(productsData);
+
+                foreach (var item in products)
+                {
+                    var pictureFileName = item.PictureUrl.Substring(16);
+                    var product = new Product
+                    {
+                        Name = item.Name,
+                        Description = item.Description,
+                        Price = item.Price,
+                        ProductBrandId = item.ProductBrandId,
+                        ProductTypeId = item.ProductTypeId
+                    };
+                    product.AddPhoto(item.PictureUrl, pictureFileName);
+                    context.Products.Add(product);
+                }
+
             }
 
             if (!context.DeliveryMethods.Any())

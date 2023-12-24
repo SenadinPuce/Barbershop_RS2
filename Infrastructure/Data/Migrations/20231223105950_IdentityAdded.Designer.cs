@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    [Migration("20231221110651_IdentityAdded")]
+    [Migration("20231223105950_IdentityAdded")]
     partial class IdentityAdded
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AppUserPhoto", b =>
+                {
+                    b.Property<int>("AppUsersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhotosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUsersId", "PhotosId");
+
+                    b.HasIndex("PhotosId");
+
+                    b.ToTable("AppUserPhoto");
+                });
 
             modelBuilder.Entity("Core.Entities.Address", b =>
                 {
@@ -140,9 +155,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("PhotoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -166,10 +178,6 @@ namespace Infrastructure.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("PhotoId")
-                        .IsUnique()
-                        .HasFilter("[PhotoId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -390,29 +398,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("ProductBrands");
                 });
 
-            modelBuilder.Entity("Core.Entities.ProductPhoto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PhotoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductPhotos");
-                });
-
             modelBuilder.Entity("Core.Entities.ProductType", b =>
                 {
                     b.Property<int>("Id")
@@ -566,6 +551,36 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PhotoProduct", b =>
+                {
+                    b.Property<int>("PhotosId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PhotosId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("PhotoProduct");
+                });
+
+            modelBuilder.Entity("AppUserPhoto", b =>
+                {
+                    b.HasOne("Core.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Photo", null)
+                        .WithMany()
+                        .HasForeignKey("PhotosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Core.Entities.AppUser", b =>
                 {
                     b.HasOne("Core.Entities.Address", "Address")
@@ -573,14 +588,7 @@ namespace Infrastructure.Data.Migrations
                         .HasForeignKey("Core.Entities.AppUser", "AddressId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Core.Entities.Photo", "Photo")
-                        .WithOne()
-                        .HasForeignKey("Core.Entities.AppUser", "PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Address");
-
-                    b.Navigation("Photo");
                 });
 
             modelBuilder.Entity("Core.Entities.AppUserRole", b =>
@@ -705,25 +713,6 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("ProductType");
                 });
 
-            modelBuilder.Entity("Core.Entities.ProductPhoto", b =>
-                {
-                    b.HasOne("Core.Entities.Photo", "Photo")
-                        .WithMany("Products")
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.Product", "Product")
-                        .WithMany("Photos")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Photo");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Core.Entities.Review", b =>
                 {
                     b.HasOne("Core.Entities.AppUser", "User")
@@ -771,6 +760,21 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PhotoProduct", b =>
+                {
+                    b.HasOne("Core.Entities.Photo", null)
+                        .WithMany()
+                        .HasForeignKey("PhotosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Core.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -784,16 +788,6 @@ namespace Infrastructure.Data.Migrations
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("Core.Entities.Photo", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Core.Entities.Product", b =>
-                {
-                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

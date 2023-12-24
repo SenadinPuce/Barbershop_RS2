@@ -117,27 +117,6 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -145,7 +124,6 @@ namespace Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhotoId = table.Column<int>(type: "int", nullable: true),
                     AddressId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -171,10 +149,25 @@ namespace Infrastructure.Data.Migrations
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Photos_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Photos",
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -240,6 +233,30 @@ namespace Infrastructure.Data.Migrations
                         column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserPhoto",
+                columns: table => new
+                {
+                    AppUsersId = table.Column<int>(type: "int", nullable: false),
+                    PhotosId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserPhoto", x => new { x.AppUsersId, x.PhotosId });
+                    table.ForeignKey(
+                        name: "FK_AppUserPhoto_AspNetUsers_AppUsersId",
+                        column: x => x.AppUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppUserPhoto_Photos_PhotosId",
+                        column: x => x.PhotosId,
+                        principalTable: "Photos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -386,26 +403,24 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductPhotos",
+                name: "PhotoProduct",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PhotoId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    PhotosId = table.Column<int>(type: "int", nullable: false),
+                    ProductsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductPhotos", x => x.Id);
+                    table.PrimaryKey("PK_PhotoProduct", x => new { x.PhotosId, x.ProductsId });
                     table.ForeignKey(
-                        name: "FK_ProductPhotos_Photos_PhotoId",
-                        column: x => x.PhotoId,
+                        name: "FK_PhotoProduct_Photos_PhotosId",
+                        column: x => x.PhotosId,
                         principalTable: "Photos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductPhotos_Products_ProductId",
-                        column: x => x.ProductId,
+                        name: "FK_PhotoProduct_Products_ProductsId",
+                        column: x => x.ProductsId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -453,6 +468,11 @@ namespace Infrastructure.Data.Migrations
                 filter: "[ServiceId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppUserPhoto_PhotosId",
+                table: "AppUserPhoto",
+                column: "PhotosId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -492,13 +512,6 @@ namespace Infrastructure.Data.Migrations
                 filter: "[AddressId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_PhotoId",
-                table: "AspNetUsers",
-                column: "PhotoId",
-                unique: true,
-                filter: "[PhotoId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -527,14 +540,9 @@ namespace Infrastructure.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPhotos_PhotoId",
-                table: "ProductPhotos",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductPhotos_ProductId",
-                table: "ProductPhotos",
-                column: "ProductId");
+                name: "IX_PhotoProduct_ProductsId",
+                table: "PhotoProduct",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductBrandId",
@@ -559,6 +567,9 @@ namespace Infrastructure.Data.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
+                name: "AppUserPhoto");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -577,7 +588,7 @@ namespace Infrastructure.Data.Migrations
                 name: "OrderItem");
 
             migrationBuilder.DropTable(
-                name: "ProductPhotos");
+                name: "PhotoProduct");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -590,6 +601,9 @@ namespace Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Photos");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -608,9 +622,6 @@ namespace Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Addresses");
-
-            migrationBuilder.DropTable(
-                name: "Photos");
         }
     }
 }
