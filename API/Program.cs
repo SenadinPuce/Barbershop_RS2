@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +22,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseSwaggerDocumentation();
 

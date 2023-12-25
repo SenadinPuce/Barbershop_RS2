@@ -1,3 +1,4 @@
+using API.Errors;
 using API.Helpers;
 using Core.Interfaces;
 using Core.Models.Dto;
@@ -36,7 +37,7 @@ namespace API.Controllers
                     return productDto;
                 }
             }
-            return BadRequest("Problem adding product photo");
+            return BadRequest(new ApiResponse(400, "Problem adding product photo"));
         }
 
         // out for development
@@ -54,11 +55,11 @@ namespace API.Controllers
                     return Ok();
                 }
 
-                return BadRequest("Problem deleting product photo");
+                return BadRequest(new ApiResponse(400, "Problem deleting product photo"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponse(400, ex.Message));
             }
         }
 
@@ -76,11 +77,11 @@ namespace API.Controllers
                     return Ok(productDto);
                 }
 
-                return BadRequest("Problem setting product main photo");
+                return BadRequest(new ApiResponse(400, "Problem setting product main photo"));
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new ApiResponse(404, ex.Message));
             }
         }
     }
