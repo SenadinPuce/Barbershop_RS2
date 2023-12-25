@@ -1,7 +1,6 @@
+using API.Dtos;
 using AutoMapper;
 using Core.Entities;
-using Core.Models.Dto;
-using Core.Models.Dtos;
 using Core.Models.UpsertObjects;
 
 namespace API.Helpers

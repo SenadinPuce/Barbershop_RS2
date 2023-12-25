@@ -1,21 +1,20 @@
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Models.Dto;
 using Core.Models.SearchObjects;
 using Core.Models.UpsertObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class ProductService : BaseCRUDService<ProductDto, Product, ProductSearchObject, ProductUpsertObject, ProductUpsertObject>
+    public class ProductService : BaseCRUDService<Product, ProductSearchObject, ProductUpsertObject, ProductUpsertObject>
         , IProductService
     {
         public ProductService(BarbershopContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public override async Task<ProductDto> GetByIdAsync(int id)
+        public override async Task<Product> GetByIdAsync(int id)
         {
             var entity = await _context.Products
                 .Include(x => x.ProductType)
@@ -23,7 +22,7 @@ namespace Infrastructure.Data.Repositories
                 .Include(x => x.Photos)
                 .SingleOrDefaultAsync(x => x.Id == id);
 
-            return _mapper.Map<ProductDto>(entity);
+            return entity;
         }
 
         public override IQueryable<Product> AddFilter(IQueryable<Product> query, ProductSearchObject search)
@@ -82,72 +81,6 @@ namespace Infrastructure.Data.Repositories
             }
 
             return query;
-        }
-
-        public async Task<ProductDto> AddProductPhoto(int id, Photo photo)
-        {
-            var product = await _context.Products
-                .Include(x => x.ProductType)
-                .Include(x => x.ProductBrand)
-                .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.Id == id);
-
-            product.AddPhoto(photo.PictureUrl, photo.FileName);
-
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return _mapper.Map<ProductDto>(product);
-        }
-
-        public async Task<Photo> DeleteProductPhoto(int id, int photoId)
-        {
-            var product = await _context.Products
-             .Include(x => x.Photos)
-             .SingleOrDefaultAsync(x => x.Id == id);
-
-            var photo = product.Photos.SingleOrDefault(x => x.Id == photoId);
-
-            if (photo != null)
-            {
-                if (photo.IsMain)
-                    throw new Exception("You cannot delete the main photo");
-            }
-            else
-            {
-                throw new Exception("Photo does not exists");
-            }
-
-            product.RemovePhoto(photoId);
-
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return photo;
-        }
-
-        public async Task<ProductDto> SetProductMainPhoto(int id, int photoId)
-        {
-            var product = await _context.Products
-                .Include(x => x.ProductType)
-                .Include(x => x.ProductBrand)
-                .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.Id == id);
-
-            if (product.Photos.All(x => x.Id != photoId)) throw new Exception("Photo doesn't exists for searched product");
-
-            product.SetMainPhoto(photoId);
-
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return _mapper.Map<ProductDto>(product);
         }
     }
 }

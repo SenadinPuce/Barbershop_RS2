@@ -1,22 +1,19 @@
-using AutoMapper;
 using Core.Interfaces;
 using Core.Models.SearchObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class BaseService<T, TDb, TSearch> : IService<T, TSearch>
-        where T : class where TDb : class where TSearch : BaseSearchObject
+    public class BaseService<TDb, TSearch> : IService<TDb, TSearch>
+       where TDb : class where TSearch : BaseSearchObject
     {
         protected readonly BarbershopContext _context;
-        protected readonly IMapper _mapper;
-        public BaseService(BarbershopContext context, IMapper mapper)
+        public BaseService(BarbershopContext context)
         {
-            _mapper = mapper;
             _context = context;
         }
 
-        public async Task<List<T>> GetAsync(TSearch search)
+        public async Task<List<TDb>> GetAsync(TSearch search)
         {
             var query = _context.Set<TDb>().AsQueryable();
 
@@ -29,16 +26,12 @@ namespace Infrastructure.Data.Repositories
                 query = query.Skip((search.PageIndex.Value - 1) * search.PageSize.Value).Take(search.PageSize.Value);
             }
 
-            var list = await query.ToListAsync();
-
-            return _mapper.Map<List<T>>(list);
+            return await query.ToListAsync();
         }
 
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<TDb> GetByIdAsync(int id)
         {
-            var entity = await _context.Set<TDb>().FindAsync(id);
-
-            return _mapper.Map<T>(entity);
+            return await _context.Set<TDb>().FindAsync(id);
         }
 
         public virtual IQueryable<TDb> AddInclude(IQueryable<TDb> query, TSearch search)

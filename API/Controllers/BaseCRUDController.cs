@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,13 +7,15 @@ namespace API.Controllers
 {
     // out for development
     // [Authorize]
-    public class BaseCRUDController<T, TSearch, TInsert, TUpdate> : BaseController<T, TSearch>
-        where T : class where TSearch : class
+    public class BaseCRUDController<T, TDb, TSearch, TInsert, TUpdate> : BaseController<T, TDb, TSearch>
+        where T : class where TDb : class where TSearch : class
     {
-        private readonly ICRUDService<T, TSearch, TInsert, TUpdate> _service;
-        public BaseCRUDController(ICRUDService<T, TSearch, TInsert, TUpdate> service)
-        : base(service)
+        private readonly ICRUDService<TDb, TSearch, TInsert, TUpdate> _service;
+        private readonly IMapper _mapper;
+        public BaseCRUDController(ICRUDService<TDb, TSearch, TInsert, TUpdate> service, IMapper mapper)
+        : base(service, mapper)
         {
+            _mapper = mapper;
             _service = service;
         }
 
@@ -23,7 +26,7 @@ namespace API.Controllers
 
             var created = await _service.Insert(insert);
 
-            return Ok(created);
+            return Ok(_mapper.Map<T>(created));
         }
 
         [HttpPut("{id}")]
@@ -31,9 +34,9 @@ namespace API.Controllers
         {
             if (insert == null) return BadRequest();
 
-            var updated= await _service.Update(id, insert);
+            var updated = await _service.Update(id, insert);
 
-            return Ok(updated);
+            return Ok(_mapper.Map<T>(updated));
         }
 
 

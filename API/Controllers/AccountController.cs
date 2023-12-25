@@ -1,7 +1,7 @@
+using API.Dtos;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Models.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

@@ -56,6 +56,13 @@ namespace Infrastructure.Data
                 context.DeliveryMethods.AddRange(methods);
             }
 
+            if (!context.Services.Any())
+            {
+                var servicesData = File.ReadAllText(path + @"/Data/SeedData/services.json");
+                var services = JsonSerializer.Deserialize<List<Service>>(servicesData);
+                context.Services.AddRange(services);
+            }
+
             // Users seed
 
             if (!userManager.Users.Any())
@@ -82,15 +89,16 @@ namespace Infrastructure.Data
                     {
                         FirstName = "Admin",
                         LastName = "Admin",
-                        Email="admin@test.com",
+                        Email= "admin@test.com",
                         UserName = "admin"
                     }
                 };
 
                 var roles = new List<AppRole>
                 {
-                    new AppRole{Name ="Client"},
-                    new AppRole{Name="Admin"}
+                    new AppRole{ Name = "Client"},
+                    new AppRole{ Name = "Barber"},
+                    new AppRole{ Name= "Admin"}
                 };
 
                 foreach (var role in roles)

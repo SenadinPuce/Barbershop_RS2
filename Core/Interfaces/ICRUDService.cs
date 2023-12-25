@@ -1,9 +1,9 @@
 namespace Core.Interfaces
 {
-    public interface ICRUDService<T, TSearch, TInsert, TUpdate> : IService<T, TSearch>
+    public interface ICRUDService<TDb, TSearch, TInsert, TUpdate> : IService<TDb, TSearch>
     {
-        Task<T> Insert(TInsert insert);
-        Task<T> Update(int id, TUpdate update);
+        Task<TDb> Insert(TInsert insert);
+        Task<TDb> Update(int id, TUpdate update);
         Task<bool> Delete(int id);
     }
 }

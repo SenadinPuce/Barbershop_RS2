@@ -1,7 +1,5 @@
-using Core.Entities;
-using Core.Models.Dtos;
 
-namespace Core.Models.Dto
+namespace API.Dtos
 {
     public class ProductDto
     {

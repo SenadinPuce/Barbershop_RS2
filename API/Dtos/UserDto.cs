@@ -1,4 +1,4 @@
-namespace Core.Models.Dtos
+namespace API.Dtos
 {
     public class UserDto
     {

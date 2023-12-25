@@ -1,8 +1,8 @@
 namespace Core.Interfaces
 {
-    public interface IService<T, TSearch>
+    public interface IService<TDb, TSearch>
     {
-        Task<List<T>> GetAsync(TSearch search);
-        Task<T> GetByIdAsync(int id);
+        Task<List<TDb>> GetAsync(TSearch search);
+        Task<TDb> GetByIdAsync(int id);
     }
 }

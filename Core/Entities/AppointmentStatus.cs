@@ -6,12 +6,8 @@ namespace Core.Entities
     {
         [EnumMember(Value = "Free")]
         Free,
-        [EnumMember(Value = "Waiting")]
-        Waiting,
-        [EnumMember(Value = "Canceled")]
-        Canceled,
-        [EnumMember(Value = "Confirmed")]
-        Confirmed,
+        [EnumMember(Value = "Reserved")]
+        Reserved,
         [EnumMember(Value = "Completed")]
         Completed
     }
