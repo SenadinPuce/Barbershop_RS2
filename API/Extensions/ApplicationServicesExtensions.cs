@@ -1,7 +1,7 @@
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
-using Infrastructure.Data.Services;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
@@ -17,6 +17,7 @@ namespace API.Extensions
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             return services;

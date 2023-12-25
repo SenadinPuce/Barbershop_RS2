@@ -2,13 +2,14 @@ using System.Reflection;
 using System.Text.Json;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
-using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data
 {
     public class BarbershopContextSeed
     {
-        public static async Task SeedAsync(BarbershopContext context)
+        public static async Task SeedAsync(BarbershopContext context, UserManager<AppUser> userManager,
+            RoleManager<AppRole> roleManager)
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -53,6 +54,56 @@ namespace Infrastructure.Data
                 var deliveryData = File.ReadAllText(path + @"/Data/SeedData/delivery.json");
                 var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
                 context.DeliveryMethods.AddRange(methods);
+            }
+
+            // Users seed
+
+            if (!userManager.Users.Any())
+            {
+                var users = new List<AppUser>
+                {
+                    new AppUser
+                    {
+                        FirstName = "Test",
+                        LastName = "Test",
+                        Email = "test@test.com",
+                        UserName = "test",
+                        Address = new Address
+                        {
+                            FirstName = "First name test",
+                            LastName = "Last name test",
+                            Street = "Sjeverni logor bb",
+                            City = "Mostar",
+                            State = "BiH",
+                            ZipCode = "88000"
+                        }
+                    },
+                    new AppUser
+                    {
+                        FirstName = "Admin",
+                        LastName = "Admin",
+                        Email="admin@test.com",
+                        UserName = "admin"
+                    }
+                };
+
+                var roles = new List<AppRole>
+                {
+                    new AppRole{Name ="Client"},
+                    new AppRole{Name="Admin"}
+                };
+
+                foreach (var role in roles)
+                {
+                    await roleManager.CreateAsync(role);
+                };
+
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "Pa$$w0rd");
+                    await userManager.AddToRoleAsync(user, "Client");
+                    if (user.UserName == "admin") await userManager.AddToRoleAsync(user, "Admin");
+                }
             }
 
             if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();

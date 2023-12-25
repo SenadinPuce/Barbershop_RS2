@@ -1,6 +1,9 @@
+using System.Text;
 using Core.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Extensions
 {
@@ -18,7 +21,18 @@ namespace API.Extensions
             .AddSignInManager<SignInManager<AppUser>>()
             .AddEntityFrameworkStores<BarbershopContext>();
 
-            services.AddAuthentication(); // add jwt auth
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+             .AddJwtBearer(options =>
+             {
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuerSigningKey = true,
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
+                     ValidateIssuer = true,
+                     ValidIssuer = config["Token:Issuer"],
+                     ValidateAudience = false
+                 };
+             });
 
             services.AddAuthorization();
 

@@ -2,7 +2,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Data.Services
+namespace Infrastructure.Services
 {
     public class PhotoService : IPhotoService
     {

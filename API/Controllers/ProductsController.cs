@@ -1,9 +1,9 @@
 using API.Helpers;
-using Core.Entities;
 using Core.Interfaces;
 using Core.Models.Dto;
 using Core.Models.SearchObjects;
 using Core.Models.UpsertObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -21,6 +21,8 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
+        // out for development
+        // [Authorize(Roles = "Admin")] 
         [HttpPut("{id}/photo")]
         public async Task<ActionResult<ProductDto>> AddProductPhoto(int id, [FromForm] PhotoInputModel uploadPhotoFile)
         {
@@ -37,6 +39,8 @@ namespace API.Controllers
             return BadRequest("Problem adding product photo");
         }
 
+        // out for development
+        // [Authorize(Roles = "Admin")] 
         [HttpDelete("{id}/photo/{photoId}")]
         public async Task<ActionResult> DeleteProductPhoto(int id, int photoId)
         {
@@ -58,6 +62,8 @@ namespace API.Controllers
             }
         }
 
+        // out for development
+        // [Authorize(Roles = "Admin")] 
         [HttpPatch("{id}/photo/{photoId}")]
         public async Task<ActionResult<ProductDto>> SetMainPhoto(int id, int photoId)
         {
