@@ -6,10 +6,10 @@ namespace Core.Entities.OrderAggregate
 		{
 		}
 
-		public Order(ICollection<OrderItem> orderItems, Address shipToAddress,
+		public Order(ICollection<OrderItem> orderItems, Address address,
 		   DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId, AppUser client)
 		{
-			ShipToAddress = shipToAddress;
+			Address = address;
 			Client = client;
 			DeliveryMethod = deliveryMethod;
 			OrderItems = orderItems;
@@ -21,12 +21,10 @@ namespace Core.Entities.OrderAggregate
 
 		public int ClientId { get; set; }
 		public virtual AppUser Client { get; set; }
-
 		public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
-		public int ShipToAddressId { get; set; }
-		public virtual Address ShipToAddress { get; set; }
-
+		public int AddressId { get; set; }
+		public virtual Address Address { get; set; }
 		public int DeliveryMethodId { get; set; }
 		public virtual DeliveryMethod DeliveryMethod { get; set; }
 		

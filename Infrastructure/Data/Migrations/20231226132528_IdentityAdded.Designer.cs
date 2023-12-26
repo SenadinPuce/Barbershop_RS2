@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    [Migration("20231223105950_IdentityAdded")]
+    [Migration("20231226132528_IdentityAdded")]
     partial class IdentityAdded
     {
         /// <inheritdoc />
@@ -270,6 +270,9 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -282,9 +285,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShipToAddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -294,12 +294,12 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
                     b.HasIndex("ClientId");
 
                     b.HasIndex("DeliveryMethodId");
-
-                    b.HasIndex("ShipToAddressId")
-                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -637,6 +637,12 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
+                    b.HasOne("Core.Entities.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("Core.Entities.OrderAggregate.Order", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
@@ -649,17 +655,11 @@ namespace Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Address", "ShipToAddress")
-                        .WithOne()
-                        .HasForeignKey("Core.Entities.OrderAggregate.Order", "ShipToAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Address");
 
                     b.Navigation("Client");
 
                     b.Navigation("DeliveryMethod");
-
-                    b.Navigation("ShipToAddress");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderItem", b =>

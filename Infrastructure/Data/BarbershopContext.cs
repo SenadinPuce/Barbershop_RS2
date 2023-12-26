@@ -11,7 +11,7 @@ namespace Infrastructure.Data
         IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
-        public BarbershopContext(DbContextOptions options) : base(options)
+        public BarbershopContext(DbContextOptions<BarbershopContext> options) : base(options)
         {
         }
 
@@ -26,7 +26,7 @@ namespace Infrastructure.Data
         public DbSet<OrderItem> OrderItem { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

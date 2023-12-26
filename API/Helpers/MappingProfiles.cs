@@ -16,6 +16,7 @@ namespace API.Helpers
             CreateMap<ProductUpsertObject, Product>();
             CreateMap<Photo, PhotoDto>()
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<PhotoUrlResolver>());
+            CreateMap<AddressDto, Address>().ReverseMap();
         }
     }
 }
