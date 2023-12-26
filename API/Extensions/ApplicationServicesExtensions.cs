@@ -18,6 +18,7 @@ namespace API.Extensions
             });
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

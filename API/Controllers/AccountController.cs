@@ -4,6 +4,7 @@ using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Models.UpsertObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,11 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IAddressService _addressService;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper)
+            ITokenService tokenService, IMapper mapper, IAddressService addressService)
         {
+            _addressService = addressService;
             _mapper = mapper;
             _tokenService = tokenService;
             _signInManager = signInManager;
@@ -90,16 +93,25 @@ namespace API.Controllers
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
 
+            if(user.Address == null) return NotFound(new ApiResponse(404));
+
             return _mapper.Map<AddressDto>(user.Address);
         }
 
         // [Authorize]
         [HttpPut("address")]
-        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressUpsertObject addressUpsert)
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
 
-            _mapper.Map(addressDto, user.Address);
+            if (user.Address == null)
+            {
+               user.Address = await _addressService.Insert(addressUpsert);
+            }
+            else
+            {
+                 _mapper.Map(addressUpsert, user.Address);
+            }
 
             var result = await _userManager.UpdateAsync(user);
 
