@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:barbershop_admin/helpers/constants.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/foundation.dart';
@@ -20,26 +19,18 @@ class AccountProvider with ChangeNotifier {
       'password': password,
     });
 
-      final response =
-          await http.post(Uri.parse(endpoint), headers: headers, body: body);
+    final response =
+        await http.post(Uri.parse(endpoint), headers: headers, body: body);
 
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
 
-        User.username = data['username'];
-        User.email = data['email'];
-        User.token = data['token'];
-
-        // Successful login
-        print('Login successful! Token: ${User.username}');
-      } else {
-        // Handle error
-        print(
-            'Login failed. Status code: ${response.statusCode}, Body: ${response.body}');
-
-            throw Exception("Login failed");
-      }
-    
+      Authorization.username = data['username'];
+      Authorization.email = data['email'];
+      Authorization.token = data['token'];
+    } else {
+      throw Exception("Login failed");
+    }
   }
 
   Map<String, String> createHeaders() {

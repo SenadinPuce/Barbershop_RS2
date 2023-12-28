@@ -1,4 +1,7 @@
+using API.Dtos;
+using AutoMapper;
 using Core.Entities;
+using Core.Models.SearchObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,26 +15,39 @@ namespace API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AdminController(UserManager<AppUser> userManager)
+        private readonly IMapper _mapper;
+        public AdminController(UserManager<AppUser> userManager, IMapper mapper)
         {
+            _mapper = mapper;
             _userManager = userManager;
         }
 
 
-        [HttpGet("users-with-roles/{id}")]
-        public async Task<ActionResult> GetUsersWithRoles()
+        [HttpGet("users-with-roles")]
+        public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] AppUserSearchObject search)
         {
-            var users = await _userManager.Users.OrderBy(u => u.UserName).Select(u => new
-            {
-                u.Id,
-                u.FirstName,
-                u.LastName,
-                u.Email,
-                Username = u.UserName,
-                Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
-            }).ToListAsync();
+            var query = _userManager.Users;
 
-            return Ok(users);
+            if (!string.IsNullOrEmpty(search.RoleName))
+            {
+                query = query.Where(u => u.UserRoles.Any(ur => ur.Role.Name == search.RoleName));
+            }
+
+            if (!string.IsNullOrEmpty(search.Username))
+            {
+                query = query.Where(u => u.UserName.Contains(search.Username));
+            }
+
+            if (search.PageIndex.HasValue == true && search.PageSize.HasValue == true)
+            {
+                query = query.Skip((search.PageIndex.Value - 1) * search.PageSize.Value).Take(search.PageSize.Value);
+            }
+
+            var users = await query.Include(u => u.UserRoles).ThenInclude(r => r.Role).ToListAsync();
+
+            var userDtos = _mapper.Map<List<AppUserDto>>(users);
+
+            return Ok(userDtos);
         }
 
 

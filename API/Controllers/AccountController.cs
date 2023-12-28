@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<AuthorizationDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByNameAsync(loginDto.Username);
 
@@ -41,7 +41,7 @@ namespace API.Controllers
 
             if (!result.Succeeded) return Unauthorized();
 
-            return new UserDto
+            return new AuthorizationDto
             {
                 Username = user.UserName,
                 Email = user.Email,
@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<AuthorizationDto>> Register(RegisterDto registerDto)
         {
             if (CheckUserNameExistsAsync(registerDto.UserName).Result.Value)
             {
@@ -73,7 +73,7 @@ namespace API.Controllers
 
             if (!roleAddResult.Succeeded) return BadRequest(new ApiResponse(400, "Failed to add to role"));
 
-            return new UserDto
+            return new AuthorizationDto
             {
                 Username = user.UserName,
                 Email = user.Email,

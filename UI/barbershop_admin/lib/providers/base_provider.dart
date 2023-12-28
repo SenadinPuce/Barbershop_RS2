@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_final_fields, unused_field
-
 import 'dart:convert';
-
 import 'package:barbershop_admin/helpers/constants.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/widgets.dart';
@@ -43,7 +41,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    String token = User.token ?? "";
+    String token = Authorization.token ?? "";
 
     String jwtAuth = "Bearer ${base64Encode(utf8.encode(token))}";
 

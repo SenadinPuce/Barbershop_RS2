@@ -1,6 +1,6 @@
 import 'dart:core';
 
-class User {
+class Authorization {
   static String? username;
   static String? email;
   static String? token;
