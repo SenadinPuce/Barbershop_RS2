@@ -13,7 +13,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     _endpoint = endpoint;
   }
 
-  Future<List<T>> Get({dynamic filter}) async {
+  Future<List<T>> get({dynamic filter}) async {
     var url = "$apiUrl$_endpoint";
 
     if (filter != null) {

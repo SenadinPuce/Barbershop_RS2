@@ -1,5 +1,6 @@
 import 'package:barbershop_admin/main.dart';
 import 'package:barbershop_admin/screens/users_list_screen.dart';
+import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/material.dart';
 
 class MasterScreenWidget extends StatefulWidget {
@@ -29,8 +30,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Text("Users"),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                       builder: (context) => const UsersListScreen()),
                 );
@@ -40,6 +40,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Text("Logout"),
               onTap: () {
+                Authorization.username = "";
+                Authorization.email = "";
+                Authorization.token = "";
+
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, use_build_context_synchronously
 
 import 'package:barbershop_admin/providers/account_provider.dart';
+import 'package:barbershop_admin/providers/admin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,10 @@ import 'screens/users_list_screen.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => AccountProvider())],
+    providers: [
+      ChangeNotifierProvider(create: (_) => AccountProvider()),
+      ChangeNotifierProvider(create: (_) => AdminProvider())
+    ],
     child: const MyApp(),
   ));
 }
@@ -135,8 +139,7 @@ class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                               await _accountProvider.loginAsync(
                                   username, password);
 
-                              Navigator.pushReplacement(
-                                context,
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) => UsersListScreen()),
                               );

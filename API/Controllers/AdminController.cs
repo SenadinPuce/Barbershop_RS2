@@ -23,17 +23,18 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("users-with-roles")]
+        // [HttpGet("users-with-roles")]
+        [HttpGet]
         public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] AppUserSearchObject search)
         {
             var query = _userManager.Users;
 
-            if (!string.IsNullOrEmpty(search.RoleName))
+            if (!string.IsNullOrWhiteSpace(search.RoleName))
             {
                 query = query.Where(u => u.UserRoles.Any(ur => ur.Role.Name == search.RoleName));
             }
 
-            if (!string.IsNullOrEmpty(search.Username))
+            if (!string.IsNullOrWhiteSpace(search.Username))
             {
                 query = query.Where(u => u.UserName.Contains(search.Username));
             }
@@ -52,6 +53,7 @@ namespace API.Controllers
 
 
         [HttpPost("edit-roles/{username}")]
+
         public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
         {
             if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
