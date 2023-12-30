@@ -22,9 +22,7 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
-
-        // [HttpGet("users-with-roles")]
-        [HttpGet]
+        [HttpGet("users-with-roles")]
         public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] AppUserSearchObject search)
         {
             var query = _userManager.Users;
@@ -54,7 +52,7 @@ namespace API.Controllers
 
         [HttpPost("edit-roles/{username}")]
 
-        public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
+        public async Task<ActionResult<AppUserDto>> EditRoles(string username, [FromBody]string roles)
         {
             if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
 
@@ -74,7 +72,9 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 
-            return Ok(await _userManager.GetRolesAsync(user));
+            
+            return Ok(_mapper.Map<AppUserDto>(await _userManager.FindByNameAsync(username)));
+
         }
     }
 }

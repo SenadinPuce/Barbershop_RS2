@@ -20,15 +20,16 @@ class _UsersListScreenState extends State<UsersListScreen> {
   String? _selectedRole = 'All';
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    _adminProvider = context.read<AdminProvider>();
+  void initState() {
+    super.initState();
     _loadUsers();
   }
 
   Future<void> _loadUsers() async {
+    _adminProvider = context.read<AdminProvider>();
+
     String roleNameToSend = (_selectedRole == 'All') ? '' : _selectedRole!;
-    var data = await _adminProvider.get(
+    var data = await _adminProvider.getUsers(
       filter: {
         'username': _usernameController.text,
         'roleName': roleNameToSend,
@@ -45,7 +46,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
     return MasterScreenWidget(
       title: "Users",
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -150,7 +151,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     if (selected == true) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => UserDetailScreen(),
+                          builder: (context) => UserDetailScreen(user: u,),
                         ),
                       );
                     }

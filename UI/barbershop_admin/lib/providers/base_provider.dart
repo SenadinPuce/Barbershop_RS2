@@ -13,8 +13,12 @@ abstract class BaseProvider<T> with ChangeNotifier {
     _endpoint = endpoint;
   }
 
-  Future<List<T>> get({dynamic filter}) async {
+  Future<List<T>> get({dynamic filter, String? extraRoute}) async {
     var url = "$apiUrl$_endpoint";
+
+    if (extraRoute != null && extraRoute.trim().isEmpty == false) {
+      url = "$url/$extraRoute";
+    }
 
     if (filter != null) {
       var queryString = getQueryString(filter);
@@ -40,6 +44,43 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future<T> insert({dynamic request, String? extraRoute}) async {
+    var url = "$apiUrl$_endpoint";
+
+    if (extraRoute != null && extraRoute.trim().isEmpty == false) {
+      url = "$url/$extraRoute";
+    }
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
+  Future<T> update(int id, [dynamic request]) async {
+    var url = "$apiUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
   Map<String, String> createHeaders() {
     String token = Authorization.token ?? "";
 
@@ -59,8 +100,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else if (response.statusCode == 401) {
       throw Exception("Unauthorized");
     } else {
-      print(response.body);
-      throw Exception("Something bad happened please try again");
+      print("Error response: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      throw Exception("Something bad happened, please try again");
     }
   }
 
@@ -95,7 +137,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     });
     return query;
   }
-  
+
   T fromJson(item) {
     throw Exception("Method not implemented");
   }
