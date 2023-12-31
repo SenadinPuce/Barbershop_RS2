@@ -21,7 +21,7 @@ namespace Infrastructure.Data.Repositories
             query = AddInclude(query, search);
             query = AddSorting(query, search);
 
-            if (search.PageIndex.HasValue == true && search.PageSize.HasValue == true)
+            if (search?.PageIndex.HasValue == true && search?.PageSize.HasValue == true)
             {
                 query = query.Skip((search.PageIndex.Value - 1) * search.PageSize.Value).Take(search.PageSize.Value);
             }

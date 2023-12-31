@@ -18,6 +18,8 @@ namespace API.Extensions
             });
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductBrandService, ProductBrandService>();
+            services.AddScoped<IProductTypeService, ProductTypeService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();

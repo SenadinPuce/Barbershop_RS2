@@ -21,7 +21,8 @@ namespace API.Controllers
         private readonly BarbershopContext _context;
         private readonly IMapper _mapper;
 
-        public ProductsController(BarbershopContext context, IProductService service, IPhotoService photoService, IMapper mapper)
+        public ProductsController(BarbershopContext context, IProductService service,
+            IPhotoService photoService, IMapper mapper)
             : base(service, mapper)
         {
             _mapper = mapper;

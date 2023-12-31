@@ -1,4 +1,5 @@
 import 'package:barbershop_admin/main.dart';
+import 'package:barbershop_admin/screens/products_list_screen.dart';
 import 'package:barbershop_admin/screens/users_list_screen.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/material.dart';
@@ -25,29 +26,53 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         title: Text(widget.title ?? ""),
       ),
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           children: [
-            ListTile(
-              title: Text("Users"),
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => const UsersListScreen()),
-                );
-              },
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: Text("Users"),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const UsersListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text("Products"),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ProductsListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             const Divider(),
-            ListTile(
-              title: Text("Logout"),
-              onTap: () {
-                Authorization.username = "";
-                Authorization.email = "";
-                Authorization.token = "";
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: ListTile(
+                title: Text("Logout"),
+                onTap: () {
+                  Authorization.username = "";
+                  Authorization.email = "";
+                  Authorization.token = "";
 
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-            )
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

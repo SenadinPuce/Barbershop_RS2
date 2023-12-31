@@ -27,12 +27,12 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Product> AddFilter(IQueryable<Product> query, ProductSearchObject search)
         {
-            if (search.ProductTypeId.HasValue)
+            if (search.ProductTypeId.HasValue && search.ProductTypeId.Value > 0)
             {
                 query = query.Where(x => x.ProductTypeId == search.ProductTypeId);
             }
 
-            if (search.ProductBrandId.HasValue)
+            if (search.ProductBrandId.HasValue && search.ProductBrandId.Value > 0)
             {
                 query = query.Where(x => x.ProductBrandId == search.ProductBrandId);
             }

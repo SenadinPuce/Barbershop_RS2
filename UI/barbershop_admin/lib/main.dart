@@ -1,17 +1,22 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, use_build_context_synchronously
-
-import 'package:barbershop_admin/providers/account_provider.dart';
-import 'package:barbershop_admin/providers/admin_provider.dart';
+import 'package:barbershop_admin/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'providers/account_provider.dart';
+import 'providers/admin_provider.dart';
+import 'providers/product_brand_provider.dart';
+import 'providers/product_type_provider.dart';
 import 'screens/users_list_screen.dart';
+
 
 void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AccountProvider()),
-      ChangeNotifierProvider(create: (_) => AdminProvider())
+      ChangeNotifierProvider(create: (_) => AdminProvider()),
+      ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
+      ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
     ],
     child: const MyApp(),
   ));
