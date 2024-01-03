@@ -13,7 +13,13 @@ abstract class BaseProvider<T> with ChangeNotifier {
     _endpoint = endpoint;
   }
 
-  Future<List<T>> get({dynamic filter, String? extraRoute}) async {
+  //fake delay added
+  
+  Future<List<T>> get(
+      {dynamic filter,
+      String? extraRoute,
+      Duration delay = const Duration(milliseconds: 500)}) async {
+    await Future.delayed(delay);
     var url = "$apiUrl$_endpoint";
 
     if (extraRoute != null && extraRoute.trim().isEmpty == false) {

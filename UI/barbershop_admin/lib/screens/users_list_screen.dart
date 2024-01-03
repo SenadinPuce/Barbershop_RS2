@@ -18,6 +18,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
   List<User>? users;
   TextEditingController _usernameController = TextEditingController();
   String? _selectedRole = 'All';
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
     );
 
     setState(() {
+      isLoading = false;
       users = data;
     });
   }
@@ -101,6 +103,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
           height: 40,
           child: ElevatedButton(
             onPressed: () async {
+              isLoading = true;
               _loadUsers();
             },
             style: ElevatedButton.styleFrom(
@@ -115,66 +118,71 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-      child: SingleChildScrollView(
-        child: DataTable(
-          showCheckboxColumn: false,
-          columns: const [
-            DataColumn(
-              label: Text('ID', style: TextStyle(fontStyle: FontStyle.italic)),
+      child: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: DataTable(
+                showCheckboxColumn: false,
+                columns: const [
+                  DataColumn(
+                    label: Text('ID',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('First Name',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('Last Name',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('Username',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('Email',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('Phone Number',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                  DataColumn(
+                    label: Text('User Roles',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+                ],
+                rows: (users ?? [])
+                    .map(
+                      (User u) => DataRow(
+                        onSelectChanged: (selected) {
+                          if (selected == true) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => UserDetailScreen(
+                                  user: u,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        cells: [
+                          DataCell(Text(u.id.toString())),
+                          DataCell(Text(u.firstName.toString())),
+                          DataCell(Text(u.lastName.toString())),
+                          DataCell(Text(u.username.toString())),
+                          DataCell(Text(u.email.toString())),
+                          DataCell(Text(u.phoneNumber.toString())),
+                          DataCell(Text(u.roles?.join(', ') ?? '')),
+                        ],
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-            DataColumn(
-              label: Text('First Name',
-                  style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-            DataColumn(
-              label: Text('Last Name',
-                  style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-            DataColumn(
-              label: Text('Username',
-                  style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-            DataColumn(
-              label:
-                  Text('Email', style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-            DataColumn(
-              label: Text('Phone Number',
-                  style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-            DataColumn(
-              label: Text('User Roles',
-                  style: TextStyle(fontStyle: FontStyle.italic)),
-            ),
-          ],
-          rows: (users ?? [])
-              .map(
-                (User u) => DataRow(
-                  onSelectChanged: (selected) {
-                    if (selected == true) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UserDetailScreen(
-                            user: u,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  cells: [
-                    DataCell(Text(u.id.toString())),
-                    DataCell(Text(u.firstName.toString())),
-                    DataCell(Text(u.lastName.toString())),
-                    DataCell(Text(u.username.toString())),
-                    DataCell(Text(u.email.toString())),
-                    DataCell(Text(u.phoneNumber.toString())),
-                    DataCell(Text(u.roles?.join(', ') ?? '')),
-                  ],
-                ),
-              )
-              .toList(),
-        ),
-      ),
     );
   }
 }

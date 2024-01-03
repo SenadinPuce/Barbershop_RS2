@@ -19,6 +19,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
   late ServiceProvider _serviceProvider;
   List<Service>? services;
   TextEditingController _serviceNameController = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
     setState(() {
       services = servicesData;
+      isLoading = false;
     });
   }
 
@@ -72,12 +74,10 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
           height: 40,
           child: ElevatedButton(
               onPressed: () async {
-                var servicesData = await _serviceProvider
-                    .get(filter: {'name': _serviceNameController.text});
-
                 setState(() {
-                  services = servicesData;
+                  isLoading = true;
                 });
+                _loadServices();
               },
               child: const Text("Search")),
         )
@@ -87,58 +87,62 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
-      child: DataTable(
-        columnSpacing: 215,
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'ID',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Name',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Price',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Description',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-        ],
-        rows: (services ?? [])
-            .map((Service s) => DataRow(
-                    onSelectChanged: (value) {
-                      if (value == true) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ServiceDetailScreen(
-                                  service: s,
-                                )));
-                      }
-                    },
-                    cells: [
-                      DataCell(Text(s.id.toString())),
-                      DataCell(Text(s.name.toString())),
-                      DataCell(Text(formatNumber(s.price))),
-                      DataCell(Text(s.description.toString())),
-                    ]))
-            .toList(),
-      ),
-    ));
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 215,
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'ID',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Name',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Price',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Description',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                  ],
+                  rows: (services ?? [])
+                      .map((Service s) => DataRow(
+                              onSelectChanged: (value) {
+                                if (value == true) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ServiceDetailScreen(
+                                            service: s,
+                                          )));
+                                }
+                              },
+                              cells: [
+                                DataCell(Text(s.id.toString())),
+                                DataCell(Text(s.name.toString())),
+                                DataCell(Text(formatNumber(s.price))),
+                                DataCell(Text(s.description.toString())),
+                              ]))
+                      .toList(),
+                ),
+              ));
   }
 }

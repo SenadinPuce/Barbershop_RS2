@@ -28,6 +28,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   List<ProductBrand> _productBrandsList = [];
   List<ProductType> _productTypesList = [];
   var productsFilter = ProductSearchFilter();
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
     setState(() {
       products = productData;
+      isLoading = false;
     });
   }
 
@@ -173,6 +175,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           height: 40,
           child: ElevatedButton(
             onPressed: () async {
+              setState(() {
+                isLoading = true;
+              });
               loadProducts();
             },
             style: ElevatedButton.styleFrom(
@@ -202,60 +207,69 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-      child: SingleChildScrollView(
-          child: DataTable(
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(
-            label: Text('ID', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-          DataColumn(
-            label: Text('Name', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-          DataColumn(
-            label: Text('Price', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-          DataColumn(
-            label: Text('Brand', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-          DataColumn(
-            label: Text('Type', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-          DataColumn(
-            label:
-                Text('Picture', style: TextStyle(fontStyle: FontStyle.italic)),
-          ),
-        ],
-        rows: (products ?? [])
-            .map((Product p) => DataRow(
-                    onSelectChanged: (value) {
-                      if (value == true) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProductDetailScreen(
-                                  product: p,
-                                )));
-                      }
-                    },
-                    cells: [
-                      DataCell(Text(p.id.toString())),
-                      DataCell(Text(p.name.toString())),
-                      DataCell(Text(formatNumber(p.price))),
-                      DataCell(Text(p.productBrand.toString())),
-                      DataCell(Text(p.productType.toString())),
-                      DataCell(
-                        Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Image.network(
-                            p.pictureUrl ?? '',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ]))
-            .toList(),
-      )),
+      child: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: DataTable(
+              showCheckboxColumn: false,
+              columns: const [
+                DataColumn(
+                  label:
+                      Text('ID', style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
+                  label: Text('Name',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
+                  label: Text('Price',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
+                  label: Text('Brand',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
+                  label: Text('Type',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
+                  label: Text('Picture',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+              ],
+              rows: (products ?? [])
+                  .map((Product p) => DataRow(
+                          onSelectChanged: (value) {
+                            if (value == true) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ProductDetailScreen(
+                                        product: p,
+                                      )));
+                            }
+                          },
+                          cells: [
+                            DataCell(Text(p.id.toString())),
+                            DataCell(Text(p.name.toString())),
+                            DataCell(Text(formatNumber(p.price))),
+                            DataCell(Text(p.productBrand.toString())),
+                            DataCell(Text(p.productType.toString())),
+                            DataCell(
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Image.network(
+                                  p.pictureUrl ?? '',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ]))
+                  .toList(),
+            )),
     );
   }
 }
