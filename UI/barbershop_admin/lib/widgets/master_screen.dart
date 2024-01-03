@@ -4,6 +4,8 @@ import 'package:barbershop_admin/screens/users_list_screen.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/services_list_screen.dart';
+
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
@@ -32,7 +34,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               child: ListView(
                 children: [
                   ListTile(
-                    title: Text("Users"),
+                    title: const Text("Users"),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -42,11 +44,21 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                     },
                   ),
                   ListTile(
-                    title: Text("Products"),
+                    title: const Text("Products"),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ProductsListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                   ListTile(
+                    title: const Text("Services"),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ServicesListScreen(),
                         ),
                       );
                     },

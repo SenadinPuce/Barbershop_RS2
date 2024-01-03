@@ -6,6 +6,7 @@ import 'providers/account_provider.dart';
 import 'providers/admin_provider.dart';
 import 'providers/product_brand_provider.dart';
 import 'providers/product_type_provider.dart';
+import 'providers/service_provider.dart';
 import 'screens/users_list_screen.dart';
 
 
@@ -17,6 +18,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ProductProvider()),
       ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
       ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
+      ChangeNotifierProvider(create: (_) => ServiceProvider()),
     ],
     child: const MyApp(),
   ));
