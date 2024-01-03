@@ -32,10 +32,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    loadProducts();
   }
 
-  Future<void> _loadProducts() async {
+  Future<void> loadProducts() async {
     _productProvider = context.read<ProductProvider>();
     _productBrandProvider = context.read<ProductBrandProvider>();
     _productTypeProvider = context.read<ProductTypeProvider>();
@@ -135,8 +135,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<String>(
-            items: ['Alphabetical', 'Price: Low to High', 'Price: High to Low']
-                .map<DropdownMenuItem<String>>((String value) {
+            items: [
+              'Sort by',
+              'Alphabetical',
+              'Price: Low to High',
+              'Price: High to Low'
+            ].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -148,8 +152,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   productsFilter.sortBy = 'priceAsc';
                 } else if (newValue == 'Price: High to Low') {
                   productsFilter.sortBy = 'priceDesc';
-                } else {
+                } else if (newValue == 'Alphabetical') {
                   productsFilter.sortBy = 'name';
+                } else {
+                  productsFilter.sortBy = null;
                 }
               });
             },
@@ -167,9 +173,27 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           height: 40,
           child: ElevatedButton(
             onPressed: () async {
-              _loadProducts();
+              loadProducts();
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+            ),
             child: const Text("Search"),
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        SizedBox(
+          width: 150,
+          height: 40,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            onPressed: () async {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProductDetailScreen()));
+            },
+            child: const Text("Add new product"),
           ),
         ),
       ],

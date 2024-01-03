@@ -5,7 +5,7 @@ class ProductSearchFilter {
   bool includeProductTypes;
   bool includeProductBrands;
   bool includeProductPhotos;
-  String sortBy;
+  String? sortBy;
   int pageIndex;
   int pageSize;
 
@@ -16,9 +16,9 @@ class ProductSearchFilter {
     this.includeProductTypes = true,
     this.includeProductBrands = true,
     this.includeProductPhotos = true,
-    this.sortBy = 'Name',
+    this.sortBy,
     this.pageIndex = 1,
-    this.pageSize = 20,
+    this.pageSize = 50,
   });
 
   Map<String, dynamic> toMap() {

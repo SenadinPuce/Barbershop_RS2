@@ -89,7 +89,7 @@ namespace API.Controllers
         // out for development
         // [Authorize(Roles = "Admin")] 
         [HttpDelete("{id}/photo/{photoId}")]
-        public async Task<ActionResult> DeleteProductPhoto(int id, int photoId)
+        public async Task<ActionResult<ProductDto>> DeleteProductPhoto(int id, int photoId)
         {
             var product = await _service.GetByIdAsync(id);
 
@@ -118,12 +118,12 @@ namespace API.Controllers
 
             if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
 
-            return Ok();
+            return Ok(_mapper.Map<ProductDto>(product));
         }
 
         // out for development
         // [Authorize(Roles = "Admin")] 
-        [HttpPatch("{id}/photo/{photoId}")]
+        [HttpPut("{id}/photo/{photoId}")]
         public async Task<ActionResult<ProductDto>> SetMainPhoto(int id, int photoId)
         {
             var product = await _service.GetByIdAsync(id);

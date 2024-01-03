@@ -95,14 +95,17 @@ class _UsersListScreenState extends State<UsersListScreen> {
             ),
           ),
         ),
-        SizedBox(width: 8),
-        Container(
+        const SizedBox(width: 8),
+        SizedBox(
           width: 150,
           height: 40,
           child: ElevatedButton(
             onPressed: () async {
               _loadUsers();
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+            ),
             child: Text("Search"),
           ),
         ),
@@ -151,7 +154,9 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     if (selected == true) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => UserDetailScreen(user: u,),
+                          builder: (context) => UserDetailScreen(
+                            user: u,
+                          ),
                         ),
                       );
                     }

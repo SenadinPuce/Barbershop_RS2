@@ -75,8 +75,10 @@ namespace Infrastructure.Data.Repositories
                 case "priceDesc":
                     query = query.OrderByDescending(x => x.Price);
                     break;
-                default:
+                case "name":
                     query = query.OrderBy(x => x.Name);
+                    break;
+                default:
                     break;
             }
 
