@@ -61,7 +61,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
+                  SizedBox(
                       width: 150,
                       height: 40,
                       child: ElevatedButton(

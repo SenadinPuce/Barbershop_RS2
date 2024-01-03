@@ -80,7 +80,22 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                 _loadServices();
               },
               child: const Text("Search")),
-        )
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        SizedBox(
+          width: 150,
+          height: 40,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            onPressed: () async {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ServiceDetailScreen()));
+            },
+            child: const Text("Add new service"),
+          ),
+        ),
       ],
     );
   }

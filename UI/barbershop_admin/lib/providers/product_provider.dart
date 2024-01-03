@@ -4,7 +4,7 @@ import 'package:barbershop_admin/models/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import '../helpers/constants.dart';
-import '../models/user.dart';
+
 import 'base_provider.dart';
 
 class ProductProvider extends BaseProvider<Product> {

@@ -109,7 +109,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  isLoading ? Container() : _buildDetailsForm(),
+                  isLoading
+                      ? Center(
+                          child: const CircularProgressIndicator(),
+                        )
+                      : _buildDetailsForm(),
                   _buildPhotoTab(),
                 ],
               ),
