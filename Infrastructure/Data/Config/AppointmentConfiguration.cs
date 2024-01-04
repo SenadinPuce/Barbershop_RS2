@@ -14,8 +14,8 @@ namespace Infrastructure.Data.Config
                 o => o.ToString(),
                 o => (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), o)).IsRequired();
 
-            builder.HasOne(x => x.Barber).WithMany().HasForeignKey(x => x.BarberId).OnDelete(DeleteBehavior.NoAction).IsRequired();
-            builder.HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(x => x.Barber).WithMany().HasForeignKey(x => x.BarberId).IsRequired();
+            builder.HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId);
             builder.HasOne(x => x.Service).WithOne().HasForeignKey<Appointment>(x => x.ServiceId).OnDelete(DeleteBehavior.NoAction);
         }
     }

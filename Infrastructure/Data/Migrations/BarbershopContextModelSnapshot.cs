@@ -211,6 +211,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("DurationInMinutes")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
@@ -612,13 +615,12 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.AppUser", "Barber")
                         .WithMany()
                         .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Core.Entities.Service", "Service")
                         .WithOne()

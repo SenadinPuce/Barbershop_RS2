@@ -6,9 +6,9 @@ using Core.Models.UpsertObjects;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class BarberService : BaseCRUDService<Service, ServiceSearchObject, ServiceUpsertObject, ServiceUpsertObject>, IBarberService
+    public class BarberServicesService : BaseCRUDService<Service, ServiceSearchObject, ServiceUpsertObject, ServiceUpsertObject>, IBarberServicesService
     {
-        public BarberService(BarbershopContext context, IMapper mapper) : base(context, mapper)
+        public BarberServicesService(BarbershopContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
@@ -16,7 +16,8 @@ namespace Infrastructure.Data.Repositories
         {
             if (!string.IsNullOrWhiteSpace(search.Name))
             {
-                query = query.Where(s => s.Name.Contains(search.Name));
+                query = query.Where(s => s.Name.Contains(search.Name)
+                );
             }
 
             return query;

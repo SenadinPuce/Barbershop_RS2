@@ -1,6 +1,8 @@
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.Models.InsertObjects;
+using Core.Models.UpdateObjects;
 using Core.Models.UpsertObjects;
 
 namespace API.Helpers
@@ -22,6 +24,13 @@ namespace API.Helpers
             .ForMember(d => d.PictureUrl, o => o.MapFrom<AppUserUrlResolver>())
             .ForMember(d => d.Roles, opt => opt.MapFrom(s => s.UserRoles.Select(ur => ur.Role.Name).ToList()));
             CreateMap<ServiceUpsertObject, Service>();
+            CreateMap<AppointmentInsertObject, Appointment>();
+            CreateMap<AppointmentUpdateObject, Appointment>();
+            CreateMap<Appointment, AppointmentDto>()
+                .ForMember(d => d.BarberUsername, o => o.MapFrom(s => s.Barber.UserName))
+                .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
+                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name));
+            
         }
     }
 }
