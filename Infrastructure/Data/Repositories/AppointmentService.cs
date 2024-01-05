@@ -15,6 +15,26 @@ namespace Infrastructure.Data.Repositories
         {
         }
 
+        public async Task<Appointment> UpdateAppointmentStatus(int id, string status)
+        {
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                var appointment = await _context.Appointments.FindAsync(id);
+
+                if (appointment != null)
+                {
+                    var appointmentStatus = (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), status, ignoreCase: true);
+
+                    appointment.Status = appointmentStatus;
+
+                    await _context.SaveChangesAsync();
+
+                    return appointment;
+                }
+            }
+            return null;
+        }
+
         public override async Task BeforeInsert(Appointment entity, AppointmentInsertObject insert)
         {
             await base.BeforeInsert(entity, insert);

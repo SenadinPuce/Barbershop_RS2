@@ -8,7 +8,7 @@ namespace Infrastructure.Data.Repositories
         ICRUDService<TDb, TSearch, TInsert, TUpdate>
         where TDb : class where TSearch : BaseSearchObject
     {
-        private readonly IMapper _mapper;
+        protected readonly IMapper _mapper;
         public BaseCRUDService(BarbershopContext context, IMapper mapper) : base(context)
         {
             _mapper = mapper;
@@ -34,7 +34,7 @@ namespace Infrastructure.Data.Repositories
             var set = _context.Set<TDb>();
 
             var entity = await set.FindAsync(id);
-
+            
             _mapper.Map(update, entity);
 
             await _context.SaveChangesAsync();

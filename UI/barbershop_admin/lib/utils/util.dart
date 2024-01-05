@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Authorization {
@@ -30,5 +31,17 @@ String getTime(DateTime? value) {
 String formatDate(DateTime? date) {
   return date != null
       ? DateFormat('dd MMM yyyy').format(date)
+      : "Select a date";
+}
+
+String formatTime(TimeOfDay? date) {
+  return date != null
+      ? DateFormat('h:mm a').format(DateTime(
+          2000,
+          1,
+          1,
+          date.hour,
+          date.minute,
+        ))
       : "Select a date";
 }

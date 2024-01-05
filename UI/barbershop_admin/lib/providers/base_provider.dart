@@ -14,7 +14,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   //fake delay added
-  
+
   Future<List<T>> get(
       {dynamic filter,
       String? extraRoute,
@@ -72,11 +72,13 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Future<T> update(int id, [dynamic request, String? extraRoute]) async {
-    var url = "$apiUrl$_endpoint/$id";
+    var url = "$apiUrl$_endpoint";
 
     if (extraRoute != null && extraRoute.trim().isEmpty == false) {
       url = "$url/$extraRoute";
     }
+
+    url = "$url/$id";
 
     var uri = Uri.parse(url);
     var headers = createHeaders();

@@ -233,7 +233,8 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AppointmentDetailScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AppointmentDetailScreen()));
             },
             child: const Text("Add new appointment"),
           ),
@@ -307,26 +308,48 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                         'Status',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Action',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
                     ))
                   ],
                   rows: (appointments ?? [])
-                      .map((Appointment a) => DataRow(
-                              onSelectChanged: (value) {
-                                if (value == true) {
-                                  //Navigation ?
-                                }
-                              },
-                              cells: [
-                                DataCell(Text(a.id.toString())),
-                                DataCell(Text(getDate(a.startTime))),
-                                DataCell(Text(getTime(a.startTime))),
-                                DataCell(Text(getTime(a.endTime))),
-                                DataCell(Text(a.durationInMinutes.toString())),
-                                DataCell(Text(a.barberUsername.toString())),
-                                DataCell(
-                                    Text(a.clientUsername?.toString() ?? '')),
-                                DataCell(Text(a.status.toString())),
-                              ]))
+                      .map((Appointment a) => DataRow(cells: [
+                            DataCell(Text(a.id.toString())),
+                            DataCell(Text(getDate(a.startTime))),
+                            DataCell(Text(getTime(a.startTime))),
+                            DataCell(Text(getTime(a.endTime))),
+                            DataCell(Text(a.durationInMinutes.toString())),
+                            DataCell(Text(a.barberUsername.toString())),
+                            DataCell(Text(a.clientUsername?.toString() ?? '')),
+                            DataCell(Text(a.status.toString())),
+                            DataCell(OutlinedButton(
+                              onPressed: a.status != 'Completed'
+                                  ? () async {
+                                      var appointment =
+                                          await _appointmentProvider
+                                              .updateAppointmentStatus(
+                                                  a.id!, 'Completed');
+
+                                      if (appointment != null) {
+                                        setState(() {
+                                          a.status = appointment.status;
+                                        });
+                                      }
+                                    }
+                                  : null,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.green,
+                                side: const BorderSide(color: Colors.green),
+                                disabledForegroundColor: Colors.grey
+                              ),
+                              child: const Text("Complete"),
+                            ))
+                          ]))
                       .toList(),
                 ),
               ));

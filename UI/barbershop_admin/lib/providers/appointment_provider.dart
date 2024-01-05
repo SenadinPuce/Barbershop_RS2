@@ -8,4 +8,9 @@ class AppointmentProvider extends BaseProvider<Appointment> {
   Appointment fromJson(item) {
     return Appointment.fromJson(item);
   }
+
+  Future<Appointment> updateAppointmentStatus(
+      int appointmentId, String status) async {
+    return await update(appointmentId, status, 'update-status');
+  }
 }
