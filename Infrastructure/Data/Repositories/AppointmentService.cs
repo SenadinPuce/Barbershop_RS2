@@ -23,17 +23,22 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Appointment> AddFilter(IQueryable<Appointment> query, AppointmentSearchObject search)
         {
-            if (search.BarberId.HasValue)
+            if (search.BarberId.HasValue && search.BarberId.Value > 0)
             {
                 query = query.Where(a => a.BarberId == search.BarberId);
             }
             if (search.DateFrom != null)
             {
-                query = query.Where(a => a.StartTime.Date >= search.DateFrom);
+                query = query.Where(a => a.StartTime.Date >= search.DateFrom.GetValueOrDefault());
             }
             if (search.DateTo != null)
             {
-                query = query.Where(a => a.EndTime <= search.DateTo);
+                query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault());
+            }
+            if (!string.IsNullOrWhiteSpace(search.Status))
+            {
+                var appointmentStatus = (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), search.Status, ignoreCase: true);
+                query = query.Where(a => a.Status == appointmentStatus);
             }
 
             return query;

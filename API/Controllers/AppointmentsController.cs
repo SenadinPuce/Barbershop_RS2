@@ -8,10 +8,10 @@ using Core.Models.UpdateObjects;
 
 namespace API.Controllers
 {
-    public class AppointmentController : BaseCRUDController<AppointmentDto, Appointment,
+    public class AppointmentsController : BaseCRUDController<AppointmentDto, Appointment,
         AppointmentSearchObject, AppointmentInsertObject, AppointmentUpdateObject>
     {
-        public AppointmentController(IAppointmentService service, IMapper mapper) : base(service, mapper)
+        public AppointmentsController(IAppointmentService service, IMapper mapper) : base(service, mapper)
         {
         }
     }

@@ -1,6 +1,5 @@
 import 'package:barbershop_admin/models/service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/service_provider.dart';

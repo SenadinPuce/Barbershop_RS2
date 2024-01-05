@@ -16,3 +16,19 @@ String formatNumber(dynamic value) {
   }
   return f.format(value);
 }
+
+String getDate(DateTime? value) {
+  return value != null
+      ? DateFormat('dd MMM yyyy').format(value).toString()
+      : " ";
+}
+
+String getTime(DateTime? value) {
+  return "${value?.hour}:${value?.minute}";
+}
+
+String formatDate(DateTime? date) {
+  return date != null
+      ? DateFormat('dd MMM yyyy').format(date)
+      : "Select a date";
+}

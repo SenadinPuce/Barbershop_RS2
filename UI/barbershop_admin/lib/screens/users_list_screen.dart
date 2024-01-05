@@ -1,4 +1,4 @@
-import 'package:barbershop_admin/providers/admin_provider.dart';
+import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:barbershop_admin/screens/user_detail_screen.dart';
 import 'package:barbershop_admin/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class UsersListScreen extends StatefulWidget {
 }
 
 class _UsersListScreenState extends State<UsersListScreen> {
-  late AdminProvider _adminProvider;
+  late UserProvider _adminProvider;
   List<User>? users;
   TextEditingController _usernameController = TextEditingController();
   String? _selectedRole = 'All';
@@ -27,7 +27,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
   }
 
   Future<void> _loadUsers() async {
-    _adminProvider = context.read<AdminProvider>();
+    _adminProvider = context.read<UserProvider>();
 
     String roleNameToSend = (_selectedRole == 'All') ? '' : _selectedRole!;
     var data = await _adminProvider.getUsers(

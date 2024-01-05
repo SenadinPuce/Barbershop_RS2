@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 
-import 'package:barbershop_admin/providers/admin_provider.dart';
+import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -25,7 +25,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   List<String> availableRoles = ['Client', 'Barber', 'Admin'];
-  late AdminProvider _adminProvider;
+  late UserProvider _adminProvider;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "roles": widget.user?.roles
     };
 
-    _adminProvider = context.read<AdminProvider>();
+    _adminProvider = context.read<UserProvider>();
   }
 
   @override

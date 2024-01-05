@@ -1,9 +1,8 @@
-import 'package:barbershop_admin/providers/base_provider.dart';
-
 import '../models/user.dart';
+import 'base_provider.dart';
 
-class AdminProvider extends BaseProvider<User> {
-  AdminProvider() : super("admin");
+class UserProvider extends BaseProvider<User> {
+  UserProvider() : super("Users");
 
   @override
   User fromJson(item) {

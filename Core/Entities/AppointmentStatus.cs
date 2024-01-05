@@ -9,6 +9,8 @@ namespace Core.Entities
         [EnumMember(Value = "Reserved")]
         Reserved,
         [EnumMember(Value = "Completed")]
-        Completed
+        Completed,
+        [EnumMember(Value = "Canceled")]
+        Canceled
     }
 }
