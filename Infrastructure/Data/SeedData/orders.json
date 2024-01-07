@@ -1,0 +1,176 @@
+[
+  {
+    "PaymentIntentId": "payment_intent_1",
+    "ClientId": 1,
+    "DeliveryMethodId": 2,
+    "AddressId": 1,
+    "Items": [
+      {
+        "Id": 1,
+        "Quantity": 3
+      },
+      {
+        "Id": 5,
+        "Quantity": 2
+      },
+      {
+        "Id": 10,
+        "Quantity": 1
+      }
+    ],
+    "Subtotal": 186.92
+  },
+  {
+    "PaymentIntentId": "payment_intent_2",
+    "ClientId": 2,
+    "DeliveryMethodId": 3,
+    "AddressId": 2,
+    "Items": [
+      {
+        "Id": 2,
+        "Quantity": 2
+      },
+      {
+        "Id": 8,
+        "Quantity": 1
+      }
+    ],
+    "Subtotal": 163.45
+  },
+  {
+    "PaymentIntentId": "payment_intent_3",
+    "ClientId": 3,
+    "DeliveryMethodId": 1,
+    "AddressId": 3,
+    "Items": [
+      {
+        "Id": 3,
+        "Quantity": 1
+      },
+      {
+        "Id": 7,
+        "Quantity": 4
+      }
+    ],
+    "Subtotal": 113.42
+  },
+  {
+    "PaymentIntentId": "payment_intent_4",
+    "ClientId": 1,
+    "DeliveryMethodId": 4,
+    "AddressId": 4,
+    "Items": [
+      {
+        "Id": 4,
+        "Quantity": 2
+      },
+      {
+        "Id": 9,
+        "Quantity": 3
+      }
+    ],
+    "Subtotal": 314.84
+  },
+  {
+    "PaymentIntentId": "payment_intent_5",
+    "ClientId": 2,
+    "DeliveryMethodId": 2,
+    "AddressId": 5,
+    "Items": [
+      {
+        "Id": 5,
+        "Quantity": 5
+      },
+      {
+        "Id": 10,
+        "Quantity": 2
+      }
+    ],
+    "Subtotal": 327.89
+  },
+  {
+    "PaymentIntentId": "payment_intent_6",
+    "ClientId": 3,
+    "DeliveryMethodId": 1,
+    "AddressId": 6,
+    "Items": [
+      {
+        "Id": 6,
+        "Quantity": 3
+      },
+      {
+        "Id": 12,
+        "Quantity": 1
+      }
+    ],
+    "Subtotal": 223.94
+  },
+  {
+    "PaymentIntentId": "payment_intent_7",
+    "ClientId": 1,
+    "DeliveryMethodId": 3,
+    "AddressId": 7,
+    "Items": [
+      {
+        "Id": 7,
+        "Quantity": 2
+      },
+      {
+        "Id": 11,
+        "Quantity": 4
+      }
+    ],
+    "Subtotal": 236.91
+  },
+  {
+    "PaymentIntentId": "payment_intent_8",
+    "ClientId": 2,
+    "DeliveryMethodId": 2,
+    "AddressId": 8,
+    "Items": [
+      {
+        "Id": 8,
+        "Quantity": 1
+      },
+      {
+        "Id": 9,
+        "Quantity": 2
+      }
+    ],
+    "Subtotal": 133.94
+  },
+  {
+    "PaymentIntentId": "payment_intent_9",
+    "ClientId": 3,
+    "DeliveryMethodId": 4,
+    "AddressId": 9,
+    "Items": [
+      {
+        "Id": 9,
+        "Quantity": 3
+      },
+      {
+        "Id": 14,
+        "Quantity": 1
+      }
+    ],
+    "Subtotal": 194.91
+  },
+  {
+    "PaymentIntentId": "payment_intent_10",
+    "ClientId": 1,
+    "DeliveryMethodId": 1,
+    "AddressId": 10,
+    "Items": [
+      {
+        "Id": 10,
+        "Quantity": 4
+      },
+      {
+        "Id": 15,
+        "Quantity": 2
+      }
+    ],
+    "Subtotal": 295.86
+  }
+]

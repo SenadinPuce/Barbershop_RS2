@@ -1,6 +1,7 @@
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Core.Models.InsertObjects;
 using Core.Models.UpdateObjects;
 using Core.Models.UpsertObjects;
@@ -30,7 +31,15 @@ namespace API.Helpers
                 .ForMember(d => d.BarberUsername, o => o.MapFrom(s => s.Barber.UserName))
                 .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
                 .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name));
-            
+            CreateMap<Order, OrderDto>()
+                .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
+                .ForMember(d => d.ClientEmail, o => o.MapFrom(s => s.Client.Email))
+                .ForMember(d => d.ClientPhoneNumber, o => o.MapFrom(s => s.Client.PhoneNumber));
+            CreateMap<OrderItem, OrderItemDto>()
+               .ForMember(d => d.Id, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
+               .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
+               .ForMember(d => d.PictureUrl, o => o.MapFrom<OrderItemUrlResolver>());
+
         }
     }
 }

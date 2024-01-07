@@ -14,5 +14,13 @@ namespace API.Extensions
 
             return await userManager.Users.Include(x => x.Address).SingleOrDefaultAsync(x => x.UserName == userName);
         }
+
+        public static async Task<AppUser> FindUserByClaimsPrincipleAsync(
+           this UserManager<AppUser> userManager, ClaimsPrincipal user)
+        {
+            var userName = user.FindFirstValue(ClaimTypes.Name);
+
+            return await userManager.Users.SingleOrDefaultAsync(x => x.UserName == userName);
+        }
     }
 }

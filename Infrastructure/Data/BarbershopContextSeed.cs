@@ -63,6 +63,18 @@ namespace Infrastructure.Data
                 context.Services.AddRange(services);
             }
 
+            if (!context.Addresses.Any())
+            {
+                var addressesData = File.ReadAllText(path + @"/Data/SeedData/addresses.json");
+                var addresses = JsonSerializer.Deserialize<List<Address>>(addressesData);
+
+                foreach (var item in addresses)
+                {
+                    Console.WriteLine(item.FirstName);
+                }
+                context.Addresses.AddRange(addresses);
+            }
+
             // Users seed
 
             if (!userManager.Users.Any())
@@ -84,6 +96,13 @@ namespace Infrastructure.Data
                             State = "BiH",
                             ZipCode = "88000"
                         }
+                    },
+                     new AppUser
+                    {
+                        FirstName = "John",
+                        LastName = "Doe",
+                        Email= "john@test.com",
+                        UserName = "john"
                     },
                     new AppUser
                     {
@@ -109,10 +128,19 @@ namespace Infrastructure.Data
                 foreach (var user in users)
                 {
                     await userManager.CreateAsync(user, "Pa$$w0rd");
-                    await userManager.AddToRoleAsync(user, "Client");
+                    if (user.UserName == "test") await userManager.AddToRoleAsync(user, "Client");
+                    if (user.UserName == "john") await userManager.AddToRoleAsync(user, "Barber");
                     if (user.UserName == "admin") await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
+
+            if (!context.Orders.Any())
+            {
+                var ordersData = File.ReadAllText(path + @"/Data/SeedData/orders.json");
+                var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
+                context.Orders.AddRange(orders);
+            }
+
 
             if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
         }
