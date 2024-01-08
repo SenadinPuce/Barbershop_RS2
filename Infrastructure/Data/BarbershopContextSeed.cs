@@ -134,12 +134,15 @@ namespace Infrastructure.Data
                 }
             }
 
+
             if (!context.Orders.Any())
             {
                 var ordersData = File.ReadAllText(path + @"/Data/SeedData/orders.json");
                 var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
                 context.Orders.AddRange(orders);
             }
+
+
 
 
             if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();

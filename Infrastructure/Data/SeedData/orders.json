@@ -4,17 +4,32 @@
     "ClientId": 1,
     "DeliveryMethodId": 2,
     "AddressId": 1,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 1,
+        "ItemOrdered": {
+          "ProductItemId": 1,
+          "ProductName": "Premium Shampoo",
+          "PictureUrl": "images/products/premium-shampoo.png"
+        },
+        "Price": 12.99,
         "Quantity": 3
       },
       {
-        "Id": 5,
+        "ItemOrdered": {
+          "ProductItemId": 5,
+          "ProductName": "Beard Oil Blend",
+          "PictureUrl": "images/products/beard-oil-blend.png"
+        },
+        "Price": 14.99,
         "Quantity": 2
       },
       {
-        "Id": 10,
+        "ItemOrdered": {
+          "ProductItemId": 10,
+          "ProductName": "Hair Styling Spray",
+          "PictureUrl": "images/products/hair-styling-spray.png"
+        },
+        "Price": 11.49,
         "Quantity": 1
       }
     ],
@@ -25,13 +40,23 @@
     "ClientId": 2,
     "DeliveryMethodId": 3,
     "AddressId": 2,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 2,
+        "ItemOrdered": {
+          "ProductItemId": 2,
+          "ProductName": "Classic Straight Razor",
+          "PictureUrl": "images/products/classic-straight-razor.png"
+        },
+        "Price": 29.99,
         "Quantity": 2
       },
       {
-        "Id": 8,
+        "ItemOrdered": {
+          "ProductItemId": 8,
+          "ProductName": "Beard Comb Set",
+          "PictureUrl": "images/products/beard-comb-set.png"
+        },
+        "Price": 9.99,
         "Quantity": 1
       }
     ],
@@ -42,13 +67,23 @@
     "ClientId": 3,
     "DeliveryMethodId": 1,
     "AddressId": 3,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 3,
+        "ItemOrdered": {
+          "ProductItemId": 3,
+          "ProductName": "Hair Styling Gel",
+          "PictureUrl": "images/products/hair-styling-gel.png"
+        },
+        "Price": 8.49,
         "Quantity": 1
       },
       {
-        "Id": 7,
+        "ItemOrdered": {
+          "ProductItemId": 7,
+          "ProductName": "Skin Cleansing Scrub",
+          "PictureUrl": "images/products/skin-cleansing-scrub.png"
+        },
+        "Price": 16.99,
         "Quantity": 4
       }
     ],
@@ -59,13 +94,23 @@
     "ClientId": 1,
     "DeliveryMethodId": 4,
     "AddressId": 4,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 4,
+        "ItemOrdered": {
+          "ProductItemId": 4,
+          "ProductName": "Beard Grooming Kit",
+          "PictureUrl": "images/products/beard-grooming-kit.png"
+        },
+        "Price": 34.99,
         "Quantity": 2
       },
       {
-        "Id": 9,
+        "ItemOrdered": {
+          "ProductItemId": 9,
+          "ProductName": "Shaving Cream",
+          "PictureUrl": "images/products/shaving-cream.png"
+        },
+        "Price": 7.99,
         "Quantity": 3
       }
     ],
@@ -76,13 +121,23 @@
     "ClientId": 2,
     "DeliveryMethodId": 2,
     "AddressId": 5,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 5,
+        "ItemOrdered": {
+          "ProductItemId": 5,
+          "ProductName": "Beard Oil Blend",
+          "PictureUrl": "images/products/beard-oil-blend.png"
+        },
+        "Price": 14.99,
         "Quantity": 5
       },
       {
-        "Id": 10,
+        "ItemOrdered": {
+          "ProductItemId": 10,
+          "ProductName": "Hair Styling Spray",
+          "PictureUrl": "images/products/hair-styling-spray.png"
+        },
+        "Price": 11.49,
         "Quantity": 2
       }
     ],
@@ -93,13 +148,23 @@
     "ClientId": 3,
     "DeliveryMethodId": 1,
     "AddressId": 6,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 6,
+        "ItemOrdered": {
+          "ProductItemId": 6,
+          "ProductName": "Hair Clippers Set",
+          "PictureUrl": "images/products/hair-clippers-set.png"
+        },
+        "Price": 49.99,
         "Quantity": 3
       },
       {
-        "Id": 12,
+        "ItemOrdered": {
+          "ProductItemId": 12,
+          "ProductName": "Texturizing Paste",
+          "PictureUrl": "images/products/texturizing-paste.png"
+        },
+        "Price": 10.99,
         "Quantity": 1
       }
     ],
@@ -110,13 +175,23 @@
     "ClientId": 1,
     "DeliveryMethodId": 3,
     "AddressId": 7,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 7,
+        "ItemOrdered": {
+          "ProductItemId": 7,
+          "ProductName": "Skin Cleansing Scrub",
+          "PictureUrl": "images/products/skin-cleansing-scrub.png"
+        },
+        "Price": 16.99,
         "Quantity": 2
       },
       {
-        "Id": 11,
+        "ItemOrdered": {
+          "ProductItemId": 11,
+          "ProductName": "Barber's Apron",
+          "PictureUrl": "images/products/barbers-apron.png"
+        },
+        "Price": 22.99,
         "Quantity": 4
       }
     ],
@@ -127,13 +202,23 @@
     "ClientId": 2,
     "DeliveryMethodId": 2,
     "AddressId": 8,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 8,
+        "ItemOrdered": {
+          "ProductItemId": 8,
+          "ProductName": "Beard Comb Set",
+          "PictureUrl": "images/products/beard-comb-set.png"
+        },
+        "Price": 9.99,
         "Quantity": 1
       },
       {
-        "Id": 9,
+        "ItemOrdered": {
+          "ProductItemId": 9,
+          "ProductName": "Shaving Cream",
+          "PictureUrl": "images/products/shaving-cream.png"
+        },
+        "Price": 7.99,
         "Quantity": 2
       }
     ],
@@ -144,13 +229,23 @@
     "ClientId": 3,
     "DeliveryMethodId": 4,
     "AddressId": 9,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 9,
+        "ItemOrdered": {
+          "ProductItemId": 9,
+          "ProductName": "Shaving Cream",
+          "PictureUrl": "images/products/shaving-cream.png"
+        },
+        "Price": 7.99,
         "Quantity": 3
       },
       {
-        "Id": 14,
+        "ItemOrdered": {
+          "ProductItemId": 14,
+          "ProductName": "Barber's Kit",
+          "PictureUrl": "images/products/barbers-kit.png"
+        },
+        "Price": 59.99,
         "Quantity": 1
       }
     ],
@@ -161,13 +256,23 @@
     "ClientId": 1,
     "DeliveryMethodId": 1,
     "AddressId": 10,
-    "Items": [
+    "OrderItems": [
       {
-        "Id": 10,
+        "ItemOrdered": {
+          "ProductItemId": 10,
+          "ProductName": "Hair Styling Spray",
+          "PictureUrl": "images/products/hair-styling-spray.png"
+        },
+        "Price": 11.49,
         "Quantity": 4
       },
       {
-        "Id": 15,
+        "ItemOrdered": {
+          "ProductItemId": 15,
+          "ProductName": "Barber's Apron",
+          "PictureUrl": "images/products/barbers-apron.png"
+        },
+        "Price": 22.99,
         "Quantity": 2
       }
     ],
