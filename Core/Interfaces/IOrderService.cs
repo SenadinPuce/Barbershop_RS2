@@ -10,5 +10,6 @@ namespace Core.Interfaces
     {
         Task<Order> CreateOrderAsync(int clientId, OrderUpsertObject request);
         Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
+        Task<Order> UpdateOrderStatus(int id, string status);
     }
 }

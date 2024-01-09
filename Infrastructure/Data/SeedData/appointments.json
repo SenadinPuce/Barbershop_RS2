@@ -1,0 +1,45 @@
+[
+    {
+      "StartTime": "2024-01-14T09:00:00",
+      "EndTime": "2024-01-15T09:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 2,
+      "ClientId": 1,
+      "ServiceId": 1
+    },
+    {
+      "StartTime": "2024-01-14T10:00:00",
+      "EndTime": "2024-01-15T10:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 3,
+      "ClientId": 1,
+      "ServiceId": 2
+    },
+    {
+      "StartTime": "2024-01-15T11:00:00",
+      "EndTime": "2024-01-15T11:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 2,
+      "ClientId": 1,
+      "ServiceId": 3
+    },
+    {
+      "StartTime": "2024-01-15T12:00:00",
+      "EndTime": "2024-01-15T12:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 3
+    },
+    {
+      "StartTime": "2024-01-15T13:00:00",
+      "EndTime": "2024-01-15T13:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 2
+    },
+    {
+      "StartTime": "2024-01-15T14:00:00",
+      "EndTime": "2024-01-15T14:20:00",
+      "DurationInMinutes": 20,
+      "BarberId": 3
+    }
+  ]
+  

@@ -35,5 +35,15 @@ namespace API.Controllers
 
             return Ok(order);
         }
+
+        [HttpPut("update-status/{id}")]
+        public async Task<ActionResult<OrderDto>> UpdateOrderStatus(int id, [FromBody] string status)
+        {
+            var order = await _service.UpdateOrderStatus(id, status);
+
+            if (order == null) return NotFound(new ApiResponse(404));
+
+            return Ok(_mapper.Map<OrderDto>(order));
+        }
     }
 }

@@ -3,6 +3,7 @@ import 'package:barbershop_admin/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/account_provider.dart';
+import 'providers/orders_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/appointment_provider.dart';
 import 'providers/product_brand_provider.dart';
@@ -21,6 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
       ChangeNotifierProvider(create: (_) => ServiceProvider()),
       ChangeNotifierProvider(create: (_) => AppointmentProvider()),
+      ChangeNotifierProvider(create: (_) => OrderProvider()),
     ],
     child: const MyApp(),
   ));

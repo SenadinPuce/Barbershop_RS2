@@ -83,14 +83,15 @@ namespace Infrastructure.Data
                 {
                     new AppUser
                     {
-                        FirstName = "Test",
-                        LastName = "Test",
-                        Email = "test@test.com",
-                        UserName = "test",
+                        FirstName = "User",
+                        LastName = "User",
+                        Email = "user@test.com",
+                        PhoneNumber = "061-111-111",
+                        UserName = "user",
                         Address = new Address
                         {
-                            FirstName = "First name test",
-                            LastName = "Last name test",
+                            FirstName = "First name user",
+                            LastName = "Last name user",
                             Street = "Sjeverni logor bb",
                             City = "Mostar",
                             State = "BiH",
@@ -99,16 +100,26 @@ namespace Infrastructure.Data
                     },
                      new AppUser
                     {
-                        FirstName = "John",
-                        LastName = "Doe",
-                        Email= "john@test.com",
-                        UserName = "john"
+                        FirstName = "Barber1",
+                        LastName = "Barber1",
+                        Email= "barber1@test.com",
+                        PhoneNumber = "061-222-222",
+                        UserName = "barber1"
+                    },
+                        new AppUser
+                    {
+                        FirstName = "Barber2",
+                        LastName = "Barber2",
+                        Email= "barber2@test.com",
+                        PhoneNumber = "061-333-333",
+                        UserName = "barber2"
                     },
                     new AppUser
                     {
                         FirstName = "Admin",
                         LastName = "Admin",
                         Email= "admin@test.com",
+                        PhoneNumber = "061-444-444",
                         UserName = "admin"
                     }
                 };
@@ -128,12 +139,11 @@ namespace Infrastructure.Data
                 foreach (var user in users)
                 {
                     await userManager.CreateAsync(user, "Pa$$w0rd");
-                    if (user.UserName == "test") await userManager.AddToRoleAsync(user, "Client");
-                    if (user.UserName == "john") await userManager.AddToRoleAsync(user, "Barber");
+                    if (user.UserName == "user") await userManager.AddToRoleAsync(user, "Client");
+                    if (user.UserName == "barber1" || user.UserName == "barber2") await userManager.AddToRoleAsync(user, "Barber");
                     if (user.UserName == "admin") await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
-
 
             if (!context.Orders.Any())
             {
@@ -142,7 +152,20 @@ namespace Infrastructure.Data
                 context.Orders.AddRange(orders);
             }
 
+            if (!context.Appointments.Any())
+            {
+                var appointmentsData = File.ReadAllText(path + @"/Data/SeedData/appointments.json");
+                var appointments = JsonSerializer.Deserialize<List<Appointment>>(appointmentsData);
 
+                foreach (var item in appointments)
+                {
+                    if (item.ClientId.HasValue && item.ClientId.Value > 0)
+                    {
+                        item.Status = AppointmentStatus.Reserved;
+                    }
+                }
+                context.Appointments.AddRange(appointments);
+            }
 
 
             if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();

@@ -16,6 +16,26 @@ namespace Infrastructure.Data.Repositories
             _mapper = mapper;
         }
 
+        public async Task<Order> UpdateOrderStatus(int id, string status)
+        {
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                var order = await GetByIdAsync(id);
+
+                if (order != null)
+                {
+                    var orderStatus = (OrderStatus)Enum.Parse(typeof(OrderStatus), status, ignoreCase: true);
+
+                    order.Status = orderStatus;
+
+                    await _context.SaveChangesAsync();
+
+                    return order;
+                }
+            }
+            return null;
+        }
+
         public async Task<Order> CreateOrderAsync(int clientId, OrderUpsertObject request)
         {
             var items = new List<OrderItem>();
@@ -82,8 +102,22 @@ namespace Infrastructure.Data.Repositories
         {
             if (!string.IsNullOrWhiteSpace(search.Status))
             {
-                var orderStatus = (OrderStatus)Enum.Parse(typeof(OrderStatus), search.Status, ignoreCase: true);
+                OrderStatus orderStatus;
+
+                if (search.Status == "Payment Received")
+                {
+                    orderStatus = OrderStatus.PaymentReceived;
+                }
+                else if (search.Status == "Payment Failed")
+                {
+                    orderStatus = OrderStatus.PaymentFailed;
+                }
+                else
+                {
+                    orderStatus = (OrderStatus)Enum.Parse(typeof(OrderStatus), search.Status, ignoreCase: true);
+                }
                 query = query.Where(o => o.Status == orderStatus);
+
             }
             if (search.DateFrom != null)
             {
@@ -108,5 +142,6 @@ namespace Infrastructure.Data.Repositories
 
             return entity;
         }
+
     }
 }

@@ -43,5 +43,5 @@ String formatTime(TimeOfDay? date) {
           date.hour,
           date.minute,
         ))
-      : "Select a date";
+      : "Select a time";
 }

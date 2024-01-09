@@ -1,11 +1,12 @@
 import 'package:barbershop_admin/main.dart';
-import 'package:barbershop_admin/screens/products_list_screen.dart';
-import 'package:barbershop_admin/screens/users_list_screen.dart';
-import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/appointments_list_screen.dart';
+import '../screens/orders_list_screen.dart';
+import '../screens/products_list_screen.dart';
 import '../screens/services_list_screen.dart';
+import '../screens/users_list_screen.dart';
+import '../utils/util.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -70,6 +71,16 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const AppointmentsListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                   ListTile(
+                    title: const Text("Orders"),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const OrdersListScreen(),
                         ),
                       );
                     },
