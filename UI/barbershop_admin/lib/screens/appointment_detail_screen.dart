@@ -1,3 +1,4 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -26,7 +27,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   List<User> _barbersList = [];
   bool isLoading = true;
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _selectedTime = DateTime.now();
 
   @override
   void initState() {
@@ -34,11 +35,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
 
     _appointmentProvider = context.read<AppointmentProvider>();
     _userProvider = context.read<UserProvider>();
-
-    _initialValue = {
-      'date': formatDate(_selectedDate),
-      'time': formatTime(_selectedTime)
-    };
 
     _loadAppointmentDetails();
   }
@@ -74,13 +70,14 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   SizedBox(
                     width: 150,
                     height: 40,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey),
-                      child: const Text("Cancel"),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.blue),
+                      ),
+                      child: const Text("Close"),
                     ),
                   ),
                   const SizedBox(
@@ -100,8 +97,8 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                       _selectedDate.day,
                                       _selectedTime.hour,
                                       _selectedTime.minute,
-                                      _selectedDate.second,
-                                      _selectedDate.microsecond ~/ 1000));
+                                      _selectedTime.second,
+                                      _selectedTime.microsecond ~/ 1000));
 
                           var request = Map.from(_formKey.currentState!.value);
 
@@ -139,61 +136,60 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   Widget _buildForm() {
     return FormBuilder(
       key: _formKey,
-      initialValue: _initialValue,
       child: Column(children: [
         Row(
           children: [
             Expanded(
-                child: FormBuilderTextField(
-              name: 'date',
-              readOnly: true,
-              validator: FormBuilderValidators.required(),
-              decoration: InputDecoration(
-                labelText: 'Select Date',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2100));
-                    if (pickedDate != null && pickedDate != _selectedDate) {
-                      _selectedDate = pickedDate;
-                      String formattedDate =
-                          DateFormat('dd-MMM-yyyy').format(pickedDate);
-                      _formKey.currentState!.fields['date']
-                          ?.didChange(formattedDate);
-                    }
-                  },
+                child: DateTimeFormField(
+              decoration: const InputDecoration(
+                labelText: 'Select date',
+                floatingLabelStyle: TextStyle(color: Colors.blue),
+                suffixIcon: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Icon(
+                    Icons.calendar_today,
+                    color: Colors.blue,
+                  ),
                 ),
               ),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+              dateFormat: DateFormat('dd MMM yyyy'),
+              initialValue: DateTime.now(),
+              mode: DateTimeFieldPickerMode.date,
+              onDateSelected: (value) {
+                setState(() {
+                  _selectedDate = value;
+                });
+              },
             )),
             const SizedBox(
               width: 8,
             ),
             Expanded(
-              child: FormBuilderTextField(
-                name: 'time',
-                readOnly: true,
-                validator: FormBuilderValidators.required(),
-                decoration: InputDecoration(
-                    labelText: 'Select Time',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.access_time),
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
-                            context: context, initialTime: _selectedTime);
-                        if (pickedTime != null && pickedTime != _selectedTime) {
-                          _selectedTime = pickedTime;
-                          String formattedTime = pickedTime.format(context);
-                          _formKey.currentState!.fields['time']
-                              ?.didChange(formattedTime);
-                        }
-                      },
-                    )),
+                child: DateTimeFormField(
+              decoration: const InputDecoration(
+                labelText: 'Select time',
+                floatingLabelStyle: TextStyle(color: Colors.blue),
+                suffixIcon: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Icon(
+                    Icons.access_time,
+                    color: Colors.blue,
+                  ),
+                ),
               ),
-            )
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+              dateFormat: DateFormat('h:mm a'),
+              initialValue: DateTime.now(),
+              mode: DateTimeFieldPickerMode.time,
+              onDateSelected: (value) {
+                setState(() {
+                  _selectedTime = value;
+                });
+              },
+            )),
           ],
         ),
         const SizedBox(

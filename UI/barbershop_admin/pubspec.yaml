@@ -43,6 +43,7 @@ dependencies:
   file_picker: ^4.6.1
   image_picker: ^1.0.0
   form_builder_validators: ^9.0.0
+  date_field: ^3.0.5
 
 dev_dependencies:
   json_serializable: ^6.2.0

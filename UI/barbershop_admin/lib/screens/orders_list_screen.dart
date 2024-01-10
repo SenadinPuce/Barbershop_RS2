@@ -1,4 +1,6 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/order.dart';
@@ -47,26 +49,6 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
     });
   }
 
-  Future<void> _selectDate(BuildContext context, bool isFromDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null &&
-        picked != (isFromDate ? _selectedDateFrom : _selectedDateTo)) {
-      setState(() {
-        if (isFromDate) {
-          _selectedDateFrom = picked;
-        } else {
-          _selectedDateTo = picked;
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
@@ -90,59 +72,53 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
     return Row(
       children: [
         Expanded(
-            child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-              borderRadius: const BorderRadius.all(Radius.circular(8))),
-          padding: const EdgeInsets.all(2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'From date: ',
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0),
+            child: DateTimeFormField(
+          decoration: const InputDecoration(
+            labelText: 'From date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
               ),
-              Text(
-                formatDate(_selectedDateFrom),
-                style: const TextStyle(fontSize: 16.0),
-              ),
-              IconButton(
-                  onPressed: () => _selectDate(context, true),
-                  icon: const Icon(Icons.calendar_today))
-            ],
+            ),
           ),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateFrom = value;
+            });
+          },
         )),
         const SizedBox(
           width: 8,
         ),
         Expanded(
-            child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-              borderRadius: const BorderRadius.all(Radius.circular(8))),
-          padding: const EdgeInsets.all(2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'To date: ',
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0),
+            child: DateTimeFormField(
+          decoration: const InputDecoration(
+            labelText: 'To date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
               ),
-              Text(
-                formatDate(_selectedDateTo),
-                style: const TextStyle(fontSize: 16.0),
-              ),
-              IconButton(
-                  onPressed: () => _selectDate(context, false),
-                  icon: const Icon(Icons.calendar_today))
-            ],
+            ),
           ),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateTo = value;
+            });
+          },
         )),
         const SizedBox(
           width: 8,
@@ -220,13 +196,6 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                     DataColumn(
                         label: Expanded(
                       child: Text(
-                        'Client phone number',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
                         'Delivery method',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
@@ -262,7 +231,14 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                     DataColumn(
                         label: Expanded(
                       child: Text(
-                        'Action',
+                        'Status',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Complete order',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ))
@@ -279,7 +255,6 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                               cells: [
                                 DataCell(Text(o.id.toString())),
                                 DataCell(Text(o.clientUsername.toString())),
-                                DataCell(Text(o.clientPhoneNumber.toString())),
                                 DataCell(Text(
                                     o.deliveryMethod!.shortName.toString())),
                                 DataCell(
@@ -287,28 +262,64 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                                 DataCell(Text(o.subtotal.toString())),
                                 DataCell(Text(o.total.toString())),
                                 DataCell(Text(getDate(o.orderDate))),
-                                DataCell(OutlinedButton(
-                                  onPressed: o.status != 'Completed'
-                                      ? () async {
-                                          var order = await _orderProvider
-                                              .updateAppointmentStatus(
-                                                  o.id!, 'Completed');
+                                DataCell(Text(o.status.toString())),
+                                DataCell(
+                                  o.status != 'Payment Received'
+                                      ? Container()
+                                      : OutlinedButton(
+                                          onPressed: () async {
+                                            bool confirm = await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      "Confirmation"),
+                                                  content: const Text(
+                                                      "Are you sure you want to mark the order as completed? This action is not reversible."),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(true);
+                                                      },
+                                                      child: const Text("Yes"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(false);
+                                                      },
+                                                      child: const Text("No"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
 
-                                          if (order != null) {
-                                            setState(() {
-                                              o.status = order.status;
-                                            });
-                                          }
-                                        }
-                                      : null,
-                                  style: OutlinedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      disabledBackgroundColor: Colors.grey),
-                                  child: const Text(
-                                    "Complete",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ))
+                                            if (confirm == true) {
+                                              var order = await _orderProvider
+                                                  .updateAppointmentStatus(
+                                                o.id!,
+                                                'Completed',
+                                              );
+
+                                              setState(() {
+                                                o.status = order.status;
+                                              });
+                                            }
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                            disabledBackgroundColor:
+                                                Colors.grey,
+                                          ),
+                                          child: const Text(
+                                            "Complete",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                )
                               ]))
                       .toList(),
                 ),

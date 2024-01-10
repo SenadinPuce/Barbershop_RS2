@@ -1,4 +1,6 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/appointment.dart';
@@ -26,26 +28,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   DateTime? _selectedDateTo;
   String? _selectedStatus = 'All';
   User _selectedBarber = User(id: 0, username: 'All');
-
-  Future<void> _selectDate(BuildContext context, bool isFromDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null &&
-        picked != (isFromDate ? _selectedDateFrom : _selectedDateTo)) {
-      setState(() {
-        if (isFromDate) {
-          _selectedDateFrom = picked;
-        } else {
-          _selectedDateTo = picked;
-        }
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -100,71 +82,54 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.blue),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
-            padding: const EdgeInsets.all(2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'From date: ',
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0),
-                ),
-                Text(
-                  formatDate(_selectedDateFrom),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () => _selectDate(context, true),
-                  color: Colors.blue,
-                ),
-              ],
+            child: DateTimeFormField(
+          decoration: const InputDecoration(
+            labelText: 'From date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
+              ),
             ),
           ),
-        ),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateFrom = value;
+            });
+          },
+        )),
         const SizedBox(
           width: 8,
         ),
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.blue),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
-            padding: const EdgeInsets.all(2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'To date: ',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-                Text(
-                  formatDate(_selectedDateTo),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () => _selectDate(context, false),
-                  color: Colors.blue,
-                ),
-              ],
+            child: DateTimeFormField(
+          decoration: const InputDecoration(
+            labelText: 'To date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
+              ),
             ),
           ),
-        ),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateTo = value;
+            });
+          },
+        )),
         const SizedBox(
           width: 8,
         ),
@@ -234,7 +199,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AppointmentDetailScreen()));
+                  builder: (context) => const AppointmentDetailScreen()));
             },
             child: const Text("Add new appointment"),
           ),
@@ -343,10 +308,9 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                                     }
                                   : null,
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.green,
-                                side: const BorderSide(color: Colors.green),
-                                disabledForegroundColor: Colors.grey
-                              ),
+                                  foregroundColor: Colors.green,
+                                  side: const BorderSide(color: Colors.green),
+                                  disabledForegroundColor: Colors.grey),
                               child: const Text("Complete"),
                             ))
                           ]))

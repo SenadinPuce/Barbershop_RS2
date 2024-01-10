@@ -149,6 +149,9 @@ namespace Infrastructure.Data
             {
                 var ordersData = File.ReadAllText(path + @"/Data/SeedData/orders.json");
                 var orders = JsonSerializer.Deserialize<List<Order>>(ordersData);
+                orders.Find(o => o.PaymentIntentId == "payment_intent_3").Status = OrderStatus.PaymentReceived;
+                orders.Find(o => o.PaymentIntentId == "payment_intent_4").Status = OrderStatus.PaymentReceived;
+
                 context.Orders.AddRange(orders);
             }
 

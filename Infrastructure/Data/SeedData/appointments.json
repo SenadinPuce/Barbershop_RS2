@@ -1,7 +1,7 @@
 [
     {
       "StartTime": "2024-01-14T09:00:00",
-      "EndTime": "2024-01-15T09:20:00",
+      "EndTime": "2024-01-14T09:20:00",
       "DurationInMinutes": 20,
       "BarberId": 2,
       "ClientId": 1,
@@ -9,7 +9,7 @@
     },
     {
       "StartTime": "2024-01-14T10:00:00",
-      "EndTime": "2024-01-15T10:20:00",
+      "EndTime": "2024-01-14T10:20:00",
       "DurationInMinutes": 20,
       "BarberId": 3,
       "ClientId": 1,

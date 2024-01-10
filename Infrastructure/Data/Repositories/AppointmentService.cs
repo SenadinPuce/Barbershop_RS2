@@ -49,11 +49,11 @@ namespace Infrastructure.Data.Repositories
             }
             if (search.DateFrom != null)
             {
-                query = query.Where(a => a.StartTime.Date >= search.DateFrom.GetValueOrDefault());
+                query = query.Where(a => a.StartTime.Date >= search.DateFrom.GetValueOrDefault().Date);
             }
             if (search.DateTo != null)
             {
-                query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault());
+                query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault().Date);
             }
             if (!string.IsNullOrWhiteSpace(search.Status))
             {
