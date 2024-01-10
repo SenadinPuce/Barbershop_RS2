@@ -45,7 +45,7 @@ namespace API.Controllers
         {
             var result = await _service.Delete(id);
 
-            if (result == true) return Ok();
+            if (result != null) return Ok(_mapper.Map<T>(result));
 
             return BadRequest();
         }

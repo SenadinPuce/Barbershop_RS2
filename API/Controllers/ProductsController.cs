@@ -47,7 +47,7 @@ namespace API.Controllers
                 }
             }
 
-            if (!await _service.Delete(id))
+            if (await _service.Delete(id) != null)
             {
                 return BadRequest(new ApiResponse(400, "Problem deleting product"));
             }

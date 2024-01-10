@@ -238,7 +238,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                     DataColumn(
                         label: Expanded(
                       child: Text(
-                        'Complete order',
+                        'Complete',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ))
@@ -263,66 +263,62 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                                 DataCell(Text(o.total.toString())),
                                 DataCell(Text(getDate(o.orderDate))),
                                 DataCell(Text(o.status.toString())),
-                                DataCell(
-                                  o.status != 'Payment Received'
-                                      ? Container()
-                                      : OutlinedButton(
-                                          onPressed: () async {
-                                            bool confirm = await showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                      "Confirmation"),
-                                                  content: const Text(
-                                                      "Are you sure you want to mark the order as completed? This action is not reversible."),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop(true);
-                                                      },
-                                                      child: const Text("Yes"),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop(false);
-                                                      },
-                                                      child: const Text("No"),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-
-                                            if (confirm == true) {
-                                              var order = await _orderProvider
-                                                  .updateAppointmentStatus(
-                                                o.id!,
-                                                'Completed',
-                                              );
-
-                                              setState(() {
-                                                o.status = order.status;
-                                              });
-                                            }
-                                          },
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: Colors.green,
-                                            disabledBackgroundColor:
-                                                Colors.grey,
-                                          ),
-                                          child: const Text(
-                                            "Complete",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                )
+                                DataCell(_completeOrder(o))
                               ]))
                       .toList(),
                 ),
               ));
+  }
+
+  Widget _completeOrder(Order o) {
+    return OutlinedButton(
+      onPressed: o.status == 'Payment Received'
+          ? () async {
+              bool confirm = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Confirmation"),
+                    content: const Text(
+                        "Are you sure you want to mark the order as completed? This action is not reversible."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text("No"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text("Yes"),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (confirm == true) {
+                var order = await _orderProvider.updateAppointmentStatus(
+                  o.id!,
+                  'Completed',
+                );
+
+                setState(() {
+                  o.status = order.status;
+                });
+              }
+            }
+          : null,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.green,
+        disabledBackgroundColor: Colors.grey,
+      ),
+      child: const Text(
+        "Complete",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 }

@@ -41,7 +41,7 @@ namespace Infrastructure.Data.Repositories
             return entity;
         }
 
-        public virtual async Task<bool> Delete(int id)
+        public virtual async Task<TDb> Delete(int id)
         {
             var set = _context.Set<TDb>();
 
@@ -51,9 +51,9 @@ namespace Infrastructure.Data.Repositories
             {
                 set.Remove(entity);
                 await _context.SaveChangesAsync();
-                return true;
+                return entity;
             }
-            return false;
+            return null;
         }
 
         public virtual Task BeforeInsert(TDb entity, TInsert insert)

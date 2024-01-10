@@ -4,6 +4,6 @@ namespace Core.Interfaces
     {
         Task<TDb> Insert(TInsert insert);
         Task<TDb> Update(int id, TUpdate update);
-        Task<bool> Delete(int id);
+        Task<TDb> Delete(int id);
     }
 }

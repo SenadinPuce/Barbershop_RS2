@@ -22,12 +22,12 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   late AppointmentProvider _appointmentProvider;
   late UserProvider _userProvider;
   List<Appointment>? appointments;
-  List<User> _barbersList = [];
-  bool isLoading = true;
+  List<User>? _barbersList;
   DateTime? _selectedDateFrom;
   DateTime? _selectedDateTo;
-  String? _selectedStatus = 'All';
-  User _selectedBarber = User(id: 0, username: 'All');
+  String? _selectedStatus;
+  User? _selectedBarber;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -39,18 +39,19 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
     _appointmentProvider = context.read<AppointmentProvider>();
     _userProvider = context.read<UserProvider>();
 
-    if (_barbersList.isEmpty) {
+    if (_barbersList == null) {
       var barbers =
           await _userProvider.getUsers(filter: {'roleName': 'barber'});
-      _barbersList.add(User(id: 0, username: 'All'));
-      _barbersList.addAll(barbers);
+      setState(() {
+        _barbersList = List.from(barbers);
+      });
     }
 
     var appointmentsData = await _appointmentProvider.get(filter: {
       'dateFrom': _selectedDateFrom,
       'dateTo': _selectedDateTo,
-      'status': (_selectedStatus == 'All') ? '' : _selectedStatus,
-      'barberId': (_selectedBarber.id == 0) ? '' : _selectedBarber.id
+      'status': _selectedStatus,
+      'barberId': _selectedBarber?.id
     });
 
     setState(() {
@@ -135,30 +136,54 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
         ),
         Expanded(
             child: DropdownButtonFormField<User>(
-          items: _barbersList.map<DropdownMenuItem<User>>((User user) {
-            return DropdownMenuItem<User>(
-              value: user,
-              child: Text(user.username ?? ''),
-            );
-          }).toList(),
+          decoration: InputDecoration(
+              labelText: "Barber",
+              contentPadding: const EdgeInsets.all(0),
+              suffixIcon: IconButton(
+                  onPressed: () => {
+                        setState(() {
+                          _selectedBarber = null;
+                        })
+                      },
+                  icon: const Icon(Icons.close)),
+              hintText: 'Select barber'),
+          value: _selectedBarber,
+          items: _barbersList
+              ?.map<DropdownMenuItem<User>>(
+                  (User user) => DropdownMenuItem<User>(
+                        alignment: AlignmentDirectional.center,
+                        value: user,
+                        child: Text(user.username ?? ''),
+                      ))
+              .toList(),
           onChanged: (User? newValue) {
             setState(() {
-              _selectedBarber = newValue ?? User(id: 0, username: 'All');
+              _selectedBarber = newValue;
             });
           },
-          decoration: const InputDecoration(
-            labelText: "Barber",
-            contentPadding: EdgeInsets.all(0),
-          ),
         )),
         const SizedBox(
           width: 8,
         ),
         Expanded(
             child: DropdownButtonFormField<String>(
-          items: ['All', 'Free', 'Reserved', 'Completed', 'Canceled']
+          decoration: InputDecoration(
+              labelText: "Status",
+              contentPadding: const EdgeInsets.all(0),
+              suffix: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _selectedStatus = null;
+                  });
+                },
+              ),
+              hintText: 'Select status'),
+          value: _selectedStatus,
+          items: ['Free', 'Reserved', 'Completed', 'Canceled']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
+              alignment: AlignmentDirectional.center,
               value: value,
               child: Text(value),
             );
@@ -168,10 +193,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
               _selectedStatus = newValue ?? '';
             });
           },
-          decoration: const InputDecoration(
-            labelText: "Status",
-            contentPadding: EdgeInsets.all(0),
-          ),
         )),
         const SizedBox(
           width: 8,
@@ -277,7 +298,14 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                     DataColumn(
                         label: Expanded(
                       child: Text(
-                        'Action',
+                        'Complete',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Delete',
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ))
@@ -292,30 +320,108 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                             DataCell(Text(a.barberUsername.toString())),
                             DataCell(Text(a.clientUsername?.toString() ?? '')),
                             DataCell(Text(a.status.toString())),
-                            DataCell(OutlinedButton(
-                              onPressed: a.status != 'Completed'
-                                  ? () async {
-                                      var appointment =
-                                          await _appointmentProvider
-                                              .updateAppointmentStatus(
-                                                  a.id!, 'Completed');
-
-                                      if (appointment != null) {
-                                        setState(() {
-                                          a.status = appointment.status;
-                                        });
-                                      }
-                                    }
-                                  : null,
-                              style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.green,
-                                  side: const BorderSide(color: Colors.green),
-                                  disabledForegroundColor: Colors.grey),
-                              child: const Text("Complete"),
-                            ))
+                            DataCell(_completeAppointment(a)),
+                            DataCell(_deleteAppointment(a))
                           ]))
                       .toList(),
                 ),
               ));
+  }
+
+  Widget _completeAppointment(Appointment a) {
+    return OutlinedButton(
+      onPressed: a.status == 'Reserved'
+          ? () async {
+              bool confirm = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirmation'),
+                      content: const Text(
+                          'Are you sure you want to mark the appointment as completed? This action is not reversible.'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text("No")),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text("Yes")),
+                      ],
+                    );
+                  });
+
+              if (confirm == true) {
+                var appointment = await _appointmentProvider
+                    .updateAppointmentStatus(a.id!, 'Completed');
+
+                setState(() {
+                  a.status = appointment.status;
+                });
+              }
+            }
+          : null,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.green,
+        disabledBackgroundColor: Colors.grey,
+      ),
+      child: const Text(
+        "Complete",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _deleteAppointment(Appointment a) {
+    return OutlinedButton(
+      onPressed: a.endTime!.isBefore(DateTime.now()) ||
+              a.status == 'Free' ||
+              a.status == 'Canceled'
+          ? () async {
+              bool confirm = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirmation'),
+                      content: const Text(
+                          'Are you sure you want to delete the appointment? This action is not reversible.'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text("No")),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text("Yes")),
+                      ],
+                    );
+                  });
+
+              if (confirm == true) {
+                var appointment = await _appointmentProvider.delete(a.id!);
+
+                if (appointment != null) {
+                  setState(() {
+                    appointments?.removeWhere((element) => element.id == a.id);
+                  });
+                }
+              }
+            }
+          : null,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.red,
+        disabledBackgroundColor: Colors.grey,
+      ),
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 }
