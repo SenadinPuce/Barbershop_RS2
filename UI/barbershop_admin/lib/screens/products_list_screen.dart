@@ -7,7 +7,6 @@ import '../models/type.dart';
 import '../providers/product_brand_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/product_type_provider.dart';
-import '../utils/product_search_filter.dart';
 import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 import 'product_detail_screen.dart';
@@ -25,9 +24,11 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   late ProductTypeProvider _productTypeProvider;
   List<Product>? products;
   TextEditingController _productNameController = TextEditingController();
-  List<ProductBrand> _productBrandsList = [];
-  List<ProductType> _productTypesList = [];
-  var productsFilter = ProductSearchFilter();
+  List<ProductBrand>? _productBrandsList;
+  ProductBrand? _selectedBrand;
+  List<ProductType>? _productTypesList;
+  ProductType? _selectedType;
+  String? _sortBy;
   bool isLoading = true;
 
   @override
@@ -41,20 +42,25 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     _productBrandProvider = context.read<ProductBrandProvider>();
     _productTypeProvider = context.read<ProductTypeProvider>();
 
-    if (_productBrandsList.isEmpty) {
+    if (_productBrandsList == null) {
       var brands = await _productBrandProvider.get();
-      _productBrandsList.add(ProductBrand(id: 0, name: 'All'));
-      _productBrandsList.addAll(brands);
+      _productBrandsList = List.from(brands);
     }
 
-    if (_productTypesList.isEmpty) {
+    if (_productTypesList == null) {
       var types = await _productTypeProvider.get();
-      _productTypesList.add(ProductType(id: 0, name: 'All'));
-      _productTypesList.addAll(types);
+      _productTypesList = List.from(types);
     }
 
-    var productData =
-        await _productProvider.get(filter: productsFilter.toMap());
+    var productData = await _productProvider.get(filter: {
+      'name': _productNameController.text,
+      'productBrandId': _selectedBrand?.id,
+      'productTypeId': _selectedType?.id,
+      'sortBy': _sortBy,
+      'includeProductTypes': true,
+      'includeProductBrands': true,
+      'includeProductPhotos': true,
+    });
 
     setState(() {
       products = productData;
@@ -68,16 +74,20 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       title: "Products",
       child: Padding(
           padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildSearch(),
-              const SizedBox(
-                height: 8,
-              ),
-              _buildDataListView()
-            ],
-          )),
+          child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildSearch(),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    _buildDataListView()
+                  ],
+                )),
     );
   }
 
@@ -91,80 +101,100 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               contentPadding: EdgeInsets.all(0),
             ),
             controller: _productNameController,
-            onChanged: (value) {
-              setState(() {
-                productsFilter.name = value;
-              });
-            },
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<ProductBrand>(
-            items: _productBrandsList.map((ProductBrand brand) {
+            decoration: InputDecoration(
+                labelText: "Brand",
+                contentPadding: const EdgeInsets.all(0),
+                suffix: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedBrand = null;
+                      });
+                    },
+                    icon: const Icon(Icons.close)),
+                hintText: 'Select brand'),
+            value: _selectedBrand,
+            items: _productBrandsList?.map((ProductBrand brand) {
               return DropdownMenuItem<ProductBrand>(
+                alignment: AlignmentDirectional.center,
                 value: brand,
                 child: Text(brand.name.toString()),
               );
             }).toList(),
             onChanged: (ProductBrand? newValue) {
-              productsFilter.productBrandId = newValue?.id;
+              setState(() {
+                _selectedBrand = newValue;
+              });
             },
-            decoration: const InputDecoration(
-              labelText: "Brand",
-              contentPadding: EdgeInsets.all(0),
-            ),
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<ProductType>(
-            items: _productTypesList.map((ProductType type) {
+            decoration: InputDecoration(
+                labelText: "Type",
+                contentPadding: const EdgeInsets.all(0),
+                suffix: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedType = null;
+                      });
+                    },
+                    icon: const Icon(Icons.close)),
+                hintText: 'Select type'),
+            value: _selectedType,
+            items: _productTypesList?.map((ProductType type) {
               return DropdownMenuItem<ProductType>(
+                alignment: AlignmentDirectional.center,
                 value: type,
                 child: Text(type.name.toString()),
               );
             }).toList(),
             onChanged: (ProductType? newValue) {
-              productsFilter.productTypeId = newValue?.id;
+              setState(() {
+                _selectedType = newValue;
+              });
             },
-            decoration: const InputDecoration(
-              labelText: "Type",
-              contentPadding: EdgeInsets.all(0),
-            ),
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: DropdownButtonFormField<String>(
-            items: [
-              'Sort by',
-              'Alphabetical',
-              'Price: Low to High',
-              'Price: High to Low'
-            ].map<DropdownMenuItem<String>>((String value) {
+          child: DropdownButtonFormField<String?>(
+            decoration: InputDecoration(
+              labelText: "Sort by",
+              contentPadding: const EdgeInsets.all(0),
+              suffix: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _sortBy = null;
+                  });
+                },
+                icon: const Icon(Icons.close),
+              ),
+              hintText: 'Sort by',
+            ),
+            value: _sortBy,
+            items: {
+              'Alphabetical': 'name',
+              'Price: Low to High': 'priceAsc',
+              'Price: High to Low': 'priceDesc',
+            }.entries.map<DropdownMenuItem<String>>(
+                (MapEntry<String, String> entry) {
               return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
+                alignment: AlignmentDirectional.center,
+                value: entry.value,
+                child: Text(entry.key),
               );
             }).toList(),
             onChanged: (String? newValue) {
               setState(() {
-                if (newValue == 'Price: Low to High') {
-                  productsFilter.sortBy = 'priceAsc';
-                } else if (newValue == 'Price: High to Low') {
-                  productsFilter.sortBy = 'priceDesc';
-                } else if (newValue == 'Alphabetical') {
-                  productsFilter.sortBy = 'name';
-                } else {
-                  productsFilter.sortBy = null;
-                }
+                _sortBy = newValue;
               });
             },
-            decoration: const InputDecoration(
-              labelText: "Sort by",
-              contentPadding: EdgeInsets.all(0),
-            ),
           ),
         ),
         const SizedBox(
@@ -196,7 +226,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProductDetailScreen()));
+                  builder: (context) => ProductDetailScreen(
+                        productBrands: _productBrandsList,
+                        productTypes: _productTypesList,
+                      )));
             },
             child: const Text("Add new product"),
           ),
@@ -239,6 +272,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   label: Text('Picture',
                       style: TextStyle(fontStyle: FontStyle.italic)),
                 ),
+                DataColumn(
+                  label: Text('Delete',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
               ],
               rows: (products ?? [])
                   .map((Product p) => DataRow(
@@ -247,6 +284,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => ProductDetailScreen(
                                         product: p,
+                                        productBrands: _productBrandsList,
+                                        productTypes: _productTypesList,
                                       )));
                             }
                           },
@@ -267,9 +306,54 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                                 ),
                               ),
                             ),
+                            DataCell(_deleteProduct(p))
                           ]))
                   .toList(),
             )),
+    );
+  }
+
+  Widget _deleteProduct(Product p) {
+    return OutlinedButton(
+      onPressed: () async {
+        bool confirm = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Confirmation'),
+                content: const Text(
+                    'Are you sure you want to delete this product? This action is not reversible.'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text("No")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: const Text("Yes")),
+                ],
+              );
+            });
+
+        if (confirm == true) {
+          var product = await _productProvider.delete(p.id!);
+
+          setState(() {
+            products?.removeWhere((element) => element.id == p.id);
+          });
+        }
+      },
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.red,
+        disabledBackgroundColor: Colors.grey,
+      ),
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.white),
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:barbershop_admin/widgets/master_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
 import '../models/service.dart';
@@ -58,39 +59,56 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
+                    width: 150,
+                    height: 40,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.blue),
+                      ),
+                      child: const Text("Close"),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  SizedBox(
                       width: 150,
                       height: 40,
                       child: ElevatedButton(
                         onPressed: hasChanges
                             ? () async {
-                                _formKey.currentState?.saveAndValidate();
+                                if (_formKey.currentState?.saveAndValidate() ==
+                                    true) {
+                                  var request =
+                                      Map.from(_formKey.currentState!.value);
 
-                                var request =
-                                    Map.from(_formKey.currentState!.value);
+                                  try {
+                                    if (widget.service == null) {
+                                      await _serviceProvider.insert(
+                                          request: request);
+                                    } else {
+                                      await _serviceProvider.update(
+                                          widget.service!.id!, request);
+                                    }
 
-                                try {
-                                  if (widget.service == null) {
-                                    await _serviceProvider.insert(
-                                        request: request);
-                                  } else {
-                                    await _serviceProvider.update(
-                                        widget.service!.id!, request);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content:
+                                          Text("Service saved successfully."),
+                                      backgroundColor: Colors.green,
+                                    ));
+                                  } on Exception catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Failed to save barbers service. Please try again.'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
                                   }
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content:
-                                        Text("Service saved successfully."),
-                                    backgroundColor: Colors.green,
-                                  ));
-                                } on Exception catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Failed to save barbers service. Please try again.'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
                                 }
                               }
                             : null,
@@ -119,6 +137,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
               Expanded(
                   child: FormBuilderTextField(
                 name: 'name',
+                validator: FormBuilderValidators.required(),
                 decoration: const InputDecoration(labelText: 'Name'),
               )),
               const SizedBox(
@@ -127,6 +146,10 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
               Expanded(
                   child: FormBuilderTextField(
                 name: 'price',
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.numeric()
+                ]),
                 decoration: const InputDecoration(labelText: 'Price'),
               )),
             ],
@@ -136,6 +159,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
           ),
           FormBuilderTextField(
             name: 'description',
+            validator: FormBuilderValidators.required(),
             maxLines: 5,
             decoration: InputDecoration(
                 labelText: 'Description',

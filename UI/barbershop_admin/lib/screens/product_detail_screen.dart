@@ -5,23 +5,26 @@ import 'dart:io';
 import 'package:barbershop_admin/models/photo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../models/brand.dart';
 import '../models/product.dart';
 import '../models/type.dart';
-import '../providers/product_brand_provider.dart';
 import '../providers/product_provider.dart';
-import '../providers/product_type_provider.dart';
 import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   Product? product;
+  List<ProductBrand>? productBrands;
+  List<ProductType>? productTypes;
   ProductDetailScreen({
     Key? key,
     this.product,
+    this.productBrands,
+    this.productTypes,
   }) : super(key: key);
 
   @override
@@ -34,10 +37,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late ProductProvider _productProvider;
-  late ProductBrandProvider _productBrandProvider;
-  late ProductTypeProvider _productTypeProvider;
-  List<ProductBrand> _productBrandsList = [];
-  List<ProductType> _productTypesList = [];
+  List<ProductBrand>? _productBrandsList;
+  List<ProductType>? _productTypesList;
   bool isLoading = true;
   List<Photo>? _productPhotos = [];
 
@@ -48,15 +49,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     _productPhotos = widget.product?.photos;
 
     _productProvider = context.read<ProductProvider>();
-    _productBrandProvider = context.read<ProductBrandProvider>();
-    _productTypeProvider = context.read<ProductTypeProvider>();
-
     initForm();
   }
 
   Future initForm() async {
-    _productBrandsList = await _productBrandProvider.get();
-    _productTypesList = await _productTypeProvider.get();
+    _productBrandsList = widget.productBrands;
+    _productTypesList = widget.productTypes;
 
     _initialValue = {
       'name': widget.product?.name,
@@ -64,13 +62,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       'price': formatNumber(widget.product?.price).toString(),
       'productTypeId': widget.product != null
           ? _productTypesList
-              .firstWhere(
+              ?.firstWhere(
                   (element) => element.name == widget.product?.productType)
               .id
           : null,
       'productBrandId': widget.product != null
           ? _productBrandsList
-              .firstWhere(
+              ?.firstWhere(
                   (element) => element.name == widget.product?.productBrand)
               .id
           : null,
@@ -85,41 +83,42 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget build(BuildContext context) {
     return MasterScreenWidget(
         title: 'Product details',
-        child: Column(
-          children: [
-            Container(
-              decoration: const BoxDecoration(color: Colors.lightBlueAccent),
-              child: TabBar(
-                controller: _tabController,
-                indicator: const BoxDecoration(color: Colors.blue),
-                labelColor: Colors.white,
-                tabs: const [
-                  Tab(
-                    text: 'Edit product',
-                    icon: Icon(Icons.edit_document),
-                  ),
-                  Tab(
-                    text: 'Edit photos',
-                    icon: Icon(Icons.image),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
                 children: [
-                  isLoading
-                      ? Center(
-                          child: const CircularProgressIndicator(),
-                        )
-                      : _buildDetailsForm(),
-                  _buildPhotoTab(),
+                  Container(
+                    decoration:
+                        const BoxDecoration(color: Colors.lightBlueAccent),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: const BoxDecoration(color: Colors.blue),
+                      labelColor: Colors.white,
+                      tabs: const [
+                        Tab(
+                          text: 'Edit product',
+                          icon: Icon(Icons.edit_document),
+                        ),
+                        Tab(
+                          text: 'Edit photos',
+                          icon: Icon(Icons.image),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildDetailsForm(),
+                        _buildPhotoTab(),
+                      ],
+                    ),
+                  ),
                 ],
-              ),
-            ),
-          ],
-        ));
+              ));
   }
 
   @override
@@ -140,6 +139,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               Expanded(
                 child: FormBuilderTextField(
                   name: 'name',
+                  validator: FormBuilderValidators.required(),
                   decoration: const InputDecoration(labelText: 'Name'),
                 ),
               ),
@@ -149,6 +149,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               Expanded(
                 child: FormBuilderTextField(
                   name: 'price',
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.numeric(),
+                  ]),
                   decoration: const InputDecoration(labelText: 'Price'),
                 ),
               )
@@ -160,6 +164,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           FormBuilderTextField(
             name: 'description',
             maxLines: 5,
+            validator: FormBuilderValidators.required(),
             decoration: InputDecoration(
                 labelText: 'Description',
                 hintText: _initialValue['description'] != null
@@ -177,6 +182,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               Expanded(
                   child: FormBuilderDropdown<int>(
                 name: 'productBrandId',
+                validator: FormBuilderValidators.required(),
                 decoration: InputDecoration(
                     labelText: 'Product brand',
                     suffix: IconButton(
@@ -187,7 +193,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       },
                     ),
                     hintText: 'Select brand'),
-                items: _productBrandsList
+                items: _productBrandsList!
                     .map((item) => DropdownMenuItem(
                           alignment: AlignmentDirectional.center,
                           value: item.id,
@@ -201,6 +207,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               Expanded(
                   child: FormBuilderDropdown<int>(
                 name: 'productTypeId',
+                validator: FormBuilderValidators.required(),
                 decoration: InputDecoration(
                     labelText: 'Product type',
                     suffix: IconButton(
@@ -210,7 +217,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       },
                     ),
                     hintText: 'Select type'),
-                items: _productTypesList
+                items: _productTypesList!
                     .map((item) => DropdownMenuItem(
                           alignment: AlignmentDirectional.center,
                           value: item.id,
@@ -227,44 +234,60 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               SizedBox(
+                width: 150,
+                height: 40,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.blue),
+                  ),
+                  child: const Text("Close"),
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              SizedBox(
                   width: 150,
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () async {
-                      try {
-                        _formKey.currentState?.saveAndValidate();
+                      if (_formKey.currentState?.saveAndValidate() == true) {
+                        try {
+                          var request = Map.from(_formKey.currentState!.value);
 
-                        var request = Map.from(_formKey.currentState!.value);
+                          Product? updatedProduct;
 
-                        Product? updatedProduct;
+                          if (widget.product == null) {
+                            updatedProduct =
+                                await _productProvider.insert(request: request);
+                          } else {
+                            updatedProduct = await _productProvider.update(
+                              widget.product!.id!,
+                              request,
+                            );
+                          }
 
-                        if (widget.product == null) {
-                          updatedProduct =
-                              await _productProvider.insert(request: request);
-                        } else {
-                          updatedProduct = await _productProvider.update(
-                            widget.product!.id!,
-                            request,
+                          setState(() {
+                            widget.product = updatedProduct;
+                          });
+
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Product saved successfully."),
+                            backgroundColor: Colors.green,
+                          ));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Failed to save product. Please try again.'),
+                              backgroundColor: Colors.red,
+                            ),
                           );
                         }
-
-                        setState(() {
-                          widget.product = updatedProduct;
-                        });
-
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text("Product saved successfully."),
-                          backgroundColor: Colors.green,
-                        ));
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                'Failed to save product. Please try again.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
                       }
                     },
                     child: const Text("Save changes"),

@@ -66,15 +66,19 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
       title: 'Appointments',
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8,
-            ),
-            _buildDataListView()
-          ],
-        ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  _buildSearch(),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  _buildDataListView()
+                ],
+              ),
       ),
     );
   }
@@ -139,7 +143,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
           decoration: InputDecoration(
               labelText: "Barber",
               contentPadding: const EdgeInsets.all(0),
-              suffixIcon: IconButton(
+              suffix: IconButton(
                   onPressed: () => {
                         setState(() {
                           _selectedBarber = null;
@@ -220,7 +224,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const AppointmentDetailScreen()));
+                  builder: (context) => AppointmentDetailScreen(barbers: _barbersList,)));
             },
             child: const Text("Add new appointment"),
           ),
@@ -231,101 +235,97 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  columns: const [
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Appointment date',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Start time',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'End time',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Duration in minutes',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Barber username',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Client username',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Status',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Complete',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Delete',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ))
-                  ],
-                  rows: (appointments ?? [])
-                      .map((Appointment a) => DataRow(cells: [
-                            DataCell(Text(a.id.toString())),
-                            DataCell(Text(getDate(a.startTime))),
-                            DataCell(Text(getTime(a.startTime))),
-                            DataCell(Text(getTime(a.endTime))),
-                            DataCell(Text(a.durationInMinutes.toString())),
-                            DataCell(Text(a.barberUsername.toString())),
-                            DataCell(Text(a.clientUsername?.toString() ?? '')),
-                            DataCell(Text(a.status.toString())),
-                            DataCell(_completeAppointment(a)),
-                            DataCell(_deleteAppointment(a))
-                          ]))
-                      .toList(),
-                ),
-              ));
+        child: SingleChildScrollView(
+      child: DataTable(
+        showCheckboxColumn: false,
+        columns: const [
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'ID',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Appointment date',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Start time',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'End time',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Duration in minutes',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Barber username',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Client username',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Status',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Complete',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Delete',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ))
+        ],
+        rows: (appointments ?? [])
+            .map((Appointment a) => DataRow(cells: [
+                  DataCell(Text(a.id.toString())),
+                  DataCell(Text(getDate(a.startTime))),
+                  DataCell(Text(getTime(a.startTime))),
+                  DataCell(Text(getTime(a.endTime))),
+                  DataCell(Text(a.durationInMinutes.toString())),
+                  DataCell(Text(a.barberUsername.toString())),
+                  DataCell(Text(a.clientUsername?.toString() ?? '')),
+                  DataCell(Text(a.status.toString())),
+                  DataCell(_completeAppointment(a)),
+                  DataCell(_deleteAppointment(a))
+                ]))
+            .toList(),
+      ),
+    ));
   }
 
   Widget _completeAppointment(Appointment a) {

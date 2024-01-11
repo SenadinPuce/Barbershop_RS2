@@ -44,15 +44,19 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
       title: 'Services',
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8,
-            ),
-            _buildDataListView()
-          ],
-        ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  _buildSearch(),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  _buildDataListView()
+                ],
+              ),
       ),
     );
   }
@@ -101,62 +105,112 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: DataTable(
-                  columnSpacing: 215,
-                  showCheckboxColumn: false,
-                  columns: const [
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Name',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Price',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Description',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                  ],
-                  rows: (services ?? [])
-                      .map((Service s) => DataRow(
-                              onSelectChanged: (value) {
-                                if (value == true) {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ServiceDetailScreen(
-                                            service: s,
-                                          )));
-                                }
-                              },
-                              cells: [
-                                DataCell(Text(s.id.toString())),
-                                DataCell(Text(s.name.toString())),
-                                DataCell(Text(formatNumber(s.price))),
-                                DataCell(Text(s.description.toString())),
-                              ]))
-                      .toList(),
-                ),
-              ));
+        child: SingleChildScrollView(
+      child: DataTable(
+        columnSpacing: 215,
+        showCheckboxColumn: false,
+        columns: const [
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'ID',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Name',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Price',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Description',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+          DataColumn(
+              label: Expanded(
+            child: Text(
+              'Delete',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          )),
+        ],
+        rows: (services ?? [])
+            .map((Service s) => DataRow(
+                    onSelectChanged: (value) {
+                      if (value == true) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ServiceDetailScreen(
+                                  service: s,
+                                )));
+                      }
+                    },
+                    cells: [
+                      DataCell(Text(s.id.toString())),
+                      DataCell(Text(s.name.toString())),
+                      DataCell(Text(formatNumber(s.price))),
+                      DataCell(Text(s.description.toString())),
+                      DataCell(_deleteService(s))
+                    ]))
+            .toList(),
+      ),
+    ));
+  }
+
+  Widget _deleteService(Service s) {
+    return OutlinedButton(
+      onPressed: () async {
+        bool confirm = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Confirmation'),
+                content: const Text(
+                    'Are you sure you want to delete the service? This action is not reversible.'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text("No")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: const Text("Yes")),
+                ],
+              );
+            });
+
+        if (confirm == true) {
+          var service = await _serviceProvider.delete(s.id!);
+
+          if (service != null) {
+            setState(() {
+              services?.removeWhere((element) => element.id == s.id);
+            });
+          }
+        }
+      },
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.red,
+        disabledBackgroundColor: Colors.grey,
+      ),
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 }

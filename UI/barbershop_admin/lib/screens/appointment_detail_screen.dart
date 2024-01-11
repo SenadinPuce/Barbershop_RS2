@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -12,7 +13,11 @@ import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class AppointmentDetailScreen extends StatefulWidget {
-  const AppointmentDetailScreen({super.key});
+  List<User>? barbers;
+  AppointmentDetailScreen({
+    super.key,
+    this.barbers,
+  });
 
   @override
   State<AppointmentDetailScreen> createState() =>
@@ -23,8 +28,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late AppointmentProvider _appointmentProvider;
-  late UserProvider _userProvider;
-  List<User> _barbersList = [];
+  List<User>? _barbersList;
   bool isLoading = true;
   DateTime _selectedDate = DateTime.now();
   DateTime _selectedTime = DateTime.now();
@@ -34,17 +38,12 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
     super.initState();
 
     _appointmentProvider = context.read<AppointmentProvider>();
-    _userProvider = context.read<UserProvider>();
 
     _loadAppointmentDetails();
   }
 
   Future<void> _loadAppointmentDetails() async {
-    if (_barbersList.isEmpty) {
-      var barbers =
-          await _userProvider.getUsers(filter: {'roleName': 'barber'});
-      _barbersList.addAll(barbers);
-    }
+    _barbersList = widget.barbers;
 
     setState(() {
       isLoading = false;
@@ -57,79 +56,87 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       title: 'Appointment details',
       child: Padding(
           padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              const SizedBox(height: 15),
-              _buildForm(),
-              const SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: 150,
-                    height: 40,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.blue),
-                      ),
-                      child: const Text("Close"),
+          child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    const SizedBox(height: 15),
+                    _buildForm(),
+                    const SizedBox(
+                      height: 15,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  SizedBox(
-                    width: 150,
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState?.saveAndValidate() == true) {
-                          String formattedDateTime =
-                              DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(
-                                  DateTime(
-                                      _selectedDate.year,
-                                      _selectedDate.month,
-                                      _selectedDate.day,
-                                      _selectedTime.hour,
-                                      _selectedTime.minute,
-                                      _selectedTime.second,
-                                      _selectedTime.microsecond ~/ 1000));
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          height: 40,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.blue),
+                            ),
+                            child: const Text("Close"),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        SizedBox(
+                          width: 150,
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState?.saveAndValidate() ==
+                                  true) {
+                                String formattedDateTime =
+                                    DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'")
+                                        .format(DateTime(
+                                            _selectedDate.year,
+                                            _selectedDate.month,
+                                            _selectedDate.day,
+                                            _selectedTime.hour,
+                                            _selectedTime.minute,
+                                            _selectedTime.second,
+                                            _selectedTime.microsecond ~/ 1000));
 
-                          var request = Map.from(_formKey.currentState!.value);
+                                var request =
+                                    Map.from(_formKey.currentState!.value);
 
-                          request['startTime'] = formattedDateTime;
+                                request['startTime'] = formattedDateTime;
 
-                          try {
-                            await _appointmentProvider.insert(request: request);
+                                try {
+                                  await _appointmentProvider.insert(
+                                      request: request);
 
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text("Appointment saved successfully."),
-                              backgroundColor: Colors.green,
-                            ));
-                          } on Exception catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Failed to save appoinemnt. Please try again.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Save changes"),
-                    ),
-                  )
-                ],
-              )
-            ],
-          )),
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content:
+                                        Text("Appointment saved successfully."),
+                                    backgroundColor: Colors.green,
+                                  ));
+                                } on Exception catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Failed to save appoinemnt. Please try again.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text("Save changes"),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                )),
     );
   }
 
@@ -226,7 +233,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     },
                   ),
                   hintText: 'Select barber'),
-              items: _barbersList
+              items: _barbersList!
                   .map((item) => DropdownMenuItem(
                         value: item.id,
                         alignment: AlignmentDirectional.center,

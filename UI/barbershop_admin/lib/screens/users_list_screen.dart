@@ -17,7 +17,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
   late UserProvider _adminProvider;
   List<User>? users;
   TextEditingController _usernameController = TextEditingController();
-  String? _selectedRole = 'All';
+  String? _selectedRole;
   bool isLoading = true;
 
   @override
@@ -29,11 +29,10 @@ class _UsersListScreenState extends State<UsersListScreen> {
   Future<void> _loadUsers() async {
     _adminProvider = context.read<UserProvider>();
 
-    String roleNameToSend = (_selectedRole == 'All') ? '' : _selectedRole!;
     var data = await _adminProvider.getUsers(
       filter: {
         'username': _usernameController.text,
-        'roleName': roleNameToSend,
+        'roleName': _selectedRole,
       },
     );
 
@@ -49,16 +48,20 @@ class _UsersListScreenState extends State<UsersListScreen> {
       title: "Users",
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8,
-            ),
-            _buildDataListView()
-          ],
-        ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildSearch(),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  _buildDataListView()
+                ],
+              ),
       ),
     );
   }
@@ -78,23 +81,32 @@ class _UsersListScreenState extends State<UsersListScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: "Role",
+              contentPadding: const EdgeInsets.all(0),
+              suffix: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _selectedRole = null;
+                  });
+                },
+              ),
+            ),
             value: _selectedRole,
-            items: ['All', 'Client', 'Barber', 'Admin']
+            items: ['Client', 'Barber', 'Admin']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
+                alignment: AlignmentDirectional.center,
                 value: value,
                 child: Text(value),
               );
             }).toList(),
             onChanged: (String? newValue) {
               setState(() {
-                _selectedRole = newValue ?? '';
+                _selectedRole = newValue;
               });
             },
-            decoration: const InputDecoration(
-              labelText: "Role",
-              contentPadding: EdgeInsets.all(0),
-            ),
           ),
         ),
         const SizedBox(width: 8),
@@ -118,71 +130,66 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-      child: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: DataTable(
-                showCheckboxColumn: false,
-                columns: const [
-                  DataColumn(
-                    label: Text('ID',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('First Name',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('Last Name',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('Username',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('Email',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('Phone Number',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                  DataColumn(
-                    label: Text('User Roles',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ),
-                ],
-                rows: (users ?? [])
-                    .map(
-                      (User u) => DataRow(
-                        onSelectChanged: (selected) {
-                          if (selected == true) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => UserDetailScreen(
-                                  user: u,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        cells: [
-                          DataCell(Text(u.id.toString())),
-                          DataCell(Text(u.firstName.toString())),
-                          DataCell(Text(u.lastName.toString())),
-                          DataCell(Text(u.username.toString())),
-                          DataCell(Text(u.email.toString())),
-                          DataCell(Text(u.phoneNumber.toString())),
-                          DataCell(Text(u.roles?.join(', ') ?? '')),
-                        ],
-                      ),
-                    )
-                    .toList(),
-              ),
+      child: SingleChildScrollView(
+        child: DataTable(
+          showCheckboxColumn: false,
+          columns: const [
+            DataColumn(
+              label: Text('ID', style: TextStyle(fontStyle: FontStyle.italic)),
             ),
+            DataColumn(
+              label: Text('First Name',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            DataColumn(
+              label: Text('Last Name',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            DataColumn(
+              label: Text('Username',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            DataColumn(
+              label:
+                  Text('Email', style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            DataColumn(
+              label: Text('Phone Number',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            DataColumn(
+              label: Text('User Roles',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+          ],
+          rows: (users ?? [])
+              .map(
+                (User u) => DataRow(
+                  onSelectChanged: (selected) {
+                    if (selected == true) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UserDetailScreen(
+                            user: u,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  cells: [
+                    DataCell(Text(u.id.toString())),
+                    DataCell(Text(u.firstName.toString())),
+                    DataCell(Text(u.lastName.toString())),
+                    DataCell(Text(u.username.toString())),
+                    DataCell(Text(u.email.toString())),
+                    DataCell(Text(u.phoneNumber.toString())),
+                    DataCell(Text(u.roles?.join(', ') ?? '')),
+                  ],
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }

@@ -17,7 +17,20 @@ class ProductProvider extends BaseProvider<Product> {
   }
 
   Future<Product> setMainPhoto(int productId, int photoId) async {
-    return await update(productId, null, 'photo/$photoId');
+    var url = "${apiUrl}products/${productId}/photo/${photoId}";
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(null);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
   }
 
   Future<Product> deletePhoto(int productId, int photoId) async {
