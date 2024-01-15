@@ -5,8 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/appointment.dart';
+import '../models/order.dart';
 import '../models/user.dart';
 import '../providers/appointment_provider.dart';
+import '../providers/orders_provider.dart';
 import '../providers/user_provider.dart';
 import '../widgets/master_screen.dart';
 
@@ -22,11 +24,13 @@ class _ReportsScreenState extends State<ReportsScreen>
   late TabController _tabController;
   late AppointmentProvider _appointmentProvider;
   late UserProvider _userProvider;
+  late OrderProvider _orderProvider;
   List<User>? _barbersList;
   DateTime? _selectedDateFrom;
   DateTime? _selectedDateTo;
   User? _selectedBarber;
   List<Appointment>? appointments;
+  List<Order>? orders;
   bool isLoading = true;
 
   @override
@@ -35,6 +39,7 @@ class _ReportsScreenState extends State<ReportsScreen>
     _tabController = TabController(length: 2, vsync: this);
     _appointmentProvider = context.read<AppointmentProvider>();
     _userProvider = context.read<UserProvider>();
+    _orderProvider = context.read<OrderProvider>();
 
     _loadBarbers();
   }
@@ -59,6 +64,16 @@ class _ReportsScreenState extends State<ReportsScreen>
 
     setState(() {
       appointments = appointmentsData;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadOrders() async {
+    var ordersData = await _orderProvider.get(
+        filter: {'dateFrom': _selectedDateFrom, 'dateTo': _selectedDateTo});
+
+    setState(() {
+      orders = ordersData;
       isLoading = false;
     });
   }
@@ -108,11 +123,13 @@ class _ReportsScreenState extends State<ReportsScreen>
     );
   }
 
+  // barbers view
+
   Widget _buildBarbersDataView() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _builderBarbersFilter(),
+        _buildBarberFilter(),
         const SizedBox(
           height: 30,
         ),
@@ -123,11 +140,14 @@ class _ReportsScreenState extends State<ReportsScreen>
                 children: [
                   const Text(
                     'Report',
-                    style: TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 16,
+                  ),
+                  Text(
+                    'Number of Reserved Appointments: ${_getReservedAppointmentsCount()}',
+                    style: const TextStyle(fontSize: 18),
                   ),
                   Text(
                     'Number of Completed Appointments: ${_getCompletedAppointmentsCount()}',
@@ -151,7 +171,7 @@ class _ReportsScreenState extends State<ReportsScreen>
     );
   }
 
-  Row _builderBarbersFilter() {
+  Row _buildBarberFilter() {
     return Row(
       children: [
         Expanded(
@@ -168,6 +188,7 @@ class _ReportsScreenState extends State<ReportsScreen>
               ),
             ),
           ),
+          initialValue: _selectedDateFrom,
           firstDate: DateTime(2000),
           lastDate: DateTime(2101),
           dateFormat: DateFormat('dd MMM yyyy'),
@@ -194,6 +215,7 @@ class _ReportsScreenState extends State<ReportsScreen>
               ),
             ),
           ),
+          initialValue: _selectedDateTo,
           firstDate: DateTime(2000),
           lastDate: DateTime(2101),
           dateFormat: DateFormat('dd MMM yyyy'),
@@ -255,6 +277,12 @@ class _ReportsScreenState extends State<ReportsScreen>
     );
   }
 
+  int? _getReservedAppointmentsCount() {
+    return appointments
+        ?.where((appointment) => appointment.status == 'Reserved')
+        .length;
+  }
+
   int? _getCompletedAppointmentsCount() {
     return appointments
         ?.where((appointment) => appointment.status == 'Completed')
@@ -275,7 +303,164 @@ class _ReportsScreenState extends State<ReportsScreen>
         .fold(0, (previousValue, element) => previousValue! + element);
   }
 
+  // Orders view
+
   Widget _buildOrdersDataView() {
-    return const Text("Data");
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildOrderFilter(),
+        const SizedBox(
+          height: 30,
+        ),
+        orders == null
+            ? Container()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Report',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Number of Payed Orders: ${_getPaymentReceivedOrders()}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    'Number of Completed Orders: ${_getCompletedOrdersCount()}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    'Average Order Value: \$${_getAverageOrderValue()}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Total Revenue: \$${_getTotalRevenue()}',
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
+      ],
+    );
+  }
+
+  Row _buildOrderFilter() {
+    return Row(
+      children: [
+        Expanded(
+            child: DateTimeFormField(
+          validator: FormBuilderValidators.required(),
+          decoration: const InputDecoration(
+            labelText: 'From date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          initialValue: _selectedDateFrom,
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateFrom = value;
+            });
+          },
+        )),
+        const SizedBox(
+          width: 8,
+        ),
+        Expanded(
+            child: DateTimeFormField(
+          decoration: const InputDecoration(
+            labelText: 'To date',
+            floatingLabelStyle: TextStyle(color: Colors.blue),
+            suffixIcon: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          initialValue: _selectedDateTo,
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101),
+          dateFormat: DateFormat('dd MMM yyyy'),
+          mode: DateTimeFieldPickerMode.date,
+          onDateSelected: (value) {
+            setState(() {
+              _selectedDateTo = value;
+            });
+          },
+        )),
+        const SizedBox(
+          width: 8,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        SizedBox(
+          width: 150,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: () async {
+              setState(() {
+                isLoading = true;
+              });
+              _loadOrders();
+            },
+            child: const Text("Generate"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  int? _getCompletedOrdersCount() {
+    return orders?.where((order) => order.status == 'Completed').length;
+  }
+
+  int? _getPaymentReceivedOrders() {
+    return orders?.where((order) => order.status == 'Payment Received').length;
+  }
+
+  double? _getAverageOrderValue() {
+    if (orders == null) {
+      return 0.0;
+    }
+
+    double totalRevenue = orders!
+        .where((order) =>
+            order.status == 'Completed' || order.status == 'Payment Received')
+        .map<double>((order) => (order.total as num).toDouble())
+        .fold(0, (previousValue, element) => previousValue + element);
+
+    return totalRevenue /
+        (orders
+            ?.where((order) =>
+                order.status == 'Completed' ||
+                order.status == 'Payment Received')
+            .length as num);
+  }
+
+  double? _getTotalRevenue() {
+    return orders
+        ?.where((order) =>
+            order.status == 'Completed' || order.status == 'Payment Received')
+        .map<double>((order) => order.total!)
+        .fold(0, (previousValue, element) => previousValue! + element);
   }
 }
