@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../screens/appointments_list_screen.dart';
 import '../screens/orders_list_screen.dart';
 import '../screens/products_list_screen.dart';
+import '../screens/reports_screen.dart';
 import '../screens/services_list_screen.dart';
 import '../screens/users_list_screen.dart';
 import '../utils/util.dart';
@@ -81,6 +82,16 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const OrdersListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: const Text("Reports"),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ReportsScreen(),
                         ),
                       );
                     },

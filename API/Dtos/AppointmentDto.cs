@@ -13,5 +13,6 @@ namespace API.Dtos
         public string ClientUsername { get; set; }
         public int? ServiceId { get; set; }
         public string ServiceName { get; set; }
+        public decimal ServicePrice { get; set; }
     }
 }

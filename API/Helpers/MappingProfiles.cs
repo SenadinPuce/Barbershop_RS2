@@ -30,7 +30,8 @@ namespace API.Helpers
             CreateMap<Appointment, AppointmentDto>()
                 .ForMember(d => d.BarberUsername, o => o.MapFrom(s => s.Barber.UserName))
                 .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
-                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name));
+                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name))
+                .ForMember(d => d.ServicePrice, o => o.MapFrom(s => s.Service.Price));
             CreateMap<Order, OrderDto>()
                 .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
                 .ForMember(d => d.ClientEmail, o => o.MapFrom(s => s.Client.Email))

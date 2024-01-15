@@ -11,7 +11,6 @@ import 'providers/product_type_provider.dart';
 import 'providers/service_provider.dart';
 import 'screens/users_list_screen.dart';
 
-
 void main() {
   runApp(MultiProvider(
     providers: [

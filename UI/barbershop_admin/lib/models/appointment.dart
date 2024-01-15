@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'appointment.g.dart';
@@ -16,6 +15,7 @@ class Appointment {
   String? clientUsername;
   int? serviceId;
   String? serviceName;
+  double? servicePrice;
 
   Appointment(
       {this.id,
@@ -28,9 +28,11 @@ class Appointment {
       this.clientId,
       this.clientUsername,
       this.serviceId,
-      this.serviceName});
+      this.serviceName,
+      this.servicePrice});
 
-    factory Appointment.fromJson(Map<String, dynamic> json) => _$AppointmentFromJson(json);
+  factory Appointment.fromJson(Map<String, dynamic> json) =>
+      _$AppointmentFromJson(json);
 
-     Map<String, dynamic> toJson() => _$AppointmentToJson(this);
+  Map<String, dynamic> toJson() => _$AppointmentToJson(this);
 }

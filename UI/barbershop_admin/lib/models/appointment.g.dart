@@ -22,6 +22,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
       clientUsername: json['clientUsername'] as String?,
       serviceId: json['serviceId'] as int?,
       serviceName: json['serviceName'] as String?,
+      servicePrice: (json['servicePrice'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
@@ -37,4 +38,5 @@ Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
       'clientUsername': instance.clientUsername,
       'serviceId': instance.serviceId,
       'serviceName': instance.serviceName,
+      'servicePrice': instance.servicePrice,
     };
