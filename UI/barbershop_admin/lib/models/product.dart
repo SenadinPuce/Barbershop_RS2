@@ -13,7 +13,7 @@ class Product {
   String? pictureUrl;
   String? productType;
   String? productBrand;
-  List<Photo>? photos;
+  String? photo;
 
   Product(
       {this.id,
@@ -23,7 +23,7 @@ class Product {
       this.pictureUrl,
       this.productType,
       this.productBrand,
-      this.photos});
+      this.photo});
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);

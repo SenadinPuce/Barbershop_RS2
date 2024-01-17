@@ -17,6 +17,9 @@ namespace Core.Models.UpsertObjects
         public decimal Price { get; set; }
 
         [Required]
+        public string Photo { get; set; }
+
+        [Required]
         public int ProductTypeId { get; set; }
 
         [Required]

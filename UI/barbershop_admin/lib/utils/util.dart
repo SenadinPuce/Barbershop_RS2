@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,13 @@ class Authorization {
   static String? username;
   static String? email;
   static String? token;
+}
+
+Image imageFromBase64String(String base64Image) {
+  return Image.memory(
+    base64Decode(base64Image),
+    fit: BoxFit.contain,
+  );
 }
 
 String formatNumber(dynamic value) {

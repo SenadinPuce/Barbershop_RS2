@@ -41,7 +41,6 @@ dependencies:
   intl: ^0.18.1
   flutter_form_builder: ^9.0.0
   file_picker: ^4.6.1
-  image_picker: ^1.0.0
   form_builder_validators: ^9.0.0
   date_field: ^3.0.5
 

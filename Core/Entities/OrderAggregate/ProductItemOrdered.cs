@@ -6,15 +6,15 @@ namespace Core.Entities.OrderAggregate
         {
         }
 
-        public ProductItemOrdered(int productItemId, string productName, string pictureUrl)
+        public ProductItemOrdered(int productItemId, string productName, string photo)
         {
             ProductItemId = productItemId;
             ProductName = productName;
-            PictureUrl = pictureUrl;
+            Photo = photo;
         }
 
         public int ProductItemId { get; set; }
         public string ProductName { get; set; }
-        public string PictureUrl { get; set; }
+        public string Photo { get; set; }
     }
 }

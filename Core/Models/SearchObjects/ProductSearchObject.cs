@@ -7,7 +7,6 @@ namespace Core.Models.SearchObjects
         public string Name { get; set; }
         public bool IncludeProductTypes { get; set; }
         public bool IncludeProductBrands { get; set; }
-        public bool IncludeProductPhotos { get; set; }
         public string SortBy { get; set; }
     }
 }

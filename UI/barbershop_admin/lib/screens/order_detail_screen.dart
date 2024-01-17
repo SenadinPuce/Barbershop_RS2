@@ -289,12 +289,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: Image.network(
-          orderItem.pictureUrl.toString(),
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-        ),
+        // child: Image.network(
+        //   orderItem.pictureUrl.toString(),
+        //   width: 50,
+        //   height: 50,
+        //   fit: BoxFit.cover,
+        // ),
       ),
       title: Text(
         orderItem.productName.toString(),

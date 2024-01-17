@@ -1,14 +1,10 @@
 using API.Dtos;
-using API.Errors;
-using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Models.SearchObjects;
 using Core.Models.UpsertObjects;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -17,129 +13,42 @@ namespace API.Controllers
         <ProductDto, Product, ProductSearchObject, ProductUpsertObject, ProductUpsertObject>
     {
         private readonly IProductService _service;
-        private readonly IPhotoService _photoService;
-        private readonly BarbershopContext _context;
         private readonly IMapper _mapper;
-
-        public ProductsController(BarbershopContext context, IProductService service,
-            IPhotoService photoService, IMapper mapper)
+        public ProductsController(IProductService service, IMapper mapper)
             : base(service, mapper)
         {
             _mapper = mapper;
-            _context = context;
             _service = service;
-            _photoService = photoService;
         }
 
-        // out for development
-        // [Authorize(Roles = "Admin")] 
-        [HttpDelete("{id}")]
-        public override async Task<ActionResult> Delete(int id)
+
+        [HttpPost]
+        public override async Task<ActionResult<ProductDto>> Post([FromBody] ProductUpsertObject insert)
         {
-            var product = await _service.GetByIdAsync(id);
+            if (insert == null) return BadRequest();
 
-            foreach (var photo in product.Photos)
+            var created = await _service.Insert(insert);
+
+            if (created != null)
             {
-                if (photo.Id > 16)
-                {
-                    _photoService.DeleteFromDisk(photo);
-                    _context.Photos.Remove(photo);
-                }
+                created = await _service.GetByIdAsync(created.Id);
             }
-
-            if (await _service.Delete(id) != null)
-            {
-                return Ok(_mapper.Map<ProductDto>(product));
-            }
-
-            return BadRequest(new ApiResponse(400, "Problem deleting product"));
+            return Ok(_mapper.Map<ProductDto>(created));
         }
 
-        // out for development
-        // [Authorize(Roles = "Admin")] 
-        [HttpPut("{id}/photo")]
-        public async Task<ActionResult<ProductDto>> AddProductPhoto(int id, [FromForm] PhotoInputModel uploadPhotoFile)
+        [HttpPut("{id}")]
+        public override async Task<ActionResult<ProductDto>> Put(int id, [FromBody] ProductUpsertObject insert)
         {
-            var product = await _service.GetByIdAsync(id);
+            if (insert == null) return BadRequest();
 
-            if (uploadPhotoFile.Photo.Length > 0)
+            var updated = await _service.Update(id, insert);
+
+            if (updated != null)
             {
-                var photo = await _photoService.SaveToDiskAsync(uploadPhotoFile.Photo);
-
-                if (photo != null)
-                {
-                    product.AddPhoto(photo.PictureUrl, photo.FileName);
-
-                    _context.Products.Attach(product);
-                    _context.Entry(product).State = EntityState.Modified;
-
-                    var result = await _context.SaveChangesAsync();
-
-                    if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
-                }
-                else
-                {
-                    return BadRequest(new ApiResponse(400, "problem saving photo to disk"));
-                }
+                updated = await _service.GetByIdAsync(updated.Id);
             }
 
-            return _mapper.Map<Product, ProductDto>(product);
-        }
-
-        // out for development
-        // [Authorize(Roles = "Admin")] 
-        [HttpDelete("{id}/photo/{photoId}")]
-        public async Task<ActionResult<ProductDto>> DeleteProductPhoto(int id, int photoId)
-        {
-            var product = await _service.GetByIdAsync(id);
-
-            var photo = product.Photos.SingleOrDefault(x => x.Id == photoId);
-
-            if (photo != null)
-            {
-                if (photo.IsMain)
-                    return BadRequest(new ApiResponse(400,
-                        "You cannot delete the main photo"));
-
-                _photoService.DeleteFromDisk(photo);
-                _context.Remove(photo);
-            }
-            else
-            {
-                return BadRequest(new ApiResponse(400, "Photo does not exist"));
-            }
-
-            product.RemovePhoto(photoId);
-
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            var result = await _context.SaveChangesAsync();
-
-            if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
-
-            return Ok(_mapper.Map<ProductDto>(product));
-        }
-
-        // out for development
-        // [Authorize(Roles = "Admin")] 
-        [HttpPut("{id}/photo/{photoId}")]
-        public async Task<ActionResult<ProductDto>> SetMainPhoto(int id, int photoId)
-        {
-            var product = await _service.GetByIdAsync(id);
-
-            if (product.Photos.All(x => x.Id != photoId)) return NotFound(new ApiResponse(404));
-
-            product.SetMainPhoto(photoId);
-
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            var result = await _context.SaveChangesAsync();
-
-            if (result <= 0) return BadRequest(new ApiResponse(400, "Problem adding photo product"));
-
-            return _mapper.Map<Product, ProductDto>(product);
+            return Ok(_mapper.Map<ProductDto>(updated));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Infrastructure.Data.Repositories
             var set = _context.Set<TDb>();
 
             var entity = await set.FindAsync(id);
-            
+
             _mapper.Map(update, entity);
 
             await _context.SaveChangesAsync();
@@ -50,10 +50,10 @@ namespace Infrastructure.Data.Repositories
             if (entity != null)
             {
                 set.Remove(entity);
-                await _context.SaveChangesAsync();
-                return entity;
             }
-            return null;
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
         public virtual Task BeforeInsert(TDb entity, TInsert insert)

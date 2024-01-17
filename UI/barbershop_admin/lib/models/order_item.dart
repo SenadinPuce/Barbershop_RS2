@@ -6,13 +6,13 @@ part 'order_item.g.dart';
 class OrderItem {
   int? id;
   String? productName;
-  String? pictureUrl;
+  String? photo;
   double? price;
   int? quantity;
   OrderItem({
     this.id,
     this.productName,
-    this.pictureUrl,
+    this.photo,
     this.price,
     this.quantity,
   });

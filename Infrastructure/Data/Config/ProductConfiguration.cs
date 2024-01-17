@@ -8,7 +8,6 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            // builder.HasMany(p => p.Photos).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Property(p => p.Price).HasColumnType("decimal(18,2)").IsRequired();
         }
     }

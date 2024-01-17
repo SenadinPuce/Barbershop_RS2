@@ -19,7 +19,6 @@ namespace Infrastructure.Data.Repositories
             var entity = await _context.Products
                 .Include(x => x.ProductType)
                 .Include(x => x.ProductBrand)
-                .Include(x => x.Photos)
                 .SingleOrDefaultAsync(x => x.Id == id);
 
             return entity;
@@ -55,11 +54,6 @@ namespace Infrastructure.Data.Repositories
             if (search.IncludeProductTypes)
             {
                 query = query.Include(x => x.ProductType);
-            }
-
-            if (search.IncludeProductPhotos)
-            {
-                query = query.Include(x => x.Photos);
             }
 
             return query;

@@ -43,9 +43,9 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public virtual async Task<ActionResult> Delete(int id)
         {
-            var result = await _service.Delete(id);
+            var deleted = await _service.Delete(id);
 
-            if (result != null) return Ok(_mapper.Map<T>(result));
+            if (deleted != null) return Ok(_mapper.Map<T>(deleted));
 
             return BadRequest();
         }

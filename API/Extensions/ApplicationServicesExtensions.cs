@@ -23,7 +23,6 @@ namespace API.Extensions
             services.AddScoped<IBarberServicesService, BarberServicesService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAddressService, AddressService>();
-            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

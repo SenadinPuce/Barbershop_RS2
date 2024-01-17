@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Infrastructure.Data.Migrations
+namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityAdded : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,21 +61,6 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Photos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsMain = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Photos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductBrands",
                 columns: table => new
                 {
@@ -124,6 +109,7 @@ namespace Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AddressId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -181,6 +167,7 @@ namespace Infrastructure.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductTypeId = table.Column<int>(type: "int", nullable: false),
                     ProductBrandId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -234,30 +221,6 @@ namespace Infrastructure.Data.Migrations
                         column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserPhoto",
-                columns: table => new
-                {
-                    AppUsersId = table.Column<int>(type: "int", nullable: false),
-                    PhotosId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserPhoto", x => new { x.AppUsersId, x.PhotosId });
-                    table.ForeignKey(
-                        name: "FK_AppUserPhoto_AspNetUsers_AppUsersId",
-                        column: x => x.AppUsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppUserPhoto_Photos_PhotosId",
-                        column: x => x.PhotosId,
-                        principalTable: "Photos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -404,30 +367,6 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PhotoProduct",
-                columns: table => new
-                {
-                    PhotosId = table.Column<int>(type: "int", nullable: false),
-                    ProductsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PhotoProduct", x => new { x.PhotosId, x.ProductsId });
-                    table.ForeignKey(
-                        name: "FK_PhotoProduct_Photos_PhotosId",
-                        column: x => x.PhotosId,
-                        principalTable: "Photos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PhotoProduct_Products_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -435,7 +374,7 @@ namespace Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ItemOrdered_ProductItemId = table.Column<int>(type: "int", nullable: true),
                     ItemOrdered_ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ItemOrdered_PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ItemOrdered_Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: true)
@@ -467,11 +406,6 @@ namespace Infrastructure.Data.Migrations
                 column: "ServiceId",
                 unique: true,
                 filter: "[ServiceId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUserPhoto_PhotosId",
-                table: "AppUserPhoto",
-                column: "PhotosId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -541,11 +475,6 @@ namespace Infrastructure.Data.Migrations
                 column: "DeliveryMethodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PhotoProduct_ProductsId",
-                table: "PhotoProduct",
-                column: "ProductsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductBrandId",
                 table: "Products",
                 column: "ProductBrandId");
@@ -568,9 +497,6 @@ namespace Infrastructure.Data.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "AppUserPhoto");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -589,7 +515,7 @@ namespace Infrastructure.Data.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "PhotoProduct");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -604,22 +530,16 @@ namespace Infrastructure.Data.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Photos");
+                name: "ProductBrands");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ProductTypes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "DeliveryMethods");
-
-            migrationBuilder.DropTable(
-                name: "ProductBrands");
-
-            migrationBuilder.DropTable(
-                name: "ProductTypes");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

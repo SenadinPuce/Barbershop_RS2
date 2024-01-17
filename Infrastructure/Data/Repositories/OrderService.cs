@@ -42,8 +42,8 @@ namespace Infrastructure.Data.Repositories
 
             foreach (var item in request.Items)
             {
-                var productItem = await _context.Products.Include(x => x.Photos).SingleOrDefaultAsync(x => x.Id == item.Id);
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photos.FirstOrDefault(x => x.IsMain).PictureUrl);
+                var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
             }

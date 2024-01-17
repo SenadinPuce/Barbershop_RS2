@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:barbershop_admin/screens/user_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -225,11 +227,18 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProductDetailScreen(
-                        productBrands: _productBrandsList,
-                        productTypes: _productTypesList,
-                      )));
+              final addedProduct =
+                  await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ProductDetailScreen(
+                            productBrands: _productBrandsList,
+                            productTypes: _productTypesList,
+                          )));
+
+              if (addedProduct != null && addedProduct is Product) {
+                setState(() {
+                  products?.add(addedProduct);
+                });
+              }
             },
             child: const Text("Add new product"),
           ),
@@ -273,87 +282,149 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                       style: TextStyle(fontStyle: FontStyle.italic)),
                 ),
                 DataColumn(
+                  label: Text('Edit',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ),
+                DataColumn(
                   label: Text('Delete',
                       style: TextStyle(fontStyle: FontStyle.italic)),
                 ),
               ],
               rows: (products ?? [])
-                  .map((Product p) => DataRow(
-                          onSelectChanged: (value) {
-                            if (value == true) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ProductDetailScreen(
-                                        product: p,
-                                        productBrands: _productBrandsList,
-                                        productTypes: _productTypesList,
-                                      )));
-                            }
+                  .map((Product p) => DataRow(cells: [
+                        DataCell(Text(p.id.toString())),
+                        DataCell(Text(p.name.toString())),
+                        DataCell(Text(formatNumber(p.price))),
+                        DataCell(Text(p.productBrand.toString())),
+                        DataCell(Text(p.productType.toString())),
+                        DataCell(p.photo != ""
+                            ? Container(
+                                padding: const EdgeInsets.all(1),
+                                width: 100,
+                                height: 100,
+                                child: imageFromBase64String(p.photo!),
+                              )
+                            : const Text("")),
+                        DataCell(IconButton(
+                          icon: const Icon(
+                            Icons.edit_document,
+                            color: Colors.green,
+                          ),
+                          onPressed: () {
+                            _editProduct(p);
                           },
-                          cells: [
-                            DataCell(Text(p.id.toString())),
-                            DataCell(Text(p.name.toString())),
-                            DataCell(Text(formatNumber(p.price))),
-                            DataCell(Text(p.productBrand.toString())),
-                            DataCell(Text(p.productType.toString())),
-                            DataCell(
-                              Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Image.network(
-                                  p.pictureUrl ?? '',
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            DataCell(_deleteProduct(p))
-                          ]))
+                        )),
+                        DataCell(IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            _deleteProduct(p);
+                          },
+                        ))
+                      ]))
                   .toList(),
             )),
     );
   }
 
-  Widget _deleteProduct(Product p) {
-    return OutlinedButton(
-      onPressed: () async {
-        bool confirm = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Confirmation'),
-                content: const Text(
-                    'Are you sure you want to delete this product? This action is not reversible.'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      child: const Text("No")),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      child: const Text("Yes")),
-                ],
-              );
-            });
+  void _editProduct(Product p) async {
+    final updatedProduct = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ProductDetailScreen(
+              product: p,
+              productBrands: _productBrandsList,
+              productTypes: _productTypesList,
+            )));
+    if (updatedProduct != null && updatedProduct is Product) {
+      int index = products!.indexWhere((p) => p.id == updatedProduct.id);
 
-        if (confirm == true) {
-          var product = await _productProvider.delete(p.id!);
+      if (index != -1) {
+        setState(() {
+          products?[index] = updatedProduct;
+        });
+      }
+    }
+  }
 
-          setState(() {
-            products?.removeWhere((element) => element.id == p.id);
-          });
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.red,
-        disabledBackgroundColor: Colors.grey,
-      ),
-      child: const Text(
-        "Delete",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+  void _deleteProduct(Product p) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete'),
+            content: const Text(
+                'Are you sure you want to delete this product? This action is not reversible.'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("No")),
+              ElevatedButton(
+                child: const Text("Yes"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  try {
+                    await _productProvider.delete(p.id!);
+
+                    setState(() {
+                      products?.removeWhere((element) => element.id == p.id);
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 8.0),
+                          Text("Product deleted successfully.")
+                        ],
+                      ),
+                      duration: const Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      action: SnackBarAction(
+                        label: 'Dismiss',
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        },
+                        textColor: Colors.white,
+                      ),
+                    ));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.error,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Failed to delete product. Please try again.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.red,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        });
   }
 }
