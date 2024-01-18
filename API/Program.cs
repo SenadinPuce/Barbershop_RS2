@@ -28,12 +28,6 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseSwaggerDocumentation();
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Content")),
-    RequestPath = "/Content"
-});
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

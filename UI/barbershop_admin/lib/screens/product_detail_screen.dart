@@ -108,7 +108,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             height: 40,
                             child: OutlinedButton(
                               onPressed: () {
-                                Navigator.of(context).pop(editedProduct);
+                                if (editedProduct != null) {
+                                  Navigator.of(context).pop(true);
+                                } else {
+                                  Navigator.of(context).pop(false);
+                                }
                               },
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(color: Colors.blue),
@@ -146,9 +150,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         );
                                       }
 
-                                      setState(() {
-                                        widget.product = editedProduct;
-                                      });
+                                      setState(() {});
 
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
@@ -249,85 +251,76 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 8,
             ),
             Expanded(
-              child: FormBuilderField(
-                name: 'photo',
-                builder: (field) {
-                  return Column(
-                    children: [
-                      InputDecorator(
-                        decoration: InputDecoration(
-                          label: const Text(
-                            'Image',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                          errorText: field.errorText,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: _base64Image != null
-                            ? SizedBox(
-                                height: 150,
-                                width: 120,
-                                child: imageFromBase64String(_base64Image!),
-                              )
-                            : const SizedBox(
-                                height: 150,
-                                width: 150,
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'No image selected',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontStyle: FontStyle.italic),
-                                      ),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Icon(
-                                        Icons.add_photo_alternate,
-                                        color: Colors.grey,
-                                      )
-                                    ],
+                child: Column(
+              children: [
+                InputDecorator(
+                  decoration: InputDecoration(
+                    label: const Text(
+                      'Image',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    errorText: null,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: _base64Image != null
+                      ? SizedBox(
+                          height: 150,
+                          width: 120,
+                          child: imageFromBase64String(_base64Image!),
+                        )
+                      : const SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'No image selected',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontStyle: FontStyle.italic,
                                   ),
                                 ),
-                              ),
-                      ),
-                      const SizedBox(
-                        height: 3,
-                      ),
-                      InkWell(
-                        onTap: getImage,
-                        child: Container(
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.orange),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.photo, color: Colors.orange),
-                              SizedBox(width: 8.0),
-                              Text(
-                                'Select image',
-                                style: TextStyle(color: Colors.orange),
-                              ),
-                              SizedBox(width: 8.0),
-                              Icon(Icons.file_upload, color: Colors.orange),
-                            ],
+                                SizedBox(width: 3),
+                                Icon(
+                                  Icons.add_photo_alternate,
+                                  color: Colors.grey,
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+                ),
+                const SizedBox(height: 3),
+                InkWell(
+                  onTap: getImage,
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.orange),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.photo, color: Colors.orange),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'Select image',
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                        SizedBox(width: 8.0),
+                        Icon(Icons.file_upload, color: Colors.orange),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )),
           ],
         ),
         const SizedBox(

@@ -76,20 +76,16 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       title: "Products",
       child: Padding(
           padding: const EdgeInsets.all(15),
-          child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildSearch(),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    _buildDataListView()
-                  ],
-                )),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildSearch(),
+              const SizedBox(
+                height: 8,
+              ),
+              _buildDataListView()
+            ],
+          )),
     );
   }
 
@@ -227,16 +223,15 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
-              final addedProduct =
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ProductDetailScreen(
-                            productBrands: _productBrandsList,
-                            productTypes: _productTypesList,
-                          )));
+              isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProductDetailScreen(
+                        productBrands: _productBrandsList,
+                        productTypes: _productTypesList,
+                      )));
 
-              if (addedProduct != null && addedProduct is Product) {
+              if (isLoading) {
                 setState(() {
-                  products?.add(addedProduct);
+                  loadProducts();
                 });
               }
             },
@@ -330,20 +325,16 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   void _editProduct(Product p) async {
-    final updatedProduct = await Navigator.of(context).push(MaterialPageRoute(
+    isLoading = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ProductDetailScreen(
               product: p,
               productBrands: _productBrandsList,
               productTypes: _productTypesList,
             )));
-    if (updatedProduct != null && updatedProduct is Product) {
-      int index = products!.indexWhere((p) => p.id == updatedProduct.id);
-
-      if (index != -1) {
-        setState(() {
-          products?[index] = updatedProduct;
-        });
-      }
+    if (isLoading) {
+      setState(() {
+        loadProducts();
+      });
     }
   }
 
