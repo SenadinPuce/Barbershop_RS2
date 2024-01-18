@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -66,19 +68,15 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
       title: 'Appointments',
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  _buildSearch(),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  _buildDataListView()
-                ],
-              ),
+        child: Column(
+          children: [
+            _buildSearch(),
+            const SizedBox(
+              height: 8,
+            ),
+            _buildDataListView()
+          ],
+        ),
       ),
     );
   }
@@ -225,8 +223,16 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AppointmentDetailScreen(barbers: _barbersList,)));
+              isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AppointmentDetailScreen(
+                        barbers: _barbersList,
+                      )));
+
+              if (isLoading) {
+                setState(() {
+                  _loadAppointments();
+                });
+              }
             },
             child: const Text("Add new appointment"),
           ),
@@ -237,193 +243,295 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
-      child: DataTable(
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'ID',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Appointment date',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Start time',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'End time',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Duration in minutes',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Barber username',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Client username',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Status',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Complete',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Delete',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          ))
-        ],
-        rows: (appointments ?? [])
-            .map((Appointment a) => DataRow(cells: [
-                  DataCell(Text(a.id.toString())),
-                  DataCell(Text(getDate(a.startTime))),
-                  DataCell(Text(getTime(a.startTime))),
-                  DataCell(Text(getTime(a.endTime))),
-                  DataCell(Text(a.durationInMinutes.toString())),
-                  DataCell(Text(a.barberUsername.toString())),
-                  DataCell(Text(a.clientUsername?.toString() ?? '')),
-                  DataCell(Text(a.status.toString())),
-                  DataCell(_completeAppointment(a)),
-                  DataCell(_deleteAppointment(a))
-                ]))
-            .toList(),
-      ),
-    ));
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: DataTable(
+                    showCheckboxColumn: false,
+                    columns: const [
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'ID',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            'Appointment date',
+                            softWrap: true,
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Start time',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'End time',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Barber username',
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Client username',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Status',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Complete',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Delete',
+                          softWrap: true,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ))
+                    ],
+                    rows: (appointments ?? [])
+                        .map((Appointment a) => DataRow(cells: [
+                              DataCell(Text(a.id.toString())),
+                              DataCell(Text(getDate(a.startTime))),
+                              DataCell(Text(getTime(a.startTime))),
+                              DataCell(Text(getTime(a.endTime))),
+                              DataCell(Text(a.barberUsername.toString())),
+                              DataCell(
+                                  Text(a.clientUsername?.toString() ?? '')),
+                              DataCell(Text(a.status.toString())),
+                              DataCell(IconButton(
+                                icon: const Icon(
+                                  Icons.check_box_outlined,
+                                ),
+                                color: Colors.green,
+                                disabledColor: Colors.grey,
+                                onPressed: (a.status == 'Reserved' &&
+                                        a.endTime!.isBefore(DateTime.now()))
+                                    ? () {
+                                        _completeAppointment(a);
+                                      }
+                                    : null,
+                              )),
+                              DataCell(
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                  ),
+                                  color: Colors.red,
+                                  disabledColor: Colors.grey,
+                                  onPressed: a.status == 'Free'
+                                      ? () => _deleteAppointment(a)
+                                      : null,
+                                ),
+                              )
+                            ]))
+                        .toList(),
+                  ),
+                ),
+              ));
   }
 
-  Widget _completeAppointment(Appointment a) {
-    return OutlinedButton(
-      onPressed: a.status == 'Reserved'
-          ? () async {
-              bool confirm = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Confirmation'),
-                      content: const Text(
-                          'Are you sure you want to mark the appointment as completed? This action is not reversible.'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                            child: const Text("No")),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: const Text("Yes")),
-                      ],
-                    );
-                  });
+  void _completeAppointment(Appointment a) {
+    showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirm'),
+            content: const Text(
+                'Are you sure you want to mark this appointment as completed? This action is not reversible.'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No')),
+              ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      var appointment = await _appointmentProvider
+                          .updateAppointmentStatus(a.id!, 'Completed');
 
-              if (confirm == true) {
-                var appointment = await _appointmentProvider
-                    .updateAppointmentStatus(a.id!, 'Completed');
+                      setState(() {
+                        a.status = appointment.status;
+                      });
 
-                setState(() {
-                  a.status = appointment.status;
-                });
-              }
-            }
-          : null,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.green,
-        disabledBackgroundColor: Colors.grey,
-      ),
-      child: const Text(
-        "Complete",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text("Appointment status updated successfully.")
+                          ],
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.green,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ));
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to update appointment status. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Yes"))
+            ],
+          );
+        }));
   }
 
-  Widget _deleteAppointment(Appointment a) {
-    return OutlinedButton(
-      onPressed: a.endTime!.isBefore(DateTime.now()) ||
-              a.status == 'Free' ||
-              a.status == 'Canceled'
-          ? () async {
-              bool confirm = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Confirmation'),
-                      content: const Text(
-                          'Are you sure you want to delete the appointment? This action is not reversible.'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                            child: const Text("No")),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: const Text("Yes")),
-                      ],
-                    );
-                  });
+  void _deleteAppointment(Appointment a) {
+    showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete'),
+            content: const Text(
+                'Are you sure you want to delete this appointment? This action is not reversible.'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No')),
+              ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      await _appointmentProvider.delete(a.id!);
 
-              if (confirm == true) {
-                var appointment = await _appointmentProvider.delete(a.id!);
+                      setState(() {
+                        appointments
+                            ?.removeWhere((element) => element.id == a.id);
 
-                if (appointment != null) {
-                  setState(() {
-                    appointments?.removeWhere((element) => element.id == a.id);
-                  });
-                }
-              }
-            }
-          : null,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.red,
-        disabledBackgroundColor: Colors.grey,
-      ),
-      child: const Text(
-        "Delete",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text("Appointment deleted successfully.")
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.green,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ));
+                      });
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to delete appointment. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Yes'))
+            ],
+          );
+        }));
   }
 }

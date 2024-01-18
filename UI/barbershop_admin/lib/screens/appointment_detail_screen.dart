@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -6,6 +6,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../models/appointment.dart';
 import '../models/user.dart';
 import '../providers/appointment_provider.dart';
 import '../providers/user_provider.dart';
@@ -29,9 +30,10 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   Map<String, dynamic> _initialValue = {};
   late AppointmentProvider _appointmentProvider;
   List<User>? _barbersList;
-  bool isLoading = true;
+  Appointment? editedAppointment;
   DateTime _selectedDate = DateTime.now();
   DateTime _selectedTime = DateTime.now();
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -75,7 +77,11 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           height: 40,
                           child: OutlinedButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              if (editedAppointment != null) {
+                                Navigator.of(context).pop(true);
+                              } else {
+                                Navigator.of(context).pop(false);
+                              }
                             },
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: Colors.blue),
@@ -110,21 +116,61 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                 request['startTime'] = formattedDateTime;
 
                                 try {
-                                  await _appointmentProvider.insert(
-                                      request: request);
+                                  editedAppointment = await _appointmentProvider
+                                      .insert(request: request);
+
+                                  setState(() {});
 
                                   ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content:
-                                        Text("Appointment saved successfully."),
+                                      .showSnackBar(SnackBar(
+                                    content: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text("Appointment saved successfully.")
+                                      ],
+                                    ),
+                                    duration: const Duration(seconds: 1),
                                     backgroundColor: Colors.green,
+                                    action: SnackBarAction(
+                                      label: 'Dismiss',
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+                                      },
+                                      textColor: Colors.white,
+                                    ),
                                   ));
                                 } on Exception catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Failed to save appoinemnt. Please try again.'),
+                                    SnackBar(
+                                      content: const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.error,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(width: 8.0),
+                                          Text(
+                                            'Failed to save service. Please try again.',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                      duration: const Duration(seconds: 1),
                                       backgroundColor: Colors.red,
+                                      action: SnackBarAction(
+                                        label: 'Dismiss',
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .hideCurrentSnackBar();
+                                        },
+                                        textColor: Colors.white,
+                                      ),
                                     ),
                                   );
                                 }
