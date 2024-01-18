@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:barbershop_admin/widgets/master_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late ServiceProvider _serviceProvider;
-  bool hasChanges = false;
+  Service? editedService;
 
   @override
   void initState() {
@@ -63,7 +63,11 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                     height: 40,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        if (editedService != null) {
+                          Navigator.of(context).pop(true);
+                        } else {
+                          Navigator.of(context).pop(false);
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Colors.blue),
@@ -78,40 +82,77 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                       width: 150,
                       height: 40,
                       child: ElevatedButton(
-                        onPressed: hasChanges
-                            ? () async {
-                                if (_formKey.currentState?.saveAndValidate() ==
-                                    true) {
-                                  var request =
-                                      Map.from(_formKey.currentState!.value);
+                        onPressed: () async {
+                          if (_formKey.currentState?.saveAndValidate() ==
+                              true) {
+                            var request =
+                                Map.from(_formKey.currentState!.value);
 
-                                  try {
-                                    if (widget.service == null) {
-                                      await _serviceProvider.insert(
-                                          request: request);
-                                    } else {
-                                      await _serviceProvider.update(
-                                          widget.service!.id!, request);
-                                    }
-
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content:
-                                          Text("Service saved successfully."),
-                                      backgroundColor: Colors.green,
-                                    ));
-                                  } on Exception catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Failed to save barbers service. Please try again.'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
-                                }
+                            try {
+                              if (widget.service == null) {
+                                editedService = await _serviceProvider.insert(
+                                    request: request);
+                              } else {
+                                editedService = await _serviceProvider.update(
+                                    widget.service!.id!, request);
                               }
-                            : null,
+
+                              setState(() {});
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Text("Service saved successfully.")
+                                  ],
+                                ),
+                                duration: const Duration(seconds: 1),
+                                backgroundColor: Colors.green,
+                                action: SnackBarAction(
+                                  label: 'Dismiss',
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                  },
+                                  textColor: Colors.white,
+                                ),
+                              ));
+                            } on Exception catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        'Failed to save service. Please try again.',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                  backgroundColor: Colors.red,
+                                  action: SnackBarAction(
+                                    label: 'Dismiss',
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    },
+                                    textColor: Colors.white,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
                         child: const Text("Save changes"),
                       )),
                 ],
@@ -125,11 +166,6 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
     return FormBuilder(
       key: _formKey,
       initialValue: _initialValue,
-      onChanged: () {
-        setState(() {
-          hasChanges = !mapEquals(_initialValue, _formKey.currentState!.value);
-        });
-      },
       child: Column(
         children: [
           Row(
@@ -148,7 +184,9 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                 name: 'price',
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
-                  FormBuilderValidators.numeric()
+                  FormBuilderValidators.match(
+                      r'^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,4})?$',
+                      errorText: 'Enter a valid decimal number'),
                 ]),
                 decoration: const InputDecoration(labelText: 'Price'),
               )),

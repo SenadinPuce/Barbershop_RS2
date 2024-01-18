@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:barbershop_admin/models/service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,19 +47,15 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
       title: 'Services',
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  _buildSearch(),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  _buildDataListView()
-                ],
-              ),
+        child: Column(
+          children: [
+            _buildSearch(),
+            const SizedBox(
+              height: 8,
+            ),
+            _buildDataListView()
+          ],
+        ),
       ),
     );
   }
@@ -93,8 +92,13 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
+              isLoading = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ServiceDetailScreen()));
+              if (isLoading) {
+                setState(() {
+                  _loadServices();
+                });
+              }
             },
             child: const Text("Add new service"),
           ),
@@ -105,112 +109,167 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
-      child: DataTable(
-        columnSpacing: 215,
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'ID',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Name',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Price',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Description',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Delete',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-        ],
-        rows: (services ?? [])
-            .map((Service s) => DataRow(
-                    onSelectChanged: (value) {
-                      if (value == true) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ServiceDetailScreen(
-                                  service: s,
-                                )));
-                      }
-                    },
-                    cells: [
-                      DataCell(Text(s.id.toString())),
-                      DataCell(Text(s.name.toString())),
-                      DataCell(Text(formatNumber(s.price))),
-                      DataCell(Text(s.description.toString())),
-                      DataCell(_deleteService(s))
-                    ]))
-            .toList(),
-      ),
-    ));
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  child: DataTable(
+                    showCheckboxColumn: false,
+                    columns: const [
+                      DataColumn(
+                          label: Text(
+                        'ID',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Name',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Price',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Description',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )),
+                      DataColumn(
+                        label: Text('Edit',
+                            style: TextStyle(fontStyle: FontStyle.italic)),
+                      ),
+                      DataColumn(
+                          label: Text(
+                        'Delete',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      )),
+                    ],
+                    rows: (services ?? [])
+                        .map((Service s) => DataRow(cells: [
+                              DataCell(Text(s.id.toString())),
+                              DataCell(Text(s.name.toString())),
+                              DataCell(Text(formatNumber(s.price))),
+                              DataCell(Text(s.description.toString())),
+                              DataCell(IconButton(
+                                icon: const Icon(
+                                  Icons.edit_document,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {
+                                  _editService(s);
+                                },
+                              )),
+                              DataCell(IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  _deleteService(s);
+                                },
+                              ))
+                            ]))
+                        .toList(),
+                  ),
+                ),
+              ));
   }
 
-  Widget _deleteService(Service s) {
-    return OutlinedButton(
-      onPressed: () async {
-        bool confirm = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Confirmation'),
-                content: const Text(
-                    'Are you sure you want to delete the service? This action is not reversible.'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      child: const Text("No")),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      child: const Text("Yes")),
-                ],
-              );
-            });
+  void _editService(Service s) async {
+    isLoading = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ServiceDetailScreen(
+              service: s,
+            )));
+    if (isLoading) {
+      setState(() {
+        _loadServices();
+      });
+    }
+  }
 
-        if (confirm == true) {
-          var service = await _serviceProvider.delete(s.id!);
+  void _deleteService(Service s) {
+    showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete'),
+            content: const Text(
+                'Are you sure you want to delete this service? This action is not reversible.'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No')),
+              ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      await _serviceProvider.delete(s.id!);
 
-          if (service != null) {
-            setState(() {
-              services?.removeWhere((element) => element.id == s.id);
-            });
-          }
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.red,
-        disabledBackgroundColor: Colors.grey,
-      ),
-      child: const Text(
-        "Delete",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+                      setState(() {
+                        services?.removeWhere((element) => element.id == s.id);
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text("Service deleted successfully.")
+                          ],
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.green,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ));
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to delete service. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Yes"))
+            ],
+          );
+        }));
   }
 }
