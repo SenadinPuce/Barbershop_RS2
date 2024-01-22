@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -55,17 +57,15 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
       title: 'Orders',
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  _buildSearch(),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  _buildDataListView()
-                ],
-              ),
+        child: Column(
+          children: [
+            _buildSearch(),
+            const SizedBox(
+              height: 8,
+            ),
+            _buildDataListView()
+          ],
+        ),
       ),
     );
   }
@@ -177,148 +177,197 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
 
   Widget _buildDataListView() {
     return Expanded(
-        child: SingleChildScrollView(
-      child: DataTable(
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'ID',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Client username',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Delivery method',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Shipping price',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Subtotal',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Total',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Order date',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Status',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          )),
-          DataColumn(
-              label: Expanded(
-            child: Text(
-              'Complete',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          ))
-        ],
-        rows: (orders ?? [])
-            .map((Order o) => DataRow(
-                    onSelectChanged: (value) {
-                      if (value == true) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                OrderDetailsScreen(order: o)));
-                      }
-                    },
-                    cells: [
-                      DataCell(Text(o.id.toString())),
-                      DataCell(Text(o.clientUsername.toString())),
-                      DataCell(Text(o.deliveryMethod!.shortName.toString())),
-                      DataCell(Text(o.deliveryMethod!.price.toString())),
-                      DataCell(Text(o.subtotal.toString())),
-                      DataCell(Text(o.total.toString())),
-                      DataCell(Text(getDate(o.orderDate))),
-                      DataCell(Text(o.status.toString())),
-                      DataCell(_completeOrder(o))
-                    ]))
-            .toList(),
-      ),
-    ));
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: DataTable(
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'ID',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Client username',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Delivery method',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Shipping price',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Subtotal',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Total',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Order date',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Status',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Complete',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    )),
+                    DataColumn(
+                        label: Expanded(
+                      child: Text(
+                        'Details',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ))
+                  ],
+                  rows: (orders ?? [])
+                      .map((Order o) => DataRow(cells: [
+                            DataCell(Text(o.id.toString())),
+                            DataCell(Text(o.clientUsername.toString())),
+                            DataCell(
+                                Text(o.deliveryMethod!.shortName.toString())),
+                            DataCell(Text(o.deliveryMethod!.price.toString())),
+                            DataCell(Text(o.subtotal.toString())),
+                            DataCell(Text(o.total.toString())),
+                            DataCell(Text(getDate(o.orderDate))),
+                            DataCell(Text(o.status.toString())),
+                            DataCell(IconButton(
+                              icon: const Icon(Icons.check_box_outlined),
+                              color: Colors.green,
+                              disabledColor: Colors.grey,
+                              onPressed: (o.status == 'Payment Received')
+                                  ? () {
+                                      _completeOrder(o);
+                                    }
+                                  : null,
+                            )),
+                            DataCell(IconButton(
+                                icon: const Icon(Icons.info),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          OrderDetailsScreen(order: o)));
+                                }))
+                          ]))
+                      .toList(),
+                ),
+              ));
   }
 
-  Widget _completeOrder(Order o) {
-    return OutlinedButton(
-      onPressed: o.status == 'Payment Received'
-          ? () async {
-              bool confirm = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("Confirmation"),
-                    content: const Text(
-                        "Are you sure you want to mark the order as completed? This action is not reversible."),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        child: const Text("No"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text("Yes"),
-                      ),
-                    ],
-                  );
-                },
-              );
+  void _completeOrder(Order o) {
+    showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirm'),
+            content: const Text(
+                'Are you sure you want to mark this order as completed? This action is not reversible.'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No')),
+              ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      var order = await _orderProvider.updateAppointmentStatus(
+                          o.id!, 'Completed');
 
-              if (confirm == true) {
-                var order = await _orderProvider.updateAppointmentStatus(
-                  o.id!,
-                  'Completed',
-                );
+                      setState(() {
+                        o.status = order.status;
+                      });
 
-                setState(() {
-                  o.status = order.status;
-                });
-              }
-            }
-          : null,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: Colors.green,
-        disabledBackgroundColor: Colors.grey,
-      ),
-      child: const Text(
-        "Complete",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text("Order status updated successfully.")
+                          ],
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.green,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ));
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to update order status. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Yes"))
+            ],
+          );
+        }));
   }
 }

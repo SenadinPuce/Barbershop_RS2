@@ -28,7 +28,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 const Text(
                   'User Information',
@@ -288,14 +288,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget _orderItemWidget(OrderItem orderItem) {
     return ListTile(
       leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        // child: Image.network(
-        //   orderItem.pictureUrl.toString(),
-        //   width: 50,
-        //   height: 50,
-        //   fit: BoxFit.cover,
-        // ),
-      ),
+          borderRadius: BorderRadius.circular(8.0),
+          child: Container(
+            padding: const EdgeInsets.all(1),
+            width: 100,
+            height: 100,
+            child: imageFromBase64String(orderItem.photo!),
+          )),
       title: Text(
         orderItem.productName.toString(),
         style: const TextStyle(

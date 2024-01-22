@@ -289,6 +289,24 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                       DataColumn(
                           label: Expanded(
                         child: Text(
+                          'Service name',
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
+                          'Service price',
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      )),
+                      DataColumn(
+                          label: Expanded(
+                        child: Text(
                           'Barber username',
                           softWrap: true,
                           textAlign: TextAlign.justify,
@@ -334,6 +352,10 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                               DataCell(Text(getDate(a.startTime))),
                               DataCell(Text(getTime(a.startTime))),
                               DataCell(Text(getTime(a.endTime))),
+                              DataCell(Text(a.serviceName != null
+                                  ? a.serviceName.toString()
+                                  : '')),
+                              DataCell(Text(a.servicePrice.toString())),
                               DataCell(Text(a.barberUsername.toString())),
                               DataCell(
                                   Text(a.clientUsername?.toString() ?? '')),
