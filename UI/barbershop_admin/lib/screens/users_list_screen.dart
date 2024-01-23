@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:barbershop_admin/screens/user_detail_screen.dart';
 import 'package:barbershop_admin/widgets/master_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart';
@@ -14,10 +18,13 @@ class UsersListScreen extends StatefulWidget {
 }
 
 class _UsersListScreenState extends State<UsersListScreen> {
-  late UserProvider _adminProvider;
+  late UserProvider _userProvider;
   List<User>? users;
   TextEditingController _usernameController = TextEditingController();
   String? _selectedRole;
+  final _formKey = GlobalKey<FormBuilderState>();
+  Map<String, dynamic> _initialValue = {};
+  List<String> availableRoles = ['Client', 'Barber', 'Admin'];
   bool isLoading = true;
 
   @override
@@ -27,9 +34,9 @@ class _UsersListScreenState extends State<UsersListScreen> {
   }
 
   Future<void> _loadUsers() async {
-    _adminProvider = context.read<UserProvider>();
+    _userProvider = context.read<UserProvider>();
 
-    var data = await _adminProvider.getUsers(
+    var data = await _userProvider.getUsers(
       filter: {
         'username': _usernameController.text,
         'roleName': _selectedRole,
@@ -121,7 +128,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
             ),
-            child: Text("Search"),
+            child: const Text("Search"),
           ),
         ),
       ],
@@ -161,21 +168,19 @@ class _UsersListScreenState extends State<UsersListScreen> {
               label: Text('User Roles',
                   style: TextStyle(fontStyle: FontStyle.italic)),
             ),
+            DataColumn(
+              label: Text('Edit Roles',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+            ),
+            // DataColumn(
+            //     label: Text(
+            //   'Details',
+            //   style: TextStyle(fontStyle: FontStyle.italic),
+            // ))
           ],
           rows: (users ?? [])
               .map(
                 (User u) => DataRow(
-                  onSelectChanged: (selected) {
-                    if (selected == true) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UserDetailScreen(
-                            user: u,
-                          ),
-                        ),
-                      );
-                    }
-                  },
                   cells: [
                     DataCell(Text(u.id.toString())),
                     DataCell(Text(u.firstName.toString())),
@@ -184,6 +189,21 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     DataCell(Text(u.email.toString())),
                     DataCell(Text(u.phoneNumber.toString())),
                     DataCell(Text(u.roles?.join(', ') ?? '')),
+                    DataCell(IconButton(
+                        icon: const Icon(Icons.edit_document),
+                        color: Colors.green,
+                        onPressed: () {
+                          _editRoles(u);
+                        })),
+                    // DataCell(IconButton(
+                    //     icon: const Icon(Icons.info),
+                    //     color: Colors.blue,
+                    //     onPressed: () {
+                    //       Navigator.of(context).push(MaterialPageRoute(
+                    //           builder: (context) => UserDetailScreen(
+                    //                 user: u,
+                    //               )));
+                    //     }))
                   ],
                 ),
               )
@@ -191,5 +211,114 @@ class _UsersListScreenState extends State<UsersListScreen> {
         ),
       ),
     );
+  }
+
+  void _editRoles(User u) {
+    _initialValue = {'roles': u.roles};
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit roles'),
+            content: FormBuilder(
+                key: _formKey,
+                initialValue: _initialValue,
+                child: FormBuilderCheckboxGroup(
+                  name: 'roles',
+                  initialValue: _initialValue['roles'] as List<String>?,
+                  onChanged: (List<String>? selectedRoles) {
+                    setState(() {});
+                  },
+                  options: const [
+                    FormBuilderFieldOption(
+                      value: 'Client',
+                      child: Text('Client'),
+                    ),
+                    FormBuilderFieldOption(
+                      value: 'Barber',
+                      child: Text('Barber'),
+                    ),
+                    FormBuilderFieldOption(
+                      value: 'Admin',
+                      child: Text('Admin'),
+                    ),
+                  ],
+                )),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close')),
+              ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    try {
+                      List<String>? selectedRoles = _formKey.currentState
+                          ?.fields['roles']?.value as List<String>?;
+
+                      await _userProvider.updateUserRoles(u.username,
+                          {"roles": selectedRoles?.join(",")}["roles"] ?? "");
+
+                      setState(() {
+                        _loadUsers();
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text("User roles saved successfully.")
+                          ],
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.green,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ));
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to update user roles. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Save changes"))
+            ],
+          );
+        });
   }
 }

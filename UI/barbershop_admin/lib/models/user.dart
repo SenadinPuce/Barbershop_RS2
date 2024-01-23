@@ -10,7 +10,7 @@ class User {
   String? username;
   String? email;
   String? phoneNumber;
-  String? pictureUrl;
+  String? photo;
   List<String>? roles;
 
   User({
@@ -20,7 +20,7 @@ class User {
     this.username,
     this.email,
     this.phoneNumber,
-    this.pictureUrl,
+    this.photo,
     this.roles,
   });
 

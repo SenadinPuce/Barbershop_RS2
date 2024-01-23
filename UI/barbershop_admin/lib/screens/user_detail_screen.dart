@@ -36,7 +36,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       "username": widget.user?.username,
       "email": widget.user?.email,
       "phoneNumber": widget.user?.phoneNumber,
-      "pictureUrl": widget.user?.pictureUrl,
+      "photo": widget.user?.photo,
       "roles": widget.user?.roles
     };
 
@@ -61,6 +61,22 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  SizedBox(
+                    width: 150,
+                    height: 40,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.blue),
+                      ),
+                      child: const Text("Close"),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
                   SizedBox(
                       width: 150,
                       height: 40,
@@ -117,6 +133,13 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       key: _formKey,
       initialValue: _initialValue,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text(
+          "User Information",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 15,
+        ),
         Row(
           children: [
             _buildUserPicture(),
@@ -241,7 +264,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   }
 
   Widget _buildUserPicture() {
-    final String? pictureUrl = _initialValue["pictureUrl"];
+    final String? pictureUrl = _initialValue["photo"];
 
     return pictureUrl != null
         ? Container(
