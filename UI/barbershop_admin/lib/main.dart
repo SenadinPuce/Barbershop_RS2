@@ -140,7 +140,7 @@ class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                   ),
                   ElevatedButton(
                     onPressed: isButtonDisabled
-                        ? null // Disable the button if isButtonDisabled is true
+                        ? null
                         : () async {
                             var username = _usernameController.text;
                             var password = _passwordController.text;
