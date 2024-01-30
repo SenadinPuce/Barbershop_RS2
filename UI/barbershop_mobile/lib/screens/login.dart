@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'home.dart';
+import 'register.dart';
 
 class Login extends StatefulWidget {
   static const routeName = '/login';
@@ -25,34 +26,35 @@ class _LoginState extends State<Login> {
   bool _isPasswordVisible = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _accountProvider = context.read<AccountProvider>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 50),
-                  child: Center(
-                    child: SizedBox(
-                      width: 200,
-                      height: 200,
-                      child: Image.asset('assets/images/logo.png'),
-                    ),
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Center(
+                child: SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Image.asset('assets/images/logo.png'),
                 ),
-              ],
+              ),
             ),
             Text(
               'Barbershop',
               style: GoogleFonts.tiltNeon(fontSize: 55),
             ),
             const SizedBox(
-              height: 40,
+              height: 25,
             ),
             Form(
                 key: _formKey,
@@ -61,15 +63,13 @@ class _LoginState extends State<Login> {
                     TextFormField(
                         controller: _usernameController,
                         validator: FormBuilderValidators.required(),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Username',
                           hintText: 'Enter username',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          prefixIcon: const Icon(Icons.person),
+                          prefixIcon: Icon(Icons.person),
                         )),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     TextFormField(
                       controller: _passwordController,
@@ -78,8 +78,6 @@ class _LoginState extends State<Login> {
                       decoration: InputDecoration(
                           labelText: 'Password',
                           hintText: 'Enter password',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)),
                           prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -96,7 +94,7 @@ class _LoginState extends State<Login> {
                   ],
                 )),
             const SizedBox(
-              height: 40,
+              height: 25,
             ),
             ElevatedButton(
                 onPressed: () async {
@@ -131,18 +129,9 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(15)),
                 ),
                 child: const Text(
-                  'Sign in',
+                  'Log in',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 )),
-            TextButton(
-                onPressed: () {},
-                child: const Text(
-                  'Forgot password ?',
-                  style: TextStyle(color: Colors.blue, fontSize: 13),
-                )),
-            const SizedBox(
-              height: 55,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -151,9 +140,11 @@ class _LoginState extends State<Login> {
                   style: TextStyle(fontSize: 13),
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, Register.routeName);
+                    },
                     child: const Text(
-                      'Sign up',
+                      'Register',
                       style: TextStyle(color: Colors.blue, fontSize: 13),
                     )),
               ],

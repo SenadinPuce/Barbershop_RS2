@@ -39,6 +39,27 @@ class AccountProvider with ChangeNotifier {
     }
   }
 
+  Future<void> register(dynamic request) async {
+    String endpoint = '${baseUrl}register';
+
+    var headers = createHeaders();
+    var uri = Uri.parse(endpoint);
+
+    final body = jsonEncode(request);
+
+    final response = await http?.post(uri, headers: headers, body: body);
+
+    if (response?.statusCode == 200) {
+      var data = jsonDecode(response!.body);
+
+      Authorization.username = data['username'];
+      Authorization.email = data['email'];
+      Authorization.token = data['token'];
+    } else {
+      throw Exception("Registration failed");
+    }
+  }
+
   Map<String, String> createHeaders() {
     final headers = {
       'accept': 'text/plain',

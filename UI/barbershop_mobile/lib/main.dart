@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/account_provider.dart';
 import 'screens/home.dart';
 import 'screens/login.dart';
+import 'screens/register.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/login',
         routes: {
           Login.routeName: (context) => const Login(),
+          Register.routeName: (context) => const Register(),
           Home.routeName: (context) => const Home(),
         });
   }
