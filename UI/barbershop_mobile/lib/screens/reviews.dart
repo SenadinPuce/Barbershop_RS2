@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  static const routeName = '/home';
-  const Home({super.key});
+class Reviews extends StatefulWidget {
+  static const routeName = '/Reviews';
+  const Reviews({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Reviews> createState() => _ReviewsState();
 }
 
-class _HomeState extends State<Home> {
+class _ReviewsState extends State<Reviews> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SingleChildScrollView(
           child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Text("Home will go here"),
+        child: Text("Reviews will go here"),
       )),
     );
   }

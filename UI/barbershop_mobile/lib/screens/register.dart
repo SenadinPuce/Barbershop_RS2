@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/account_provider.dart';
-import 'home.dart';
+import 'navigation.dart';
 
 class Register extends StatefulWidget {
   static const routeName = '/register';
@@ -148,7 +148,7 @@ class _RegisterState extends State<Register> {
                                     await _accountProvider.register(request);
 
                                     Navigator.popAndPushNamed(
-                                        context, Home.routeName);
+                                        context, Navigation.routeName);
                                   }
                                 } on Exception catch (e) {
                                   showDialog(

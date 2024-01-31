@@ -6,7 +6,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'home.dart';
+import 'navigation.dart';
 import 'register.dart';
 
 class Login extends StatefulWidget {
@@ -105,7 +105,7 @@ class _LoginState extends State<Login> {
 
                       await _accountProvider.login(username, password);
 
-                      Navigator.popAndPushNamed(context, Home.routeName);
+                      Navigator.popAndPushNamed(context, Navigation.routeName);
                     }
                   } on Exception catch (e) {
                     showDialog(
