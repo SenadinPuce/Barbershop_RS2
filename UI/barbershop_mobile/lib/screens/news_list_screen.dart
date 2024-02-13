@@ -55,7 +55,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
       child: Center(
         child: Text(
           "News",
-          style: GoogleFonts.tiltNeon(color: Colors.black, fontSize: 40),
+          style: GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
         ),
       ),
     );
@@ -89,7 +89,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => NewsDetailScreen(
-                          news: news,
+                          news: news!,
                         )));
           },
           tileColor: const Color.fromRGBO(240, 240, 230, 1),
@@ -108,7 +108,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
               const SizedBox(
                 width: 5,
               ),
-              Text(formatDate(news?.createdDateTime)),
+              Text(formatDate(news?.createdDateTime) ?? 'Uknown'),
             ],
           ),
         ),

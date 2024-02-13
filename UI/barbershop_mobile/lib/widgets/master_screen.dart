@@ -27,18 +27,23 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     });
 
     if (_currentIndex == 0) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, NewsListScreen.routeName);
     }
     if (_currentIndex == 1) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Appointments.routeName);
     }
     if (_currentIndex == 2) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Shop.routeName);
     }
     if (_currentIndex == 3) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Reviews.routeName);
     }
     if (_currentIndex == 4) {
+      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Profile.routeName);
     }
   }

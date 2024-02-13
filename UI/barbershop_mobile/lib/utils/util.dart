@@ -16,8 +16,7 @@ Image imageFromBase64String(String base64Image) {
   );
 }
 
-String formatDate(DateTime? value) {
-  return value != null
-      ? DateFormat('dd MMM yyyy').format(value).toString()
-      : " ";
+String? formatDate(DateTime? value) {
+  if (value != null) return DateFormat('dd MMM yyyy').format(value).toString();
+  return null;
 }
