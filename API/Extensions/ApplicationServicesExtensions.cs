@@ -21,6 +21,7 @@ namespace API.Extensions
             services.AddScoped<IProductBrandService, ProductBrandService>();
             services.AddScoped<IProductTypeService, ProductTypeService>();
             services.AddScoped<IBarberServicesService, BarberServicesService>();
+            services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<ITokenService, TokenService>();

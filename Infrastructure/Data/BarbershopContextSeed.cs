@@ -130,6 +130,13 @@ namespace Infrastructure.Data
                 }
             }
 
+             if (!context.News.Any())
+            {
+                var newsData = File.ReadAllText(path + @"/Data/SeedData/news.json");
+                var news = JsonSerializer.Deserialize<List<News>>(newsData);
+                context.News.AddRange(news);
+            }
+
             if (!context.Orders.Any())
             {
                 var ordersData = File.ReadAllText(path + @"/Data/SeedData/orders.json");

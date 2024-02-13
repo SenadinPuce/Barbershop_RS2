@@ -6,19 +6,19 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'navigation.dart';
-import 'register.dart';
+import 'news_list_screen.dart';
+import 'register_screen.dart';
 
-class Login extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
-  const Login({Key? key});
+  const LoginScreen({Key? key});
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -105,7 +105,7 @@ class _LoginState extends State<Login> {
 
                       await _accountProvider.login(username, password);
 
-                      Navigator.popAndPushNamed(context, Navigation.routeName);
+                      Navigator.popAndPushNamed(context, NewsListScreen.routeName);
                     }
                   } on Exception catch (e) {
                     showDialog(
@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, Register.routeName);
+                      Navigator.popAndPushNamed(context, RegisterScreen.routeName);
                     },
                     child: const Text(
                       'Register',

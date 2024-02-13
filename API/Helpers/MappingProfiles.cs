@@ -36,6 +36,9 @@ namespace API.Helpers
                .ForMember(d => d.Id, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
                .ForMember(d => d.Photo, o => o.MapFrom(s => s.ItemOrdered.Photo));
+            CreateMap<News, NewsDto>();
+            CreateMap<NewsInsertObject, News>();
+            CreateMap<NewsUpdateObject, News>();
         }
     }
 }

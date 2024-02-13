@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:barbershop_mobile/screens/login.dart';
+import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -8,18 +8,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/account_provider.dart';
-import 'navigation.dart';
+import 'news_list_screen.dart';
 
-class Register extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
-  const Register({Key? key});
+  const RegisterScreen({Key? key});
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   late AccountProvider _accountProvider;
   bool isPasswordVisible = false;
@@ -148,7 +148,7 @@ class _RegisterState extends State<Register> {
                                     await _accountProvider.register(request);
 
                                     Navigator.popAndPushNamed(
-                                        context, Navigation.routeName);
+                                        context, NewsListScreen.routeName);
                                   }
                                 } on Exception catch (e) {
                                   showDialog(
@@ -174,7 +174,7 @@ class _RegisterState extends State<Register> {
                                     borderRadius: BorderRadius.circular(15)),
                               ),
                               child: const Text(
-                                'Register',
+                                'RegisterScreen',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 25),
                               )),
@@ -188,7 +188,7 @@ class _RegisterState extends State<Register> {
                               TextButton(
                                   onPressed: () {
                                     Navigator.popAndPushNamed(
-                                        context, Login.routeName);
+                                        context, LoginScreen.routeName);
                                   },
                                   child: const Text(
                                     'Log in',
