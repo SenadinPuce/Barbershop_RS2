@@ -92,7 +92,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
                           news: news!,
                         )));
           },
-          tileColor: const Color.fromRGBO(240, 240, 230, 1),
+          tileColor: Colors.grey[200],
           contentPadding: const EdgeInsets.all(10),
           leading: news?.photo != null
               ? imageFromBase64String(news!.photo!)

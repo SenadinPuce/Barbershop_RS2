@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/appointments.dart';
+import '../screens/appointments_screen.dart';
 import '../screens/news_list_screen.dart';
 import '../screens/profile.dart';
 import '../screens/reviews.dart';
@@ -19,7 +19,7 @@ class MasterScreenWidget extends StatefulWidget {
 }
 
 class _MasterScreenWidgetState extends State<MasterScreenWidget> {
-  int _currentIndex = 0;
+  static int _currentIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -27,23 +27,18 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
     });
 
     if (_currentIndex == 0) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, NewsListScreen.routeName);
     }
     if (_currentIndex == 1) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
-      Navigator.pushNamed(context, Appointments.routeName);
+      Navigator.pushNamed(context, AppointmentsScreen.routeName);
     }
     if (_currentIndex == 2) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Shop.routeName);
     }
     if (_currentIndex == 3) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Reviews.routeName);
     }
     if (_currentIndex == 4) {
-      Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.pushNamed(context, Profile.routeName);
     }
   }
@@ -52,7 +47,9 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        automaticallyImplyLeading: false,
+        toolbarHeight: 70,
+        backgroundColor: Colors.blue,
         title: SizedBox(
           width: 100,
           height: 100,
@@ -61,22 +58,26 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         centerTitle: true,
       ),
       body: SafeArea(child: widget.child!),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month), label: 'Appointments'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Shop'),
-          BottomNavigationBarItem(icon: Icon(Icons.reviews), label: 'Reviews'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
-        ],
-        selectedItemColor: Colors.cyanAccent,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.black,
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.blue,
+        ),
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month), label: 'Appointments'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), label: 'Shop'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.reviews), label: 'Reviews'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+          ],
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.black,
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }

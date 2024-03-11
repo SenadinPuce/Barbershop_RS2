@@ -11,6 +11,10 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_Appointments_ServiceId",
+                table: "Appointments");
+
             migrationBuilder.CreateTable(
                 name: "News",
                 columns: table => new
@@ -35,6 +39,11 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Appointments_ServiceId",
+                table: "Appointments",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_News_AuthorId",
                 table: "News",
                 column: "AuthorId");
@@ -45,6 +54,17 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "News");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Appointments_ServiceId",
+                table: "Appointments");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_ServiceId",
+                table: "Appointments",
+                column: "ServiceId",
+                unique: true,
+                filter: "[ServiceId] IS NOT NULL");
         }
     }
 }

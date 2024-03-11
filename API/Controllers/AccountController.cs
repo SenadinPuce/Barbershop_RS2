@@ -43,6 +43,7 @@ namespace API.Controllers
 
             return new AuthorizationDto
             {
+                Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user)
@@ -75,6 +76,7 @@ namespace API.Controllers
 
             return new AuthorizationDto
             {
+                Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user)
@@ -93,7 +95,7 @@ namespace API.Controllers
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
 
-            if(user.Address == null) return NotFound(new ApiResponse(404));
+            if (user.Address == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<AddressDto>(user.Address);
         }
@@ -106,11 +108,11 @@ namespace API.Controllers
 
             if (user.Address == null)
             {
-               user.Address = await _addressService.Insert(addressUpsert);
+                user.Address = await _addressService.Insert(addressUpsert);
             }
             else
             {
-                 _mapper.Map(addressUpsert, user.Address);
+                _mapper.Map(addressUpsert, user.Address);
             }
 
             var result = await _userManager.UpdateAsync(user);

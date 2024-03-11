@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Authorization {
+  static int? id;
   static String? username;
   static String? email;
   static String? token;
@@ -18,5 +19,10 @@ Image imageFromBase64String(String base64Image) {
 
 String? formatDate(DateTime? value) {
   if (value != null) return DateFormat('dd MMM yyyy').format(value).toString();
+  return null;
+}
+
+String? formatTime(DateTime? value) {
+  if (value != null) return DateFormat('HH:mm').format(value).toString();
   return null;
 }

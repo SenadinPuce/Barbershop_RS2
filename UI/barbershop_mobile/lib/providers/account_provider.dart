@@ -31,6 +31,7 @@ class AccountProvider with ChangeNotifier {
     if (response?.statusCode == 200) {
       var data = jsonDecode(response!.body);
 
+      Authorization.id = data['id'];
       Authorization.username = data['username'];
       Authorization.email = data['email'];
       Authorization.token = data['token'];
@@ -52,6 +53,7 @@ class AccountProvider with ChangeNotifier {
     if (response?.statusCode == 200) {
       var data = jsonDecode(response!.body);
 
+      Authorization.id = data['id'];
       Authorization.username = data['username'];
       Authorization.email = data['email'];
       Authorization.token = data['token'];

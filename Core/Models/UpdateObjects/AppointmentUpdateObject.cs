@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Core.Entities;
 
 namespace Core.Models.UpdateObjects
 {
@@ -9,5 +10,7 @@ namespace Core.Models.UpdateObjects
 
         [Required]
         public int ServiceId { get; set; }
+        
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Reserved;
     }
 }

@@ -74,6 +74,50 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+   Future<T> insert({dynamic request, String? extraRoute}) async {
+    var url = "$apiUrl$_endpoint";
+
+    if (extraRoute != null && extraRoute.trim().isEmpty == false) {
+      url = "$url/$extraRoute";
+    }
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http!.post(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
+ Future<T> update(int id, {dynamic request, String? extraRoute}) async {
+    var url = "$apiUrl$_endpoint";
+
+    if (extraRoute != null && extraRoute.trim().isEmpty == false) {
+      url = "$url/$extraRoute";
+    }
+
+    url = "$url/$id";
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http!.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
   Map<String, String> createHeaders() {
     String token = Authorization.token ?? "";
 

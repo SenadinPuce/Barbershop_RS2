@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    [Migration("20240131094426_NewsEntityAdded")]
+    [Migration("20240227192337_NewsEntityAdded")]
     partial class NewsEntityAdded
     {
         /// <inheritdoc />
@@ -221,9 +221,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("ServiceId")
-                        .IsUnique()
-                        .HasFilter("[ServiceId] IS NOT NULL");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Appointments");
                 });
@@ -595,9 +593,8 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ClientId");
 
                     b.HasOne("Core.Entities.Service", "Service")
-                        .WithOne()
-                        .HasForeignKey("Core.Entities.Appointment", "ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .WithMany()
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Barber");
 

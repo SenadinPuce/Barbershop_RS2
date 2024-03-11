@@ -15,44 +15,49 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [
-              Center(
-                child: Text(
-                  news?.title ?? '',
-                  textAlign: TextAlign.center,
-                  style:
-                      GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              if (news?.photo != null) imageFromBase64String(news!.photo!),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                news?.content ?? '',
-                textAlign: TextAlign.justify,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 16.0),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Published on: ${formatDate(news?.createdDateTime) ?? 'Unknown'}',
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    fontStyle: FontStyle.italic,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("News details"),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    news?.title ?? '',
+                    textAlign: TextAlign.center,
+                    style:
+                        GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 16,
+                ),
+                if (news?.photo != null) imageFromBase64String(news!.photo!),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  news?.content ?? '',
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 16.0),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Published on: ${formatDate(news?.createdDateTime) ?? 'Unknown'}',
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
