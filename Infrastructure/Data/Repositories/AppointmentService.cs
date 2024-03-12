@@ -43,6 +43,10 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Appointment> AddFilter(IQueryable<Appointment> query, AppointmentSearchObject search)
         {
+             if (search.ClientId.HasValue && search.ClientId.Value > 0)
+            {
+                query = query.Where(a => a.ClientId == search.ClientId);
+            }
             if (search.BarberId.HasValue && search.BarberId.Value > 0)
             {
                 query = query.Where(a => a.BarberId == search.BarberId);

@@ -10,7 +10,8 @@ namespace Core.Models.UpdateObjects
 
         [Required]
         public int ServiceId { get; set; }
-        
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Reserved;
+
+        [Required]
+        public string Status { get; set; }
     }
 }

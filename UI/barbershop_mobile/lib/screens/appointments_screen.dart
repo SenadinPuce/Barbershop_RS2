@@ -39,7 +39,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     _serviceProvider = context.read<ServiceProvider>();
     _appointmentProvider = context.read<AppointmentProvider>();
 
-    var servicesData = await _serviceProvider.get();
+    if (_services == null) {
+      var servicesData = await _serviceProvider.get();
+      _services = servicesData;
+    }
 
     var appointmentsData = await _appointmentProvider.get(filter: {
       'dateFrom': _selectedDate,
@@ -48,7 +51,6 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     });
 
     setState(() {
-      _services = servicesData;
       _appointments = appointmentsData;
       isLoading = false;
     });
@@ -70,7 +72,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             onPressed: () {
               Navigator.pushNamed(context, UserAppointmentsScreen.routeName);
             },
-            backgroundColor: Colors.cyan,
+            backgroundColor: Colors.amber[700],
             child: const Icon(
               Icons.calendar_month,
             ),
@@ -219,10 +221,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                                 Map request = {
                                   "ClientId": Authorization.id,
                                   "ServiceId": _selectedService?.id,
+                                  "Status": "Reserved"
                                 };
 
                                 await _appointmentProvider.update(a.id!,
                                     request: request);
+                                loadData();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

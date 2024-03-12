@@ -108,7 +108,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
               const SizedBox(
                 width: 5,
               ),
-              Text(formatDate(news?.createdDateTime) ?? 'Uknown'),
+              Text(formatDate(news?.createdDateTime) ?? 'Unknown'),
             ],
           ),
         ),
