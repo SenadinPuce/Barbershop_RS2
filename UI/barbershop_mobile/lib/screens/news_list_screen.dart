@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../models/news.dart';
 import '../providers/news_provider.dart';
 import '../widgets/master_screen.dart';
-import 'news_detail_screen.dart';
+import 'news_details_screen.dart';
 
 class NewsListScreen extends StatefulWidget {
   static const routeName = '/news';
@@ -88,7 +88,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NewsDetailScreen(
+                    builder: (context) => NewsDetailsScreen(
                           news: news!,
                         )));
           },

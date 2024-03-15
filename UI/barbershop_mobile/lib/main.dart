@@ -1,3 +1,7 @@
+import 'package:barbershop_mobile/models/type.dart';
+import 'package:barbershop_mobile/providers/product_brand_provider.dart';
+import 'package:barbershop_mobile/providers/product_provider.dart';
+import 'package:barbershop_mobile/providers/product_type_provider.dart';
 import 'package:barbershop_mobile/providers/service_provider.dart';
 import 'package:barbershop_mobile/screens/user_appointments_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +16,7 @@ import 'screens/login_screen.dart';
 import 'screens/profile.dart';
 import 'screens/register_screen.dart';
 import 'screens/reviews.dart';
-import 'screens/shop.dart';
+import 'screens/products_list_screen.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -21,6 +25,9 @@ void main() {
       ChangeNotifierProvider(create: (_) => NewsProvider()),
       ChangeNotifierProvider(create: (_) => AppointmentProvider()),
       ChangeNotifierProvider(create: (_) => ServiceProvider()),
+      ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
+      ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
     ],
     child: const MyApp(),
   ));
@@ -41,8 +48,9 @@ class MyApp extends StatelessWidget {
           RegisterScreen.routeName: (context) => const RegisterScreen(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
           AppointmentsScreen.routeName: (context) => const AppointmentsScreen(),
-          UserAppointmentsScreen.routeName: (context) => const UserAppointmentsScreen(),
-          Shop.routeName: (context) => const Shop(),
+          UserAppointmentsScreen.routeName: (context) =>
+              const UserAppointmentsScreen(),
+          ProductsListScreen.routeName: (context) => const ProductsListScreen(),
           Reviews.routeName: (context) => const Reviews(),
           Profile.routeName: (context) => const Profile(),
         });

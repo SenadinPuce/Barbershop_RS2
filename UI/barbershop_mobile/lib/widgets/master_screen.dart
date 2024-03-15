@@ -4,7 +4,7 @@ import '../screens/appointments_screen.dart';
 import '../screens/news_list_screen.dart';
 import '../screens/profile.dart';
 import '../screens/reviews.dart';
-import '../screens/shop.dart';
+import '../screens/products_list_screen.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -33,7 +33,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
       Navigator.pushNamed(context, AppointmentsScreen.routeName);
     }
     if (_currentIndex == 2) {
-      Navigator.pushNamed(context, Shop.routeName);
+      Navigator.pushNamed(context, ProductsListScreen.routeName);
     }
     if (_currentIndex == 3) {
       Navigator.pushNamed(context, Reviews.routeName);

@@ -26,3 +26,12 @@ String? formatTime(DateTime? value) {
   if (value != null) return DateFormat('HH:mm').format(value).toString();
   return null;
 }
+
+String formatNumber(dynamic value) {
+  var f = NumberFormat('###,##0.00');
+
+  if (value == null) {
+    return "";
+  }
+  return f.format(value);
+}
