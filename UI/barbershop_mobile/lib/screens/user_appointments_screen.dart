@@ -2,6 +2,7 @@ import 'package:barbershop_mobile/models/appointment.dart';
 import 'package:barbershop_mobile/providers/appointment_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class UserAppointmentsScreen extends StatefulWidget {
@@ -39,7 +40,8 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Appointments"),
+        title: Text("Your appointments",
+            style: GoogleFonts.tiltNeon(fontSize: 25)),
         backgroundColor: Colors.blue,
       ),
       body: SafeArea(
@@ -70,7 +72,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
 
   Widget _buildAppointmentTile(Appointment? a) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(8),

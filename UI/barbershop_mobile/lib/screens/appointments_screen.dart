@@ -7,7 +7,6 @@ import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

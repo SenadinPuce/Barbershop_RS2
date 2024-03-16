@@ -346,6 +346,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         .map((p) => Card(
               elevation: 3,
               color: Colors.grey[200],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 6),
                 child: Column(children: [
@@ -382,8 +384,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
                     onPressed: () {
                       // Handle adding product to cart
                     },

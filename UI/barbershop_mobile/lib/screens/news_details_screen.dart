@@ -16,7 +16,7 @@ class NewsDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("News details"),
+        title: Text("Back to news", style: GoogleFonts.tiltNeon(fontSize: 25)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
