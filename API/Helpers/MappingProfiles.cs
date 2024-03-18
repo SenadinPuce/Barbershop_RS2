@@ -39,6 +39,8 @@ namespace API.Helpers
             CreateMap<News, NewsDto>();
             CreateMap<NewsInsertObject, News>();
             CreateMap<NewsUpdateObject, News>();
+            CreateMap<Review, ReviewDto>();
+            CreateMap<ReviewUpsertObject, Review>();
         }
     }
 }

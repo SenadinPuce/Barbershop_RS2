@@ -52,12 +52,14 @@ namespace Infrastructure.Data
             {
                 var addressesData = File.ReadAllText(path + @"/Data/SeedData/addresses.json");
                 var addresses = JsonSerializer.Deserialize<List<Address>>(addressesData);
-
-                foreach (var item in addresses)
-                {
-                    Console.WriteLine(item.FirstName);
-                }
                 context.Addresses.AddRange(addresses);
+            }
+
+            if (!context.Reviews.Any())
+            {
+                var reviewsData = File.ReadAllText(path + @"/Data/SeedData/reviews.json");
+                var reviews = JsonSerializer.Deserialize<List<Review>>(reviewsData);
+                context.Reviews.AddRange(reviews);
             }
 
             // Users seed
@@ -130,7 +132,7 @@ namespace Infrastructure.Data
                 }
             }
 
-             if (!context.News.Any())
+            if (!context.News.Any())
             {
                 var newsData = File.ReadAllText(path + @"/Data/SeedData/news.json");
                 var news = JsonSerializer.Deserialize<List<News>>(newsData);

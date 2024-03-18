@@ -15,7 +15,7 @@ import 'screens/news_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile.dart';
 import 'screens/register_screen.dart';
-import 'screens/reviews.dart';
+import 'screens/reviews_list_screen.dart';
 import 'screens/products_list_screen.dart';
 
 void main() {

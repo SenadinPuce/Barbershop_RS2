@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 
 class Reviews extends StatefulWidget {
@@ -11,11 +12,11 @@ class Reviews extends StatefulWidget {
 class _ReviewsState extends State<Reviews> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SingleChildScrollView(
-          child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Text("Reviews will go here"),
+    return MasterScreenWidget(
+      child: SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [],
       )),
     );
   }

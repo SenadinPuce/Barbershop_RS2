@@ -26,6 +26,7 @@ namespace API.Extensions
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

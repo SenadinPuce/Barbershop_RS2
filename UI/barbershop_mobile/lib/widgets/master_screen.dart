@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/appointments_screen.dart';
 import '../screens/news_list_screen.dart';
 import '../screens/profile.dart';
-import '../screens/reviews.dart';
+import '../screens/reviews_list_screen.dart';
 import '../screens/products_list_screen.dart';
 
 class MasterScreenWidget extends StatefulWidget {
