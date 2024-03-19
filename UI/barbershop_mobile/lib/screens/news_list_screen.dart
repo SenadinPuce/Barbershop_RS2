@@ -41,11 +41,20 @@ class _NewsListScreenState extends State<NewsListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_buildHeader(), _buildView()],
-      )),
+      child: Stack(children: [
+        SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            _buildView(),
+          ],
+        )),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ]),
     );
   }
 
@@ -63,9 +72,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
 
   Widget _buildView() {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return Container();
     } else {
       return ListView.builder(
           shrinkWrap: true,
@@ -80,9 +87,12 @@ class _NewsListScreenState extends State<NewsListScreen> {
   Widget _buildNewsTile(News? news) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Material(
+      child: Card(
+        color: Colors.green[50],
         elevation: 2,
-        borderRadius: BorderRadius.circular(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: ListTile(
           onTap: () {
             Navigator.push(
@@ -92,7 +102,6 @@ class _NewsListScreenState extends State<NewsListScreen> {
                           news: news!,
                         )));
           },
-          tileColor: Colors.grey[200],
           contentPadding: const EdgeInsets.all(10),
           leading: news?.photo != null
               ? imageFromBase64String(news!.photo!)

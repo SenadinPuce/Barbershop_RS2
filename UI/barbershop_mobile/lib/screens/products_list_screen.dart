@@ -75,11 +75,17 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_buildHeader(), _buildProductSearch(), _buildView()],
-      )),
+      child: Stack(children: [
+        SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [_buildHeader(), _buildProductSearch(), _buildView()],
+        )),
+        if (isLoading) // Show CircularProgressIndicator if loading
+          Center(
+            child: CircularProgressIndicator(),
+          ),
+      ]),
     );
   }
 
@@ -321,9 +327,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   Widget _buildView() {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return Container();
     } else {
       return Padding(
         padding: const EdgeInsets.all(8.0),

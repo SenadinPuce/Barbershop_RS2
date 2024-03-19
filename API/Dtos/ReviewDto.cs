@@ -6,6 +6,9 @@ namespace API.Dtos
         public int Rating { get; set; }
         public string Comment { get; set; }
         public int UserId { get; set; }
+        public string ClientFirstName { get; set; }
+        public string ClientLastName { get; set; }
+
         public DateTime CreatedDateTime { get; set; }
     }
 }

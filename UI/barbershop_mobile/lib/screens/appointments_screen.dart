@@ -62,17 +62,29 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildHeader(), _buildSearch(), _buildView()],
+          children: [
+            _buildHeader(),
+            _buildSearch(),
+            _buildView(),
+            const SizedBox(
+              height: 80,
+            )
+          ],
         )),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
         Positioned(
           bottom: 16.0,
           right: 16.0,
-          child: FloatingActionButton(
+          child: FloatingActionButton.extended(
             onPressed: () {
               Navigator.pushNamed(context, UserAppointmentsScreen.routeName);
             },
             backgroundColor: Colors.amber[700],
-            child: const Icon(
+            label: const Text("Your appointments"),
+            icon: const Icon(
               Icons.calendar_month,
             ),
           ),
@@ -125,9 +137,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   Widget _buildView() {
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return Container();
     } else {
       if (_appointments != null && _appointments!.isNotEmpty) {
         return Column(

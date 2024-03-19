@@ -45,20 +45,26 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
         backgroundColor: Colors.blue,
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [_buildView()],
+          child: Stack(children: [
+        SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [_buildView()],
+            ),
           ),
         ),
-      )),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ])),
     );
   }
 
   Widget _buildView() {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Container();
     } else {
       return ListView.builder(
           shrinkWrap: true,
@@ -72,7 +78,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
 
   Widget _buildAppointmentTile(Appointment? a) {
     return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(8),

@@ -39,7 +39,9 @@ namespace API.Helpers
             CreateMap<News, NewsDto>();
             CreateMap<NewsInsertObject, News>();
             CreateMap<NewsUpdateObject, News>();
-            CreateMap<Review, ReviewDto>();
+            CreateMap<Review, ReviewDto>()
+                .ForMember(d => d.ClientFirstName, o => o.MapFrom(s => s.User.FirstName))
+                .ForMember(d => d.ClientLastName, o => o.MapFrom(s => s.User.LastName));
             CreateMap<ReviewUpsertObject, Review>();
         }
     }
