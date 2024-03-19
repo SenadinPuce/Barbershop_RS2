@@ -223,7 +223,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                                 backgroundColor: Colors.green,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0)),
-                                minimumSize: const Size(double.infinity, 40),
+                                minimumSize: const Size(double.infinity, 45),
                                 elevation: 3),
                             onPressed: () async {
                               if (_selectedService != null) {
@@ -244,7 +244,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                                 );
                               }
                             },
-                            child: const Text('Book now'),
+                            child: const Text(
+                              'Book now',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ],

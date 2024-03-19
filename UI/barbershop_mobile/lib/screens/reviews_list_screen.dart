@@ -52,7 +52,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
             )
           ],
         )),
-        if (isLoading) 
+        if (isLoading)
           const Center(
             child: CircularProgressIndicator(),
           ),
@@ -60,8 +60,16 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, ReviewAddScreen.routeName);
+            onPressed: () async {
+              final result =
+                  await Navigator.pushNamed(context, ReviewAddScreen.routeName);
+
+              if (result != null && result == true) {
+                setState(() {
+                  isLoading = true;
+                });
+                loadData();
+              }
             },
             backgroundColor: Colors.amber[700],
             label: const Text("Rate us"),

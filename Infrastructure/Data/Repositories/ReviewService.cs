@@ -20,5 +20,12 @@ namespace Infrastructure.Data.Repositories
             }
             return query;
         }
+
+        public override IQueryable<Review> AddFilter(IQueryable<Review> query, ReviewSearchObject search)
+        {
+            query = query.OrderByDescending(x => x.CreatedDateTime);
+
+            return query;
+        }
     }
 }
