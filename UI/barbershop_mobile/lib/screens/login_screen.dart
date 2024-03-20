@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       print(Authorization.email);
                       print(Authorization.id);
 
-                      Navigator.popAndPushNamed(context, NewsListScreen.routeName);
+                      Navigator.pushNamed(context, NewsListScreen.routeName);
                     }
                   } on Exception catch (e) {
                     showDialog(
@@ -127,29 +127,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 55),
-                  elevation: 5,
+                  minimumSize: const Size(double.infinity, 45),
+                  elevation: 3,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 24.0),
                 ),
-                child: const Text(
+                child:  const Text(
                   'Log in',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
                 )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   "Don't have an account ?",
-                  style: TextStyle(fontSize: 13),
+                  style: TextStyle(fontSize: 15),
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, RegisterScreen.routeName);
+                      Navigator.popAndPushNamed(
+                          context, RegisterScreen.routeName);
                     },
                     child: const Text(
                       'Register',
-                      style: TextStyle(color: Colors.blue, fontSize: 13),
+                      style: TextStyle(color: Colors.blue, fontSize: 15),
                     )),
               ],
             )

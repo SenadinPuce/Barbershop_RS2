@@ -5,6 +5,7 @@ import '../screens/news_list_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/reviews_list_screen.dart';
 import '../screens/products_list_screen.dart';
+import '../utils/util.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -19,26 +20,22 @@ class MasterScreenWidget extends StatefulWidget {
 }
 
 class _MasterScreenWidgetState extends State<MasterScreenWidget> {
-  static int _currentIndex = 0;
-
   void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    ButtomNavigationBarHelper.currentIndex = index;
 
-    if (_currentIndex == 0) {
+    if (ButtomNavigationBarHelper.currentIndex == 0) {
       Navigator.pushReplacementNamed(context, NewsListScreen.routeName);
     }
-    if (_currentIndex == 1) {
+    if (ButtomNavigationBarHelper.currentIndex == 1) {
       Navigator.pushReplacementNamed(context, AppointmentsScreen.routeName);
     }
-    if (_currentIndex == 2) {
+    if (ButtomNavigationBarHelper.currentIndex == 2) {
       Navigator.pushReplacementNamed(context, ProductsListScreen.routeName);
     }
-    if (_currentIndex == 3) {
+    if (ButtomNavigationBarHelper.currentIndex == 3) {
       Navigator.pushReplacementNamed(context, ReviewsListScreen.routeName);
     }
-    if (_currentIndex == 4) {
+    if (ButtomNavigationBarHelper.currentIndex == 4) {
       Navigator.pushReplacementNamed(context, ProfileScreen.routeName);
     }
   }
@@ -75,7 +72,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
           ],
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.black,
-          currentIndex: _currentIndex,
+          currentIndex: ButtomNavigationBarHelper.currentIndex,
           onTap: _onItemTapped,
         ),
       ),

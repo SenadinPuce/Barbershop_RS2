@@ -20,6 +20,7 @@ namespace API.Helpers
             CreateMap<AddressDto, Address>().ReverseMap();
             CreateMap<AppUser, AppUserDto>()
             .ForMember(d => d.Roles, opt => opt.MapFrom(s => s.UserRoles.Select(ur => ur.Role.Name).ToList()));
+            CreateMap<AppUserUpdateRequest, AppUser>();
             CreateMap<ServiceUpsertObject, Service>();
             CreateMap<AppointmentInsertObject, Appointment>();
             CreateMap<AppointmentUpdateObject, Appointment>();

@@ -168,22 +168,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 55),
-                                elevation: 5,
+                                minimumSize: const Size(double.infinity, 45),
+                                elevation: 3,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
+                                    borderRadius: BorderRadius.circular(10)),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 24.0),
                               ),
                               child: const Text(
-                                'RegisterScreen',
+                                'Register',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 25),
+                                    fontSize: 25, fontWeight: FontWeight.w600),
                               )),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
                                 "I have an account ?",
-                                style: TextStyle(fontSize: 13),
+                                style: TextStyle(fontSize: 15),
                               ),
                               TextButton(
                                   onPressed: () {
@@ -193,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: const Text(
                                     'Log in',
                                     style: TextStyle(
-                                        color: Colors.blue, fontSize: 13),
+                                        color: Colors.blue, fontSize: 15),
                                   )),
                             ],
                           )

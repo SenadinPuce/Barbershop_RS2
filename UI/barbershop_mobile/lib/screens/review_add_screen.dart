@@ -108,6 +108,8 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             minimumSize: const Size(double.infinity, 45),
@@ -132,7 +134,10 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                     backgroundColor: Colors.green,
-                    content: Text('Review successfully submitted')),
+                    showCloseIcon: true,
+                    closeIconColor: Colors.white,
+                    duration: Duration(seconds: 1),
+                    content: Text('Review submitted successfully')),
               );
 
               setState(() {

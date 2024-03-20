@@ -1,7 +1,10 @@
+import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../utils/util.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -15,10 +18,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: SingleChildScrollView(
-          child: Column(
-        children: [_buildHeader(), _buildView()],
-      )),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildHeader(),
+                  _buildView(),
+                ],
+              ),
+            ),
+          ),
+          _buildLogOutOption(),
+        ],
+      ),
     );
   }
 
@@ -78,6 +93,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: () {},
         ),
       ],
+    );
+  }
+
+  Widget _buildLogOutOption() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          Authorization.username = "";
+          Authorization.email = "";
+          Authorization.token = "";
+
+          ButtomNavigationBarHelper.currentIndex = 0;
+
+          Navigator.pushNamed(context, LoginScreen.routeName);
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red[400],
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 3,
+            minimumSize: const Size(double.infinity, 45)),
+        icon: const Icon(Icons.logout, size: 25.0),
+        label: const Text(
+          "Log Out",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:barbershop_mobile/providers/product_provider.dart';
 import 'package:barbershop_mobile/providers/product_type_provider.dart';
 import 'package:barbershop_mobile/providers/review_provider.dart';
 import 'package:barbershop_mobile/providers/service_provider.dart';
+import 'package:barbershop_mobile/providers/user_provider.dart';
 import 'package:barbershop_mobile/screens/review_add_screen.dart';
 import 'package:barbershop_mobile/screens/user_appointments_screen.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
       ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
       ChangeNotifierProvider(create: (_) => ReviewProvider()),
+      ChangeNotifierProvider(create: (_) => UserProvider()),
     ],
     child: const MyApp(),
   ));

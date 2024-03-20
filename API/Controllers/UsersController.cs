@@ -2,7 +2,7 @@ using API.Dtos;
 using AutoMapper;
 using Core.Entities;
 using Core.Models.SearchObjects;
-using Microsoft.AspNetCore.Authorization;
+using Core.Models.UpdateObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +75,48 @@ namespace API.Controllers
 
             return Ok(_mapper.Map<AppUserDto>(await _userManager.FindByNameAsync(username)));
 
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppUserDto>> GetUserById(int id)
+        {
+            var user = await _userManager.Users
+            .Include(u => u.UserRoles).ThenInclude(r => r.Role)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<AppUserDto>(user));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AppUserDto>> UpdateUser(int id, [FromBody] AppUserUpdateRequest update)
+        {
+            if (update == null) return BadRequest();
+
+            var user = await _userManager.Users
+           .Include(u => u.UserRoles).ThenInclude(r => r.Role)
+           .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null) return NotFound();
+
+            _mapper.Map(update, user);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            return Ok(_mapper.Map<AppUserDto>(user));
         }
     }
 }
