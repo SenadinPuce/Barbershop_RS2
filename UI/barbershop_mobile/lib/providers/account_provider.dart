@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:barbershop_mobile/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
 
+import '../models/address.dart';
+import '../utils/constants.dart';
 import '../utils/util.dart';
 
 class AccountProvider with ChangeNotifier {
@@ -63,11 +64,54 @@ class AccountProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    final headers = {
-      'accept': 'text/plain',
-      'Content-Type': 'application/json',
+    var headers = {
+      "Content-Type": "application/json",
     };
 
+    String token = Authorization.token ?? "";
+
+    if (token.isNotEmpty) {
+      String jwtAuth = "Bearer $token";
+      headers["Authorization"] = jwtAuth;
+    }
+
     return headers;
+  }
+
+  Future<Address> getAddress() async {
+    String endpoint = '${baseUrl}address';
+
+    var headers = createHeaders();
+
+    var uri = Uri.parse(endpoint);
+
+    final response = await http?.get(uri, headers: headers);
+
+    if (response?.statusCode == 200) {
+      Address address = Address.fromJson(jsonDecode(response!.body));
+      return address;
+    } else {
+      throw Exception("Failed to fetch address");
+    }
+  }
+
+  Future<Address> updateAddress(dynamic update) async {
+    String endpoint = '${baseUrl}address';
+
+    var headers = createHeaders();
+    var uri = Uri.parse(endpoint);
+
+    final body = jsonEncode(update);
+
+    final response = await http?.put(uri, headers: headers, body: body);
+
+    if (response?.statusCode == 200) {
+      Address address = Address.fromJson(jsonDecode(response!.body));
+      return address;
+    } else if (response?.statusCode == 400) {
+      throw Exception("Problem updating the address");
+    } else {
+      throw Exception("Failed to update address");
+    }
   }
 }

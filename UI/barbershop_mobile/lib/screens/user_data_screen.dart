@@ -163,7 +163,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
               }
             : null,
         child: const Text(
-          'Update',
+          'Save changes',
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
       ),

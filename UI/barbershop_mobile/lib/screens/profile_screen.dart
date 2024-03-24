@@ -1,4 +1,5 @@
 import 'package:barbershop_mobile/screens/login_screen.dart';
+import 'package:barbershop_mobile/screens/user_address_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserDataScreen()));
+                MaterialPageRoute(builder: (context) => const UserDataScreen()));
           },
         ),
         const Divider(
@@ -75,10 +76,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ListTile(
           leading: Icon(Icons.location_on, color: Colors.amber[700]),
           title: const Text("Address", style: TextStyle(color: Colors.black)),
-          subtitle: const Text("View or update your address",
+          subtitle: const Text("View or update your delivery address",
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const UserAddressScreen()));
+          },
         ),
         const Divider(
           thickness: 1.5,
