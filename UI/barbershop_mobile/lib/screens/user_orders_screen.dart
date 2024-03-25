@@ -106,7 +106,7 @@ class _UserOrdersScreenState extends State<UserOrdersScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Order ID: ${order?.id}',
+                      'Order Number: # ${order?.id}',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
