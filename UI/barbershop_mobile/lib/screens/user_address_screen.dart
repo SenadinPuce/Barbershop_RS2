@@ -157,7 +157,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
                 if (_formKey.currentState?.saveAndValidate() == true) {
                   var request = Map.from(_formKey.currentState!.value);
 
-                   await _accountProvider.updateAddress(request);
+                  await _accountProvider.updateAddress(request);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -168,7 +168,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
                         content: Text('Delivery address updated successfully')),
                   );
                 }
-            }
+              }
             : null,
         child: const Text(
           'Save changes',

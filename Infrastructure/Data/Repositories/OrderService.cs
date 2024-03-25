@@ -100,6 +100,10 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Order> AddFilter(IQueryable<Order> query, OrderSearchObject search)
         {
+            if (search.ClientId != null)
+            {
+                query = query.Where(o => o.ClientId == search.ClientId);
+            }
             if (!string.IsNullOrWhiteSpace(search.Status))
             {
                 OrderStatus orderStatus;

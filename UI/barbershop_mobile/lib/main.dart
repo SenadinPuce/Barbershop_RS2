@@ -1,24 +1,25 @@
-import 'package:barbershop_mobile/providers/product_brand_provider.dart';
-import 'package:barbershop_mobile/providers/product_provider.dart';
-import 'package:barbershop_mobile/providers/product_type_provider.dart';
-import 'package:barbershop_mobile/providers/review_provider.dart';
-import 'package:barbershop_mobile/providers/service_provider.dart';
-import 'package:barbershop_mobile/providers/user_provider.dart';
-import 'package:barbershop_mobile/screens/review_add_screen.dart';
-import 'package:barbershop_mobile/screens/user_appointments_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/account_provider.dart';
 import 'providers/appointment_provider.dart';
 import 'providers/news_provider.dart';
+import 'providers/order_provider.dart';
+import 'providers/product_brand_provider.dart';
+import 'providers/product_provider.dart';
+import 'providers/product_type_provider.dart';
+import 'providers/review_provider.dart';
+import 'providers/service_provider.dart';
+import 'providers/user_provider.dart';
 import 'screens/appointments_screen.dart';
 import 'screens/news_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/review_add_screen.dart';
 import 'screens/reviews_list_screen.dart';
 import 'screens/products_list_screen.dart';
+import 'screens/user_appointments_screen.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -32,6 +33,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
       ChangeNotifierProvider(create: (_) => ReviewProvider()),
       ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => OrderProvider()),
     ],
     child: const MyApp(),
   ));

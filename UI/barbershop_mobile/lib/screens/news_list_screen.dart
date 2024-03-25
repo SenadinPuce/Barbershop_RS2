@@ -88,7 +88,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Card(
-        color: Colors.green[50],
+        color: Colors.grey[200],
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

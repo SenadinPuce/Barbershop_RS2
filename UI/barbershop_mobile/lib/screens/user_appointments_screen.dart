@@ -47,11 +47,8 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
       body: SafeArea(
           child: Stack(children: [
         SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [_buildView()],
-            ),
+          child: Column(
+            children: [_buildView()],
           ),
         ),
         if (isLoading)
@@ -79,12 +76,14 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
   Widget _buildAppointmentTile(Appointment? a) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Material(
+      child: Card(
+        color: Colors.grey[200],
         elevation: 2,
-        borderRadius: BorderRadius.circular(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: ListTile(
           onTap: () {},
-          tileColor: Colors.grey[200],
           contentPadding: const EdgeInsets.all(10),
           title: (Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:barbershop_mobile/screens/user_address_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
+import 'package:barbershop_mobile/screens/user_orders_screen.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,8 +67,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserDataScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UserDataScreen()));
           },
         ),
         const Divider(
@@ -80,8 +83,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const UserAddressScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UserAddressScreen()));
           },
         ),
         const Divider(
@@ -94,7 +99,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           subtitle: const Text("View your past orders",
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UserOrdersScreen()));
+          },
         ),
       ],
     );
