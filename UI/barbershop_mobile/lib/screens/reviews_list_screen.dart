@@ -72,7 +72,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
               }
             },
             backgroundColor: Colors.amber[700],
-            label: const Text("Rate us"),
+            label: const Text("Rate Us"),
             icon: const Icon(
               Icons.rate_review_rounded,
             ),

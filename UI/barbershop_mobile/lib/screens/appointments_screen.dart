@@ -83,7 +83,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               Navigator.pushNamed(context, UserAppointmentsScreen.routeName);
             },
             backgroundColor: Colors.amber[700],
-            label: const Text("Your appointments"),
+            label: const Text("Your Appointments"),
             icon: const Icon(
               Icons.calendar_month,
             ),

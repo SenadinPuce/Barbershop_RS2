@@ -1,9 +1,11 @@
 import 'package:barbershop_mobile/models/brand.dart';
 import 'package:barbershop_mobile/models/product.dart';
 import 'package:barbershop_mobile/models/type.dart';
+import 'package:barbershop_mobile/providers/cart_provider.dart';
 import 'package:barbershop_mobile/providers/product_brand_provider.dart';
 import 'package:barbershop_mobile/providers/product_provider.dart';
 import 'package:barbershop_mobile/providers/product_type_provider.dart';
+import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/product_details_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
@@ -22,16 +24,21 @@ class ProductsListScreen extends StatefulWidget {
 class _ProductsListScreenState extends State<ProductsListScreen> {
   final GlobalKey<FormFieldState> _typeKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _brandKey = GlobalKey<FormFieldState>();
+
   late ProductProvider _productProvider;
   late ProductBrandProvider _productBrandProvider;
   late ProductTypeProvider _productTypeProvider;
+  late CartProvider _cartProvider;
+
   List<Product>? _products;
   List<ProductBrand>? _productBrandsList;
   List<ProductType>? _productTypesList;
+
   TextEditingController _productNameController = TextEditingController();
   String? _sortBy = "name";
   ProductBrand? _selectedBrand;
   ProductType? _selectedType;
+
   bool isLoading = true;
 
   @override
@@ -44,6 +51,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     _productProvider = context.read<ProductProvider>();
     _productBrandProvider = context.read<ProductBrandProvider>();
     _productTypeProvider = context.read<ProductTypeProvider>();
+    _cartProvider = context.read<CartProvider>();
 
     if (_productBrandsList == null) {
       var brands = await _productBrandProvider.get();
@@ -79,12 +87,34 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildHeader(), _buildProductSearch(), _buildView()],
+          children: [
+            _buildHeader(),
+            _buildProductSearch(),
+            _buildView(),
+            const SizedBox(
+              height: 80,
+            )
+          ],
         )),
-        if (isLoading) // Show CircularProgressIndicator if loading
-          Center(
+        if (isLoading)
+          const Center(
             child: CircularProgressIndicator(),
           ),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: FloatingActionButton.extended(
+            onPressed: () async {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()));
+            },
+            backgroundColor: Colors.amber[700],
+            label: const Text("Your Cart"),
+            icon: const Icon(
+              Icons.shopping_bag_outlined,
+            ),
+          ),
+        )
       ]),
     );
   }
@@ -393,7 +423,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0))),
                     onPressed: () {
-                      // Handle adding product to cart
+                      _cartProvider.addToCart(p);
                     },
                     icon: const Icon(Icons.shopping_cart),
                     label: const Text('Add to Cart'),

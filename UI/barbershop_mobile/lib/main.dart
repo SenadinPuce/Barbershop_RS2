@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/account_provider.dart';
 import 'providers/appointment_provider.dart';
+import 'providers/cart_provider.dart';
 import 'providers/news_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/product_brand_provider.dart';
@@ -22,7 +23,7 @@ import 'screens/products_list_screen.dart';
 import 'screens/user_appointments_screen.dart';
 
 void main() {
-  runApp(MultiProvider(
+runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AccountProvider()),
       ChangeNotifierProvider(create: (_) => NewsProvider()),
@@ -34,6 +35,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ReviewProvider()),
       ChangeNotifierProvider(create: (_) => UserProvider()),
       ChangeNotifierProvider(create: (_) => OrderProvider()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
     ],
     child: const MyApp(),
   ));
