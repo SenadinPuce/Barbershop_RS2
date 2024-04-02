@@ -2,18 +2,19 @@ using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
-using Core.Models.UpsertObjects;
+using Core.Models.UpdateObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class OrderService : BaseService<Order, OrderSearchObject>, IOrderService
+    public class OrderService : BaseCRUDService<Order, OrderSearchObject, OrderInsertObject, OrderUpdateObject>, IOrderService
     {
-        private readonly IMapper _mapper;
-        public OrderService(BarbershopContext context, IMapper mapper) : base(context)
+        protected readonly BarbershopContext _context;
+        public OrderService(BarbershopContext context, IMapper mapper) : base(context, mapper)
         {
-            _mapper = mapper;
+            _context = context;
         }
 
         public async Task<Order> UpdateOrderStatus(int id, string status)
@@ -36,11 +37,11 @@ namespace Infrastructure.Data.Repositories
             return null;
         }
 
-        public async Task<Order> CreateOrderAsync(int clientId, OrderUpsertObject request)
+        public async override Task<Order> Insert(OrderInsertObject insert)
         {
             var items = new List<OrderItem>();
 
-            foreach (var item in request.Items)
+            foreach (var item in insert.Items)
             {
                 var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
@@ -48,22 +49,22 @@ namespace Infrastructure.Data.Repositories
                 items.Add(orderItem);
             }
 
-            var deliveryMethod = await _context.DeliveryMethods.FindAsync(request.DeliveryMethodId);
+            var deliveryMethod = await _context.DeliveryMethods.FindAsync(insert.DeliveryMethodId);
 
             var subtotal = items.Sum(item => item.Price * item.Quantity);
 
-            var order = _context.Orders.Include(x => x.Address).SingleOrDefault(x => x.PaymentIntentId == request.PaymentIntentId);
+            var order = _context.Orders.Include(x => x.Address).SingleOrDefault(x => x.PaymentIntentId == insert.PaymentIntentId);
 
             if (order != null)
             {
-                _mapper.Map(request.Address, order.Address);
+                _mapper.Map(insert.Address, order.Address);
                 order.Subtotal = subtotal;
                 _context.Orders.Update(order);
             }
             else
             {
-                var address = _mapper.Map<Address>(request.Address);
-                order = new Order(items, clientId, deliveryMethod, subtotal, request.PaymentIntentId, address);
+                var address = _mapper.Map<Address>(insert.Address);
+                order = new Order(items, insert.ClientId, deliveryMethod, subtotal, insert.PaymentIntentId, address);
                 _context.Orders.Add(order);
             }
 
@@ -73,6 +74,44 @@ namespace Infrastructure.Data.Repositories
 
             return order;
         }
+
+        // public async Task<Order> CreateOrderAsync(int clientId, OrderUpsertObject request)
+        // {
+        //     var items = new List<OrderItem>();
+
+        //     foreach (var item in request.Items)
+        //     {
+        //         var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
+        //         var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
+        //         var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+        //         items.Add(orderItem);
+        //     }
+
+        //     var deliveryMethod = await _context.DeliveryMethods.FindAsync(request.DeliveryMethodId);
+
+        //     var subtotal = items.Sum(item => item.Price * item.Quantity);
+
+        //     var order = _context.Orders.Include(x => x.Address).SingleOrDefault(x => x.PaymentIntentId == request.PaymentIntentId);
+
+        //     if (order != null)
+        //     {
+        //         _mapper.Map(request.Address, order.Address);
+        //         order.Subtotal = subtotal;
+        //         _context.Orders.Update(order);
+        //     }
+        //     else
+        //     {
+        //         var address = _mapper.Map<Address>(request.Address);
+        //         order = new Order(items, clientId, deliveryMethod, subtotal, request.PaymentIntentId, address);
+        //         _context.Orders.Add(order);
+        //     }
+
+        //     var result = await _context.SaveChangesAsync();
+
+        //     if (result <= 0) return null;
+
+        //     return order;
+        // }
 
         public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
@@ -146,6 +185,7 @@ namespace Infrastructure.Data.Repositories
 
             return entity;
         }
+
 
     }
 }

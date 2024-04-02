@@ -1,9 +1,13 @@
+import 'package:barbershop_mobile/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/account_provider.dart';
 import 'providers/appointment_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/delivery_method_provider.dart';
 import 'providers/news_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/product_brand_provider.dart';
@@ -22,8 +26,12 @@ import 'screens/reviews_list_screen.dart';
 import 'screens/products_list_screen.dart';
 import 'screens/user_appointments_screen.dart';
 
-void main() {
-runApp(MultiProvider(
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  Stripe.publishableKey = stripePublishKey;
+
+  runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AccountProvider()),
       ChangeNotifierProvider(create: (_) => NewsProvider()),
@@ -36,6 +44,7 @@ runApp(MultiProvider(
       ChangeNotifierProvider(create: (_) => UserProvider()),
       ChangeNotifierProvider(create: (_) => OrderProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => DeliveryMethodProvider()),
     ],
     child: const MyApp(),
   ));
@@ -49,7 +58,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Barbershop mobile',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme:
+                GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)),
         initialRoute: '/login',
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),

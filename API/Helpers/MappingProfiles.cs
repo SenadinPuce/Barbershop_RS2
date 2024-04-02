@@ -44,6 +44,8 @@ namespace API.Helpers
                 .ForMember(d => d.ClientFirstName, o => o.MapFrom(s => s.User.FirstName))
                 .ForMember(d => d.ClientLastName, o => o.MapFrom(s => s.User.LastName));
             CreateMap<ReviewUpsertObject, Review>();
+            CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<DeliveryMethodUpsertObject, DeliveryMethod>();
         }
     }
 }

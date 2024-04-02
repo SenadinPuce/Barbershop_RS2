@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/screens/checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Back to shop", style: GoogleFonts.tiltNeon(fontSize: 25)),
+        title: Text("Back to Shop", style: GoogleFonts.tiltNeon(fontSize: 25)),
       ),
       body: SafeArea(
           child: Stack(children: [
@@ -152,7 +153,10 @@ class _CartScreenState extends State<CartScreen> {
                   borderRadius: BorderRadius.circular(10.0)),
               minimumSize: const Size(double.infinity, 45),
               elevation: 3),
-          onPressed: () async {},
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CheckoutScreen()));
+          },
           child: const Text(
             'Proceed to Checkout',
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
