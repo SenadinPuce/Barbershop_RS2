@@ -44,26 +44,23 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                child: Image.asset(
-                  'assets/images/appbar-logo.png',
-                  width: 70,
-                  height: 70,
-                ),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              child: Image.asset(
+                'assets/images/appbar-logo.png',
+                width: 50,
+                height: 50,
               ),
-              const Text(
-                "Barbershop",
-                style: TextStyle(fontSize: 30),
-              )
-            ],
-          ),
+            ),
+            const Text(
+              "Barbershop",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+            )
+          ],
         ),
       ),
       body: _screens[_currentIndex],

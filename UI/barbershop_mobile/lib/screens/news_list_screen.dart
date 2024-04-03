@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../models/news.dart';
 import '../providers/news_provider.dart';
-import '../widgets/master_screen.dart';
 import 'news_details_screen.dart';
 
 class NewsListScreen extends StatefulWidget {
@@ -59,10 +58,10 @@ class _NewsListScreenState extends State<NewsListScreen> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Center(
+      child: const Center(
         child: Text(
           "News",
-          style: GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
+          style: TextStyle(color: Colors.black, fontSize: 35),
         ),
       ),
     );
@@ -86,37 +85,73 @@ class _NewsListScreenState extends State<NewsListScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Card(
-        color: Colors.grey[200],
+        color: Colors.blueGrey[50],
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: ListTile(
+        child: InkWell(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NewsDetailsScreen(
-                          news: news!,
-                        )));
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewsDetailsScreen(
+                  news: news!,
+                ),
+              ),
+            );
           },
-          contentPadding: const EdgeInsets.all(10),
-          leading: news?.photo != null
-              ? imageFromBase64String(news!.photo!)
-              : const SizedBox(),
-          title: Text(news?.title ?? ''),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Icon(
-                Icons.calendar_today,
-                size: 15,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(formatDate(news?.createdDateTime) ?? 'Unknown'),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                news?.photo != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: imageFromBase64String(news!.photo!),
+                        ),
+                      )
+                    : const SizedBox(width: 100),
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        news?.title ?? '',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 15,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            formatDate(news?.createdDateTime) ?? 'Unknown',
+                            style: const TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

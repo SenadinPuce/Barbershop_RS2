@@ -1,4 +1,5 @@
 import 'package:barbershop_mobile/screens/navigation.dart';
+import 'package:barbershop_mobile/screens/news_details_screen.dart';
 import 'package:barbershop_mobile/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -60,19 +61,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Barbershop mobile',
         theme: ThemeData(
-            appBarTheme: const AppBarTheme(
-              color: Color.fromRGBO(57, 131, 120, 1),
-            ),
-            colorScheme: ColorScheme.fromSwatch()
-                .copyWith(primary: const Color.fromRGBO(213, 178, 99, 1)),
-            textTheme:
-                GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)),
+          appBarTheme: const AppBarTheme(
+            color: Color.fromRGBO(57, 131, 120, 1),
+          ),
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(primary: const Color.fromRGBO(213, 178, 99, 1)),
+          fontFamily: GoogleFonts.roboto().fontFamily,
+        ),
         initialRoute: '/login',
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
           Navigation.routeName: (context) => const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
+          NewsDetailsScreen.routeName: (context) => NewsDetailsScreen(),
           AppointmentsScreen.routeName: (context) => const AppointmentsScreen(),
           UserAppointmentsScreen.routeName: (context) =>
               const UserAppointmentsScreen(),

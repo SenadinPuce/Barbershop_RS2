@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NewsDetailsScreen extends StatelessWidget {
+  static const routeName = '/news-details';
+
   News? news;
 
   NewsDetailsScreen({
@@ -16,7 +18,7 @@ class NewsDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Back to news", style: GoogleFonts.tiltNeon(fontSize: 25)),
+        title: const Text("Back to news", style: TextStyle(fontSize: 25)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -28,8 +30,7 @@ class NewsDetailsScreen extends StatelessWidget {
                   child: Text(
                     news?.title ?? '',
                     textAlign: TextAlign.center,
-                    style:
-                        GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
+                    style: const TextStyle(color: Colors.black, fontSize: 35),
                   ),
                 ),
                 const SizedBox(
@@ -51,7 +52,6 @@ class NewsDetailsScreen extends StatelessWidget {
                     'Published on: ${formatDate(news?.createdDateTime) ?? 'Unknown'}',
                     style: const TextStyle(
                       fontSize: 14.0,
-                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
