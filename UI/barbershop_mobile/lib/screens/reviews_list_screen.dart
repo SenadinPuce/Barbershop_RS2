@@ -39,47 +39,45 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Stack(children: [
-        SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildView(),
-            const SizedBox(
-              height: 80,
-            )
-          ],
-        )),
-        if (isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () async {
-              final result =
-                  await Navigator.pushNamed(context, ReviewAddScreen.routeName);
+    return Stack(children: [
+      SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          _buildView(),
+          const SizedBox(
+            height: 80,
+          )
+        ],
+      )),
+      if (isLoading)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      Positioned(
+        bottom: 16.0,
+        right: 16.0,
+        child: FloatingActionButton.extended(
+          onPressed: () async {
+            final result =
+                await Navigator.pushNamed(context, ReviewAddScreen.routeName);
 
-              if (result != null && result == true) {
-                setState(() {
-                  isLoading = true;
-                });
-                loadData();
-              }
-            },
-            backgroundColor: Colors.amber[700],
-            label: const Text("Rate Us"),
-            icon: const Icon(
-              Icons.rate_review_rounded,
-            ),
+            if (result != null && result == true) {
+              setState(() {
+                isLoading = true;
+              });
+              loadData();
+            }
+          },
+          backgroundColor: Colors.amber[700],
+          label: const Text("Rate Us"),
+          icon: const Icon(
+            Icons.rate_review_rounded,
           ),
-        )
-      ]),
-    );
+        ),
+      )
+    ]);
   }
 
   Widget _buildHeader() {

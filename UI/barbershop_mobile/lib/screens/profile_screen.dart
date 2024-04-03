@@ -19,23 +19,21 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildHeader(),
-                  _buildView(),
-                ],
-              ),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildHeader(),
+                _buildView(),
+              ],
             ),
           ),
-          _buildLogOutOption(),
-        ],
-      ),
+        ),
+        _buildLogOutOption(),
+      ],
     );
   }
 

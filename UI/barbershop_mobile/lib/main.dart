@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/screens/navigation.dart';
 import 'package:barbershop_mobile/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -28,7 +29,7 @@ import 'screens/user_appointments_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   Stripe.publishableKey = stripePublishKey;
 
   runApp(MultiProvider(
@@ -59,13 +60,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Barbershop mobile',
         theme: ThemeData(
-            primarySwatch: Colors.blue,
+            appBarTheme: const AppBarTheme(
+              color: Color.fromRGBO(57, 131, 120, 1),
+            ),
+            colorScheme: ColorScheme.fromSwatch()
+                .copyWith(primary: const Color.fromRGBO(213, 178, 99, 1)),
             textTheme:
                 GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)),
         initialRoute: '/login',
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
+          Navigation.routeName: (context) => const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
           AppointmentsScreen.routeName: (context) => const AppointmentsScreen(),
           UserAppointmentsScreen.routeName: (context) =>

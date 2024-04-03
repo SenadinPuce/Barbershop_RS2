@@ -82,41 +82,39 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Stack(children: [
-        SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildProductSearch(),
-            _buildView(),
-            const SizedBox(
-              height: 80,
-            )
-          ],
-        )),
-        if (isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
+    return Stack(children: [
+      SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          _buildProductSearch(),
+          _buildView(),
+          const SizedBox(
+            height: 80,
+          )
+        ],
+      )),
+      if (isLoading)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      Positioned(
+        bottom: 16.0,
+        right: 16.0,
+        child: FloatingActionButton.extended(
+          onPressed: () async {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const CartScreen()));
+          },
+          backgroundColor: Colors.amber[700],
+          label: const Text("Your Cart"),
+          icon: const Icon(
+            Icons.shopping_bag_outlined,
           ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () async {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CartScreen()));
-            },
-            backgroundColor: Colors.amber[700],
-            label: const Text("Your Cart"),
-            icon: const Icon(
-              Icons.shopping_bag_outlined,
-            ),
-          ),
-        )
-      ]),
-    );
+        ),
+      )
+    ]);
   }
 
   Widget _buildHeader() {

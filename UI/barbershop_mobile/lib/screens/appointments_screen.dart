@@ -57,40 +57,38 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Stack(children: [
-        SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildSearch(),
-            _buildView(),
-            const SizedBox(
-              height: 80,
-            )
-          ],
-        )),
-        if (isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
+    return Stack(children: [
+      SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          _buildSearch(),
+          _buildView(),
+          const SizedBox(
+            height: 80,
+          )
+        ],
+      )),
+      if (isLoading)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      Positioned(
+        bottom: 16.0,
+        right: 16.0,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.pushNamed(context, UserAppointmentsScreen.routeName);
+          },
+          backgroundColor: Colors.amber[700],
+          label: const Text("Your Appointments"),
+          icon: const Icon(
+            Icons.calendar_month,
           ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, UserAppointmentsScreen.routeName);
-            },
-            backgroundColor: Colors.amber[700],
-            label: const Text("Your Appointments"),
-            icon: const Icon(
-              Icons.calendar_month,
-            ),
-          ),
-        )
-      ]),
-    );
+        ),
+      )
+    ]);
   }
 
   Widget _buildHeader() {

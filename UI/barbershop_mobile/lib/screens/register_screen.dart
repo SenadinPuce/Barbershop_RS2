@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/account_provider.dart';
+import 'navigation.dart';
 import 'news_list_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -35,25 +36,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: SingleChildScrollView(
           child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Center(
-                      child: SizedBox(
-                        width: 200,
-                        height: 200,
-                        child: Image.asset('assets/images/logo.png'),
-                      ),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 300,
+                      height: 300,
                     ),
                   ),
-                  Text(
-                    'Barbershop',
-                    style: GoogleFonts.tiltNeon(fontSize: 55),
-                  ),
                   const SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   FormBuilder(
                       key: _formKey,
@@ -127,9 +122,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                   icon: Icon(
                                     isPasswordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.black87,
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                   ),
                                 )),
                           ),
@@ -147,8 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                     await _accountProvider.register(request);
 
-                                    Navigator.popAndPushNamed(
-                                        context, NewsListScreen.routeName);
+                                    Navigator.popAndPushNamed(context, Navigation.routeName);
                                   }
                                 } on Exception catch (e) {
                                   showDialog(
@@ -169,6 +162,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 45),
+                                backgroundColor:
+                                    const Color.fromRGBO(57, 131, 120, 1),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
@@ -189,13 +184,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               TextButton(
                                   onPressed: () {
-                                    Navigator.popAndPushNamed(
+                                    Navigator.pushNamed(
                                         context, LoginScreen.routeName);
                                   },
                                   child: const Text(
                                     'Log in',
                                     style: TextStyle(
-                                        color: Colors.blue, fontSize: 15),
+                                        color: Color.fromRGBO(57, 131, 120, 1),
+                                        fontSize: 15),
                                   )),
                             ],
                           )

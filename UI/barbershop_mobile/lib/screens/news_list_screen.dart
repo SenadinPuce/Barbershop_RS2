@@ -40,22 +40,20 @@ class _NewsListScreenState extends State<NewsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      child: Stack(children: [
-        SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildView(),
-          ],
-        )),
-        if (isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ]),
-    );
+    return Stack(children: [
+      SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          _buildView(),
+        ],
+      )),
+      if (isLoading)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+    ]);
   }
 
   Widget _buildHeader() {

@@ -46,7 +46,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         toolbarHeight: 70,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.red,
         title: SizedBox(
           width: 100,
           height: 100,

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:barbershop_mobile/providers/account_provider.dart';
+import 'package:barbershop_mobile/screens/navigation.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -37,25 +38,18 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Center(
-                child: SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Image.asset('assets/images/logo.png'),
-                ),
+            Center(
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 300,
+                height: 300,
               ),
             ),
-            Text(
-              'Barbershop',
-              style: GoogleFonts.tiltNeon(fontSize: 55),
-            ),
             const SizedBox(
-              height: 25,
+              height: 20,
             ),
             Form(
                 key: _formKey,
@@ -87,8 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             icon: Icon(_isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
+                                ? Icons.visibility_off
+                                : Icons.visibility),
                             color: Colors.black87,
                           )),
                     ),
@@ -106,10 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       await _accountProvider.login(username, password);
 
-                      print(Authorization.email);
-                      print(Authorization.id);
-
-                      Navigator.pushNamed(context, NewsListScreen.routeName);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (route) => false);
                     }
                   } on Exception catch (e) {
                     showDialog(
@@ -128,13 +120,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 45),
+                  backgroundColor: const Color.fromRGBO(57, 131, 120, 1),
                   elevation: 3,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.symmetric(
                       vertical: 16.0, horizontal: 24.0),
                 ),
-                child:  const Text(
+                child: const Text(
                   'Log in',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
                 )),
@@ -152,7 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Text(
                       'Register',
-                      style: TextStyle(color: Colors.blue, fontSize: 15),
+                      style: TextStyle(
+                          color: Color.fromRGBO(57, 131, 120, 1), fontSize: 15),
                     )),
               ],
             )
