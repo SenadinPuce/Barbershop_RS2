@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 45),
-                  backgroundColor: const Color.fromRGBO(57, 131, 120, 1),
+                  backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
                   elevation: 3,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       'Register',
                       style: TextStyle(
-                          color: Color.fromRGBO(57, 131, 120, 1), fontSize: 15),
+                          color: Color.fromRGBO(84, 181, 166, 1), fontSize: 15),
                     )),
               ],
             )

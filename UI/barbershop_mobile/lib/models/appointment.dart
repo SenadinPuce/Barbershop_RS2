@@ -11,6 +11,7 @@ class Appointment {
   String? status;
   int? barberId;
   String? barberUsername;
+  String? barberFullName;
   int? clientId;
   String? clientUsername;
   int? serviceId;

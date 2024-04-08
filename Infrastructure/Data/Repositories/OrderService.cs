@@ -11,7 +11,7 @@ namespace Infrastructure.Data.Repositories
 {
     public class OrderService : BaseCRUDService<Order, OrderSearchObject, OrderInsertObject, OrderUpdateObject>, IOrderService
     {
-        protected readonly BarbershopContext _context;
+        protected readonly new BarbershopContext _context;
         public OrderService(BarbershopContext context, IMapper mapper) : base(context, mapper)
         {
             _context = context;

@@ -9,6 +9,7 @@ namespace API.Dtos
         public string Status { get; set; }
         public int BarberId { get; set; }
         public string BarberUsername { get; set; }
+        public string BarberFullName { get; set; }
         public int? ClientId { get; set; }
         public string ClientUsername { get; set; }
         public int? ServiceId { get; set; }

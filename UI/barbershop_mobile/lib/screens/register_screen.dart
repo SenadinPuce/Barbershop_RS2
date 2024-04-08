@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 45),
                                 backgroundColor:
-                                    const Color.fromRGBO(57, 131, 120, 1),
+                                    const Color.fromRGBO(84, 181, 166, 1),
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: const Text(
                                     'Log in',
                                     style: TextStyle(
-                                        color: Color.fromRGBO(57, 131, 120, 1),
+                                        color: Color.fromRGBO(84, 181, 166, 1),
                                         fontSize: 15),
                                   )),
                             ],

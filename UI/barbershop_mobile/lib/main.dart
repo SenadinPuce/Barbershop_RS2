@@ -18,7 +18,7 @@ import 'providers/product_type_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/service_provider.dart';
 import 'providers/user_provider.dart';
-import 'screens/appointments_screen.dart';
+import 'screens/appointments_list_screen.dart';
 import 'screens/news_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
@@ -75,7 +75,8 @@ class MyApp extends StatelessWidget {
           Navigation.routeName: (context) => const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
           NewsDetailsScreen.routeName: (context) => NewsDetailsScreen(),
-          AppointmentsScreen.routeName: (context) => const AppointmentsScreen(),
+          AppointmentsListScreen.routeName: (context) =>
+              const AppointmentsListScreen(),
           UserAppointmentsScreen.routeName: (context) =>
               const UserAppointmentsScreen(),
           ProductsListScreen.routeName: (context) => const ProductsListScreen(),

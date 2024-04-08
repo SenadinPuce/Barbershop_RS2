@@ -2,7 +2,6 @@
 import 'package:barbershop_mobile/models/news.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class NewsDetailsScreen extends StatelessWidget {
   static const routeName = '/news-details';

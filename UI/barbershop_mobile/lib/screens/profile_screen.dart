@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Navigator.pushNamed(context, LoginScreen.routeName);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red[400],
+            backgroundColor: const Color(0xfff71133),
             padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
             shape: RoundedRectangleBorder(

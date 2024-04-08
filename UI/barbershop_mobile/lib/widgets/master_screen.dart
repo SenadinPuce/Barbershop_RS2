@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/appointments_screen.dart';
+import '../screens/appointments_list_screen.dart';
 import '../screens/news_list_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/reviews_list_screen.dart';
@@ -27,7 +27,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
       Navigator.pushReplacementNamed(context, NewsListScreen.routeName);
     }
     if (ButtomNavigationBarHelper.currentIndex == 1) {
-      Navigator.pushReplacementNamed(context, AppointmentsScreen.routeName);
+      Navigator.pushReplacementNamed(context, AppointmentsListScreen.routeName);
     }
     if (ButtomNavigationBarHelper.currentIndex == 2) {
       Navigator.pushReplacementNamed(context, ProductsListScreen.routeName);

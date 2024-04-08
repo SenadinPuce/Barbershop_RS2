@@ -1,4 +1,4 @@
-import 'package:barbershop_mobile/screens/appointments_screen.dart';
+import 'package:barbershop_mobile/screens/appointments_list_screen.dart';
 import 'package:barbershop_mobile/screens/news_list_screen.dart';
 import 'package:barbershop_mobile/screens/products_list_screen.dart';
 import 'package:barbershop_mobile/screens/profile_screen.dart';
@@ -17,7 +17,7 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   final List<Widget> _screens = [
     const NewsListScreen(),
-    const AppointmentsScreen(),
+    const AppointmentsListScreen(),
     const ProductsListScreen(),
     const ReviewsListScreen(),
     const ProfileScreen()
@@ -66,7 +66,7 @@ class _NavigationState extends State<Navigation> {
       body: _screens[_currentIndex],
       bottomNavigationBar: Theme(
         data: Theme.of(context)
-            .copyWith(canvasColor: Color.fromRGBO(57, 131, 120, 1)),
+            .copyWith(canvasColor: const Color.fromRGBO(57, 131, 120, 1)),
         child: BottomNavigationBar(
           showUnselectedLabels: true,
           currentIndex: _currentIndex,

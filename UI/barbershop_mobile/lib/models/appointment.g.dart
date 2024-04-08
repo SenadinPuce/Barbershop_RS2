@@ -23,7 +23,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
       serviceId: json['serviceId'] as int?,
       serviceName: json['serviceName'] as String?,
       servicePrice: (json['servicePrice'] as num?)?.toDouble(),
-    );
+    )..barberFullName = json['barberFullName'] as String?;
 
 Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
     <String, dynamic>{
@@ -34,6 +34,7 @@ Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
       'status': instance.status,
       'barberId': instance.barberId,
       'barberUsername': instance.barberUsername,
+      'barberFullName': instance.barberFullName,
       'clientId': instance.clientId,
       'clientUsername': instance.clientUsername,
       'serviceId': instance.serviceId,

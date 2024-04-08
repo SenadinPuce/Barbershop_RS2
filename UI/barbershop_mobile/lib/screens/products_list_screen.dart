@@ -8,7 +8,6 @@ import 'package:barbershop_mobile/providers/product_type_provider.dart';
 import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/product_details_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

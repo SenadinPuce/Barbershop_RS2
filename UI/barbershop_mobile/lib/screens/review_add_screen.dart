@@ -136,7 +136,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
                     backgroundColor: Colors.green,
                     showCloseIcon: true,
                     closeIconColor: Colors.white,
-                    duration: Duration(seconds: 1),
+                    duration: Duration(seconds: 2),
                     content: Text('Review submitted successfully')),
               );
 
