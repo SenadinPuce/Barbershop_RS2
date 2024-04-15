@@ -31,7 +31,9 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackButtonAppBar(),
+      appBar: BackButtonAppBar(onPressed: (() {
+        Navigator.pop(context, true);
+      })),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -78,7 +80,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
       itemSize: 40,
       itemBuilder: (context, _) => const Icon(
         Icons.star,
-        color: Colors.amber,
+        color: Color.fromRGBO(213, 178, 99, 1),
       ),
       onRatingUpdate: (rating) {
         setState(() {
@@ -105,13 +107,13 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            minimumSize: const Size(double.infinity, 45),
-            elevation: 3),
+          minimumSize: const Size(double.infinity, 45),
+          backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
+          elevation: 3,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+        ),
         onPressed: () async {
           if (_formKey.currentState!.saveAndValidate()) {
             if (_rating == 0.0) {
@@ -142,13 +144,12 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
                 _rating = 0.0;
                 _commentController.clear();
               });
-              Navigator.pop(context, true);
             }
           }
         },
         child: const Text(
           'Submit',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
     );

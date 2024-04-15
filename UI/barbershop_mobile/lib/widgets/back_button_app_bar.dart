@@ -2,7 +2,12 @@
 import 'package:flutter/material.dart';
 
 class BackButtonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BackButtonAppBar({super.key});
+  final VoidCallback? onPressed;
+
+  const BackButtonAppBar({
+    Key? key,
+    this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,11 @@ class BackButtonAppBar extends StatelessWidget implements PreferredSizeWidget {
             size: 30,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            if (onPressed != null) {
+              onPressed!();
+            } else {
+              Navigator.of(context).pop();
+            }
           },
         ),
       ),

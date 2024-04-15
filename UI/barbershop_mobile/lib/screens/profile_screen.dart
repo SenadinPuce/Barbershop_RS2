@@ -2,9 +2,7 @@ import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:barbershop_mobile/screens/user_address_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
 import 'package:barbershop_mobile/screens/user_orders_screen.dart';
-import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../utils/util.dart';
@@ -20,31 +18,34 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildHeader(),
-                _buildView(),
-              ],
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildHeader(),
+                  _buildView(),
+                ],
+              ),
             ),
           ),
-        ),
-        _buildLogOutOption(),
-      ],
+        ],
+      ),
+      floatingActionButton: _buildLogOutOption(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Center(
+      child: const Center(
           child: Text(
         "Profile",
-        style: GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
+        style: TextStyle(color: Colors.black, fontSize: 35),
       )),
     );
   }
@@ -54,9 +55,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       shrinkWrap: true,
       children: [
         ListTile(
-          leading: Icon(
+          leading: const Icon(
             Icons.person,
-            color: Colors.amber[700],
+            color: Color.fromRGBO(213, 178, 99, 1),
           ),
           title: const Text(
             "Personal data",
@@ -64,7 +65,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           subtitle: const Text("View or update your personal information",
               style: TextStyle(color: Colors.black54)),
-          trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
+          trailing: const Icon(Icons.arrow_forward,
+              color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
             PersistentNavBarNavigator.pushNewScreen(context,
                 screen: const UserDataScreen());
@@ -74,11 +76,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           thickness: 1.5,
         ),
         ListTile(
-          leading: Icon(Icons.location_on, color: Colors.amber[700]),
+          leading: const Icon(
+            Icons.location_on,
+            color: Color.fromRGBO(213, 178, 99, 1),
+          ),
           title: const Text("Address", style: TextStyle(color: Colors.black)),
           subtitle: const Text("View or update your delivery address",
               style: TextStyle(color: Colors.black54)),
-          trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
+          trailing: const Icon(Icons.arrow_forward,
+              color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
             PersistentNavBarNavigator.pushNewScreen(context,
                 screen: const UserAddressScreen());
@@ -88,12 +94,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           thickness: 1.5,
         ),
         ListTile(
-          leading: Icon(Icons.history, color: Colors.amber[700]),
+          leading:
+              const Icon(Icons.history, color: Color.fromRGBO(213, 178, 99, 1)),
           title: const Text("Order History",
               style: TextStyle(color: Colors.black)),
           subtitle: const Text("View your past orders",
               style: TextStyle(color: Colors.black54)),
-          trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
+          trailing: const Icon(Icons.arrow_forward,
+              color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
             PersistentNavBarNavigator.pushNewScreen(context,
                 screen: const UserOrdersScreen());
@@ -112,9 +120,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Authorization.email = "";
           Authorization.token = "";
 
-          ButtomNavigationBarHelper.currentIndex = 0;
-
-          Navigator.pushNamed(context, LoginScreen.routeName);
+          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+            context,
+            settings: const RouteSettings(name: LoginScreen.routeName),
+            screen: const LoginScreen(),
+            withNavBar: false,
+            pageTransitionAnimation: PageTransitionAnimation.slideUp,
+          );
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xfff71133),

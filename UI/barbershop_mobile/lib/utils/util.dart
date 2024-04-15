@@ -10,9 +10,6 @@ class Authorization {
   static String? token;
 }
 
-class ButtomNavigationBarHelper {
-  static int currentIndex = 0;
-}
 
 Image imageFromBase64String(String base64Image) {
   return Image.memory(

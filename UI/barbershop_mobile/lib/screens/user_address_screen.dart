@@ -145,11 +145,13 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            minimumSize: const Size(double.infinity, 45),
-            elevation: 3),
+          minimumSize: const Size(double.infinity, 45),
+          backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
+          elevation: 3,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+        ),
         onPressed: isFormEdited
             ? () async {
                 if (_formKey.currentState?.saveAndValidate() == true) {
@@ -170,7 +172,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
             : null,
         child: const Text(
           'Save changes',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
     );

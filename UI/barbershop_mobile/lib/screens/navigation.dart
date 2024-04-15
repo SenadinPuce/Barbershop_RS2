@@ -30,34 +30,38 @@ class _NavigationState extends State<Navigation> {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
+    double iconSize = MediaQuery.of(context).size.height * 0.04;
+    double labelFontSize = 14.0;
+
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
-        title: ("Home"),
+        icon: Icon(Icons.home, size: iconSize),
+        title: "Home",
         activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.calendar_today),
-        title: ("Appointments"),
+        icon: Icon(Icons.calendar_today, size: iconSize),
+        title: "Appointments",
         activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.shopping_cart),
-        title: ("Shop"),
+        icon: Icon(Icons.shopping_cart, size: iconSize),
+        title: "Shop",
         activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.reviews),
-        title: ("Reviews"),
+        icon: Icon(Icons.reviews, size: iconSize),
+        title: "Reviews",
         activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.person),
-        title: ("Profile"),
+        icon: Icon(Icons.person, size: iconSize),
+        contentPadding: 0,
+        title: "Profile",
         activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
@@ -66,9 +70,12 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        toolbarHeight: screenHeight * 0.09,
         title: Row(
           children: [
             Padding(
@@ -109,6 +116,7 @@ class _NavigationState extends State<Navigation> {
           duration: Duration(milliseconds: 200),
         ),
         navBarStyle: NavBarStyle.style3,
+        navBarHeight: screenHeight * 0.09,
       ),
     );
   }

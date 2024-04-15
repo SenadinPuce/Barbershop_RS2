@@ -6,6 +6,7 @@ import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import 'news_list_screen.dart';
@@ -103,8 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       await _accountProvider.login(username, password);
 
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/home', (route) => false);
+                      PersistentNavBarNavigator.pushNewScreen(context,
+                          screen: const Navigation());
                     }
                   } on Exception catch (e) {
                     showDialog(

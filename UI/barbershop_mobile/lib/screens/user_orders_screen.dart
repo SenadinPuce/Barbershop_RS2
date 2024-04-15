@@ -3,6 +3,7 @@ import 'package:barbershop_mobile/providers/order_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/back_button_app_bar.dart';
@@ -84,17 +85,15 @@ class _UserOrdersScreenState extends State<UserOrdersScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Card(
-        color: Colors.grey[200],
+        color: Colors.blueGrey[50],
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => OrderDetailsScreen(
-                          order: order,
-                        )));
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: OrderDetailsScreen(
+                  order: order,
+                ));
           },
           child: Padding(
             padding: const EdgeInsets.all(20.0),

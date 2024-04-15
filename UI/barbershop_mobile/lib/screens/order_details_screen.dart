@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,10 +20,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text("Back to orders", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -35,21 +33,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const SizedBox(height: 10),
-              const Divider(color: Colors.black,),
+              const Divider(
+                color: Color.fromRGBO(213, 178, 99, 1),
+                thickness: 2,
+              ),
               Text('Date: ${formatDate(widget.order?.orderDate)}',
                   style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 10),
-              Text('Subtotal: \$${formatNumber(widget.order?.subtotal)}',
+              Text('Subtotal: ${formatNumber(widget.order?.subtotal)} \$ ',
                   style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 10),
               Text(
-                  'Delivery Price: \$${formatNumber(widget.order!.deliveryMethod?.price)}',
+                  'Delivery Price: ${formatNumber(widget.order!.deliveryMethod?.price)} \$',
                   style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 10),
-              const Divider(color: Colors.black,),
-              Text('Total: \$${formatNumber(widget.order?.total)}',
-                  style: const TextStyle(fontSize: 18)),
-              const Divider(color: Colors.black,),
+              const Divider(
+                thickness: 2,
+                color: Color.fromRGBO(213, 178, 99, 1),
+              ),
+              Text('Total: ${formatNumber(widget.order?.total)} \$',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              const Divider(
+                thickness: 2,
+                color: Color.fromRGBO(213, 178, 99, 1),
+              ),
               const SizedBox(height: 20),
               const Text(
                 'Contact Information:',
