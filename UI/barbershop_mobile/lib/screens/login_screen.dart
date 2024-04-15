@@ -39,22 +39,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Center(
                 child: Image.asset(
                   'assets/images/logo.png',
                   width: 300,
                   height: 300,
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: Form(
+              const SizedBox(
+                height: 20,
+              ),
+              Form(
                   key: _formKey,
                   child: Column(
                     children: [
@@ -91,70 +90,73 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   )),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    if (_formKey.currentState?.validate() == true) {
-                      var username = _usernameController.text;
-                      var password = _passwordController.text;
+              const SizedBox(
+                height: 25,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      if (_formKey.currentState?.validate() == true) {
+                        var username = _usernameController.text;
+                        var password = _passwordController.text;
 
-                      await _accountProvider.login(username, password);
+                        await _accountProvider.login(username, password);
 
-                      PersistentNavBarNavigator.pushNewScreen(context,
-                          screen: const Navigation());
+                        PersistentNavBarNavigator.pushNewScreen(context,
+                            screen: const Navigation());
+                      }
+                    } on Exception catch (e) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Error'),
+                                content: Text(e.toString()),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text("Ok"))
+                                ],
+                              ));
                     }
-                  } on Exception catch (e) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Error'),
-                              content: Text(e.toString()),
-                              actions: [
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text("Ok"))
-                              ],
-                            ));
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 45),
-                  backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 24.0),
-                ),
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
-                )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Don't have an account ?",
-                  style: TextStyle(fontSize: 15),
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.popAndPushNamed(
-                          context, RegisterScreen.routeName);
-                    },
-                    child: const Text(
-                      'Register',
-                      style: TextStyle(
-                          color: Color.fromRGBO(84, 181, 166, 1), fontSize: 15),
-                    )),
-              ],
-            )
-          ],
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 45),
+                    backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 24.0),
+                  ),
+                  child: const Text(
+                    'Log in',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account ?",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        PersistentNavBarNavigator.pushNewScreen(context,
+                            screen: const RegisterScreen(),
+                            pageTransitionAnimation:
+                                PageTransitionAnimation.cupertino);
+                      },
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                            color: Color.fromRGBO(84, 181, 166, 1),
+                            fontSize: 15),
+                      )),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
