@@ -26,7 +26,6 @@ namespace Core.Entities.OrderAggregate
 		public virtual Address Address { get; set; }
 		public int DeliveryMethodId { get; set; }
 		public virtual DeliveryMethod DeliveryMethod { get; set; }
-
 		public virtual ICollection<OrderItem> OrderItems { get; set; }
 		public decimal Subtotal { get; set; }
 		public OrderStatus Status { get; set; } = OrderStatus.Pending;

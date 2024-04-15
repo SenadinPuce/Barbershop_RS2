@@ -5,6 +5,7 @@ import 'package:barbershop_mobile/screens/user_orders_screen.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../utils/util.dart';
 
@@ -65,10 +66,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const UserDataScreen()));
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: const UserDataScreen());
           },
         ),
         const Divider(
@@ -81,10 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const UserAddressScreen()));
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: const UserAddressScreen());
           },
         ),
         const Divider(
@@ -98,10 +95,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.black54)),
           trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const UserOrdersScreen()));
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: const UserOrdersScreen());
           },
         ),
       ],

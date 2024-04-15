@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:barbershop_mobile/models/news.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class NewsDetailsScreen extends StatelessWidget {
@@ -16,9 +17,7 @@ class NewsDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Back to news", style: TextStyle(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

@@ -5,6 +5,7 @@ import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 class ReviewsListScreen extends StatefulWidget {
@@ -60,9 +61,9 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
         right: 16.0,
         child: FloatingActionButton.extended(
           onPressed: () async {
-            final result =
-                await Navigator.pushNamed(context, ReviewAddScreen.routeName);
-
+            final result = await PersistentNavBarNavigator.pushNewScreen(
+                context,
+                screen: const ReviewAddScreen());
             if (result != null && result == true) {
               setState(() {
                 isLoading = true;

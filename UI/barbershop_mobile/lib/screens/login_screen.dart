@@ -36,58 +36,61 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-          child: Padding(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: Column(
           children: [
-            Center(
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: 300,
-                height: 300,
+            Expanded(
+              child: Center(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 300,
+                  height: 300,
+                ),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                        controller: _usernameController,
-                        validator: FormBuilderValidators.required(),
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          hintText: 'Enter username',
-                          prefixIcon: Icon(Icons.person),
-                        )),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      validator: FormBuilderValidators.required(),
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Enter password',
-                          prefixIcon: const Icon(Icons.password),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                            icon: Icon(_isPasswordVisible
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            color: Colors.black87,
+            Expanded(
+              child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                          controller: _usernameController,
+                          validator: FormBuilderValidators.required(),
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                            hintText: 'Enter username',
+                            prefixIcon: Icon(Icons.person),
                           )),
-                    ),
-                  ],
-                )),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      TextFormField(
+                        controller: _passwordController,
+                        validator: FormBuilderValidators.required(),
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            hintText: 'Enter password',
+                            prefixIcon: const Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                              icon: Icon(_isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              color: Colors.black87,
+                            )),
+                      ),
+                    ],
+                  )),
+            ),
             const SizedBox(
               height: 25,
             ),
@@ -152,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
-      )),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:barbershop_mobile/providers/review_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -30,10 +31,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text("Back to reviews", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

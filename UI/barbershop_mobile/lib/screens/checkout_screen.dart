@@ -1,22 +1,28 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
+import 'package:barbershop_mobile/models/customer_payment.dart';
 import 'package:barbershop_mobile/models/delivery_method.dart';
-import 'package:barbershop_mobile/models/order.dart';
 import 'package:barbershop_mobile/providers/account_provider.dart';
 import 'package:barbershop_mobile/providers/cart_provider.dart';
 import 'package:barbershop_mobile/providers/delivery_method_provider.dart';
 import 'package:barbershop_mobile/providers/order_provider.dart';
+import 'package:barbershop_mobile/providers/payment_provider.dart';
 import 'package:barbershop_mobile/screens/payment_success.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:collection/collection.dart';
 
 import '../models/address.dart' as BarbershopAddress;
 import '../utils/constants.dart';
+import '../widgets/order_summary.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -30,12 +36,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   late AccountProvider _accountProvider;
   late CartProvider _cartProvider;
   late OrderProvider _orderProvider;
+  late PaymentProvider _paymentProvider;
   List<DeliveryMethod>? _deliveryMethods;
   BarbershopAddress.Address? _address;
   final _formKey = GlobalKey<FormBuilderState>();
-  DeliveryMethod? _selectedDeliveryMethod;
-  Map<String, dynamic>? paymentIntent;
   bool isLoading = true;
+  bool isSheetLoading = false;
 
   @override
   void initState() {
@@ -46,13 +52,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _cartProvider = context.read<CartProvider>();
+    _cartProvider = context.watch<CartProvider>();
   }
 
   Future loadData() async {
     _deliveryMethodProvider = context.read<DeliveryMethodProvider>();
     _accountProvider = context.read<AccountProvider>();
     _orderProvider = context.read<OrderProvider>();
+    _paymentProvider = context.read<PaymentProvider>();
 
     var deliveryMethodsData = await _deliveryMethodProvider.get();
     var addressData = await _accountProvider.getAddress();
@@ -64,14 +71,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
   }
 
+  Map<String, dynamic> _buildAddressFromFormData(
+      Map<String, dynamic> formData) {
+    return {
+      'firstName': formData['firstName'],
+      'lastName': formData['lastName'],
+      'street': formData['street'],
+      'city': formData['city'],
+      'state': formData['state'],
+      'zipCode': formData['zipCode'],
+    };
+  }
+
+  List<Map<String, dynamic>> _buildOrderItems() {
+    return _cartProvider.cart.items.map((element) {
+      return {'Id': element.product.id, 'Quantity': element.count};
+    }).toList();
+  }
+
   stripeMakePayment() async {
+    setState(() {
+      isSheetLoading = true;
+    });
+
     try {
-      paymentIntent = await createPaymentIntent(
-          (calculateAmount() * 100).round().toString(), 'USD');
+      final formData = _formKey.currentState!.value;
+      final address = _buildAddressFromFormData(formData);
+
+      Map request = {
+        'PaymentIntentId': _cartProvider.customerPayment?.paymentIntentId,
+        'DeliveryMethodId': _cartProvider.selectedDeliveryMethod?.id,
+        'Address': address,
+        'Items': _buildOrderItems()
+      };
+
+      _cartProvider.customerPayment =
+          await _paymentProvider.insert(request: request);
+
       await Stripe.instance
           .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  paymentIntentClientSecret:
+                      _cartProvider.customerPayment?.clientSecret,
                   style: ThemeMode.dark,
                   merchantDisplayName: 'Barbershop'))
           .then((value) {});
@@ -84,11 +125,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   displayPaymentSheet() async {
     try {
-      await Stripe.instance.presentPaymentSheet();
-
       await insertOrder();
 
-      print('Payment succesfully completed');
+      setState(() {
+        isSheetLoading = false;
+      });
+
+      await Stripe.instance.presentPaymentSheet();
+
+      PersistentNavBarNavigator.pushNewScreen(context,
+          screen: const PaymentSuccessScreen());
+
+      print('Payment sheet presented successfully');
+      print('Payment successfully completed');
     } on Exception catch (e) {
       if (e is StripeException) {
         print('Error from Stripe: ${e.error.localizedMessage}');
@@ -99,88 +148,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   insertOrder() async {
-    List<Map> orderItems = [];
-    _cartProvider.cart.items.forEach((element) {
-      orderItems.add({'Id': element.product.id, 'Quantity': element.count});
-    });
-
     final formData = _formKey.currentState!.value;
-    final String firstName = formData['firstName'];
-    final String lastName = formData['lastName'];
-    final String street = formData['street'];
-    final String city = formData['city'];
-    final String state = formData['state'];
-    final String zipCode = formData['zipCode'];
-
-    final address = BarbershopAddress.Address(
-      firstName: firstName,
-      lastName: lastName,
-      street: street,
-      city: city,
-      state: state,
-      zipCode: zipCode,
-    );
+    final address = _buildAddressFromFormData(formData);
 
     Map order = {
       'ClientId': Authorization.id,
-      'PaymentIntentId': paymentIntent?['id'],
-      'DeliveryMethodId': _selectedDeliveryMethod?.id,
+      'PaymentIntentId': _cartProvider.customerPayment?.paymentIntentId,
+      'DeliveryMethodId': _cartProvider.selectedDeliveryMethod?.id,
       'Address': address,
-      'Items': orderItems
+      'Items': _buildOrderItems()
     };
 
     await _orderProvider.insert(request: order);
 
     setState(() {
-      paymentIntent = null;
-      _selectedDeliveryMethod = null;
+      _cartProvider.customerPayment = null;
+      _cartProvider.selectedDeliveryMethod = null;
       _cartProvider.cart.items.clear();
     });
-
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const PaymentSuccessScreen()));
-  }
-
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': amount,
-        'currency': currency,
-        'payment_method_types[]': 'card'
-      };
-
-      var response = await http.post(
-          Uri.parse('https://api.stripe.com/v1/payment_intents'),
-          body: body,
-          headers: {
-            'Authorization': 'Bearer $stripeSecretKey',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          });
-      return jsonDecode(response.body);
-    } catch (e) {
-      print('Exception: $e');
-    }
-  }
-
-  double calculateAmount() {
-    double cartTotal = _selectedDeliveryMethod!.price!;
-    for (var element in _cartProvider.cart.items) {
-      cartTotal += (element.product.price! * element.count).toDouble();
-    }
-
-    return cartTotal;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Back to Cart", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
         child: Stack(
           children: [
-            SingleChildScrollView(child: _buildView()),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    if (isLoading == false) _buildView(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    if (isLoading == false)
+                      OrderSummaryWidget(cartProvider: _cartProvider),
+                    const SizedBox(
+                      height: 80,
+                    )
+                  ],
+                ),
+              ),
+            ),
             if (isLoading)
               const Center(
                 child: CircularProgressIndicator(),
@@ -196,142 +208,145 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildView() {
-    if (isLoading) {
-      return Container();
-    } else {
-      return FormBuilder(
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: FormBuilder(
         key: _formKey,
         initialValue: {
-          'firstName': _address!.firstName ?? '',
-          'lastName': _address!.lastName ?? '',
-          'street': _address!.street ?? '',
-          'city': _address!.city ?? '',
-          'state': _address!.state ?? '',
-          'zipCode': _address!.zipCode ?? '',
+          'deliveryMethodId':
+              _cartProvider.selectedDeliveryMethod?.id.toString(),
+          'firstName': _address?.firstName ?? '',
+          'lastName': _address?.lastName ?? '',
+          'street': _address?.street ?? '',
+          'city': _address?.city ?? '',
+          'state': _address?.state ?? '',
+          'zipCode': _address?.zipCode ?? '',
         },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Choose Delivery Method:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    FormBuilderRadioGroup<DeliveryMethod>(
-                      name: 'deliveryMethod',
-                      onChanged: (selectedMethod) {
-                        setState(() {
-                          _selectedDeliveryMethod = selectedMethod;
-                        });
-                      },
-                      validator: FormBuilderValidators.required(
-                          errorText: "You need to choose delivery method."),
-                      options: _deliveryMethods!
-                          .map((method) => FormBuilderFieldOption(
-                                value: method,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: _selectedDeliveryMethod == method
-                                          ? Colors.blue.withOpacity(0.1)
-                                          : null,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12.0, horizontal: 20.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            method.shortName ?? '',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          if (method.deliveryTime != null)
-                                            Text(
-                                              'Delivery Time: ${method.deliveryTime}',
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          if (method.price != null)
-                                            Text(
-                                              'Price: \$${method.price}',
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Choose Delivery Method:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                FormBuilderRadioGroup<String>(
+                  name: 'deliveryMethodId',
+                  onChanged: (selectedMethodId) {
+                    int id = int.parse(selectedMethodId!);
+                    DeliveryMethod? selectedMethod =
+                        _deliveryMethods?.firstWhereOrNull(
+                      (method) => method.id == id,
+                    );
+                    _cartProvider.setSelectedDeliveryMethod(selectedMethod!);
+                  },
+                  validator: FormBuilderValidators.required(
+                    errorText: "You need to choose a delivery method.",
+                  ),
+                  options: _deliveryMethods!
+                      .map((method) => FormBuilderFieldOption(
+                            value: method.id.toString(),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: _cartProvider
+                                              .selectedDeliveryMethod?.id ==
+                                          method.id
+                                      ? Colors.blue.withOpacity(0.1)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0,
+                                    horizontal: 20.0,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        method.shortName ?? '',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 5),
+                                      if (method.deliveryTime != null)
+                                        Text(
+                                          'Delivery Time: ${method.deliveryTime}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      if (method.price != null)
+                                        Text(
+                                          'Price: \$${method.price}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Delivery Address:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    FormBuilderTextField(
-                      name: 'firstName',
-                      decoration:
-                          const InputDecoration(labelText: 'First Name'),
-                      validator: FormBuilderValidators.required(),
-                    ),
-                    FormBuilderTextField(
-                      name: 'lastName',
-                      decoration: const InputDecoration(labelText: 'Last Name'),
-                      validator: FormBuilderValidators.required(),
-                    ),
-                    FormBuilderTextField(
-                      name: 'street',
-                      decoration: const InputDecoration(labelText: 'Street'),
-                      validator: FormBuilderValidators.required(),
-                    ),
-                    FormBuilderTextField(
-                      name: 'city',
-                      decoration: const InputDecoration(labelText: 'City'),
-                      validator: FormBuilderValidators.required(),
-                    ),
-                    FormBuilderTextField(
-                      name: 'state',
-                      decoration: const InputDecoration(labelText: 'State'),
-                      validator: FormBuilderValidators.required(),
-                    ),
-                    FormBuilderTextField(
-                      name: 'zipCode',
-                      decoration: const InputDecoration(labelText: 'Zip Code'),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.numeric()
-                      ]),
-                    ),
-                  ],
-                )),
-            const SizedBox(
-              height: 80,
-            )
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Delivery Address:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                FormBuilderTextField(
+                  name: 'firstName',
+                  decoration: const InputDecoration(labelText: 'First Name'),
+                  validator: FormBuilderValidators.required(),
+                ),
+                FormBuilderTextField(
+                  name: 'lastName',
+                  decoration: const InputDecoration(labelText: 'Last Name'),
+                  validator: FormBuilderValidators.required(),
+                ),
+                FormBuilderTextField(
+                  name: 'street',
+                  decoration: const InputDecoration(labelText: 'Street'),
+                  validator: FormBuilderValidators.required(),
+                ),
+                FormBuilderTextField(
+                  name: 'city',
+                  decoration: const InputDecoration(labelText: 'City'),
+                  validator: FormBuilderValidators.required(),
+                ),
+                FormBuilderTextField(
+                  name: 'state',
+                  decoration: const InputDecoration(labelText: 'State'),
+                  validator: FormBuilderValidators.required(),
+                ),
+                FormBuilderTextField(
+                  name: 'zipCode',
+                  decoration: const InputDecoration(labelText: 'Zip Code'),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    FormBuilderValidators.numeric()
+                  ]),
+                ),
+              ],
+            ),
           ],
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget _buildCheckoutButton() {
@@ -341,7 +356,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
               shape: RoundedRectangleBorder(
@@ -353,10 +368,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               await stripeMakePayment();
             }
           },
-          child: const Text(
-            'Checkout',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          ),
+          child: isSheetLoading
+              ? const CircularProgressIndicator()
+              : const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Make a Payment',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.payment)
+                  ],
+                ),
         ),
       ),
     );

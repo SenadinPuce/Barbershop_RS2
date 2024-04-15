@@ -1,10 +1,10 @@
 import 'package:barbershop_mobile/models/user.dart';
 import 'package:barbershop_mobile/providers/user_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class UserDataScreen extends StatefulWidget {
@@ -41,10 +41,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text("Back to profile", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
           child: Stack(children: [
         SingleChildScrollView(

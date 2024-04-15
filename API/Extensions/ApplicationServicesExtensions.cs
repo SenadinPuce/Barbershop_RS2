@@ -29,6 +29,7 @@ namespace API.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

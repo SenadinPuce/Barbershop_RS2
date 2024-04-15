@@ -1,6 +1,7 @@
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/news.dart';
@@ -39,20 +40,22 @@ class _NewsListScreenState extends State<NewsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          _buildView(),
-        ],
-      )),
-      if (isLoading)
-        const Center(
-          child: CircularProgressIndicator(),
-        ),
-    ]);
+    return Scaffold(
+      body: Stack(children: [
+        SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            _buildView(),
+          ],
+        )),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ]),
+    );
   }
 
   Widget _buildHeader() {
@@ -92,12 +95,10 @@ class _NewsListScreenState extends State<NewsListScreen> {
         ),
         child: InkWell(
           onTap: () {
-            Navigator.push(
+            PersistentNavBarNavigator.pushNewScreen(
               context,
-              MaterialPageRoute(
-                builder: (context) => NewsDetailsScreen(
-                  news: news!,
-                ),
+              screen: NewsDetailsScreen(
+                news: news!,
               ),
             );
           },

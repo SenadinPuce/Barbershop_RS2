@@ -4,6 +4,7 @@ import 'package:barbershop_mobile/screens/products_list_screen.dart';
 import 'package:barbershop_mobile/screens/profile_screen.dart';
 import 'package:barbershop_mobile/screens/reviews_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class Navigation extends StatefulWidget {
   static const routeName = '/home';
@@ -15,31 +16,53 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  final List<Widget> _screens = [
-    const NewsListScreen(),
-    const AppointmentsListScreen(),
-    const ProductsListScreen(),
-    const ReviewsListScreen(),
-    const ProfileScreen()
-  ];
+  PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
 
-  final List<IconData> _icons = const [
-    Icons.home,
-    Icons.calendar_today,
-    Icons.shopping_cart,
-    Icons.reviews,
-    Icons.person
-  ];
+  List<Widget> _buildScreens() {
+    return [
+      const NewsListScreen(),
+      const AppointmentsListScreen(),
+      const ProductsListScreen(),
+      const ReviewsListScreen(),
+      const ProfileScreen()
+    ];
+  }
 
-  final List<String> _labels = const [
-    "News",
-    "Appointments",
-    "Shop",
-    "Reviews",
-    "Profile"
-  ];
-
-  int _currentIndex = 0;
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.home),
+        title: ("Home"),
+        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        inactiveColorPrimary: Colors.white,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.calendar_today),
+        title: ("Appointments"),
+        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        inactiveColorPrimary: Colors.white,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.shopping_cart),
+        title: ("Shop"),
+        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        inactiveColorPrimary: Colors.white,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.reviews),
+        title: ("Reviews"),
+        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        inactiveColorPrimary: Colors.white,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.person),
+        title: ("Profile"),
+        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        inactiveColorPrimary: Colors.white,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,29 +86,29 @@ class _NavigationState extends State<Navigation> {
           ],
         ),
       ),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: Theme(
-        data: Theme.of(context)
-            .copyWith(canvasColor: const Color.fromRGBO(57, 131, 120, 1)),
-        child: BottomNavigationBar(
-          showUnselectedLabels: true,
-          currentIndex: _currentIndex,
-          onTap: (int index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: List.generate(_icons.length, (index) {
-            return BottomNavigationBarItem(
-                icon: Icon(
-                  _icons[index],
-                  size: 30,
-                ),
-                label: _labels[index]);
-          }),
-          selectedItemColor: Color.fromRGBO(213, 178, 99, 1),
-          unselectedItemColor: Colors.white,
+      body: PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: const Color.fromRGBO(57, 131, 120, 1),
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true,
+        stateManagement: true,
+        hideNavigationBarWhenKeyboardShows: true,
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: const ItemAnimationProperties(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
         ),
+        screenTransitionAnimation: const ScreenTransitionAnimation(
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle: NavBarStyle.style3,
       ),
     );
   }

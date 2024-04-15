@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/back_button_app_bar.dart';
 import 'order_details_screen.dart';
 
 class UserOrdersScreen extends StatefulWidget {
@@ -44,9 +45,7 @@ class _UserOrdersScreenState extends State<UserOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text("Back to profile",
-              style: GoogleFonts.tiltNeon(fontSize: 25))),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
           child: Stack(
         children: [

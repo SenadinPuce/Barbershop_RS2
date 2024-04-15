@@ -9,7 +9,7 @@ import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/product_details_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 class ProductsListScreen extends StatefulWidget {
@@ -81,98 +81,146 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          _buildProductSearch(),
-          _buildView(),
-          const SizedBox(
-            height: 80,
-          )
-        ],
-      )),
-      if (isLoading)
-        const Center(
-          child: CircularProgressIndicator(),
-        ),
-      Positioned(
-        bottom: 16.0,
-        right: 16.0,
-        child: FloatingActionButton.extended(
-          onPressed: () async {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const CartScreen()));
-          },
-          backgroundColor: Colors.amber[700],
-          label: const Text("Your Cart"),
-          icon: const Icon(
-            Icons.shopping_bag_outlined,
+    return Scaffold(
+      body: Stack(children: [
+        SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            _buildProductSearch(),
+            _buildView(),
+            const SizedBox(
+              height: 80,
+            )
+          ],
+        )),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
           ),
+      ]),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          PersistentNavBarNavigator.pushNewScreen(context,
+              screen: const CartScreen());
+        },
+        backgroundColor: const Color.fromRGBO(99, 134, 213, 1),
+        label: const Text("Your Cart"),
+        icon: const Icon(
+          Icons.shopping_bag_outlined,
         ),
-      )
-    ]);
+      ),
+    );
   }
 
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Center(
+      child: const Center(
         child: Text(
           "Products",
-          style: GoogleFonts.tiltNeon(color: Colors.black, fontSize: 35),
+          style: TextStyle(color: Colors.black, fontSize: 35),
         ),
       ),
     );
   }
 
   Widget _buildProductSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: TextField(
-                controller: _productNameController,
-                onSubmitted: (value) async {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  loadData();
-                },
-                decoration: InputDecoration(
-                    hintText: "Search",
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.grey)))),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        children: [
+          TextField(
+            controller: _productNameController,
+            onSubmitted: (value) async {
+              setState(() {
+                isLoading = true;
+              });
+              loadData();
+            },
+            decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+                hintText: "Search here",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.grey)),
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 25),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                    ),
+                    child: const Text(
+                      "Search",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      loadData();
+                    },
+                  ),
+                )),
           ),
-        ),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-            child: Column(children: [
-              IconButton(
-                icon: const Icon(Icons.sort_outlined),
-                onPressed: () {
-                  _showSortModal(context);
-                },
-              ),
-              const Text("Sort by")
-            ])),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
-            child: Column(children: [
-              IconButton(
-                icon: const Icon(Icons.filter_alt_outlined),
-                onPressed: () {
-                  _showFiltersModal(context);
-                },
-              ),
-              const Text("Filters")
-            ])),
-      ],
+          const SizedBox(
+            height: 5,
+          ),
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    _showSortModal(context);
+                  },
+                  icon: const Icon(
+                    Icons.sort_outlined,
+                    color: Color.fromRGBO(213, 178, 99, 1),
+                    size: 25,
+                  ),
+                  label: const Text(
+                    "Sort by",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+                const VerticalDivider(
+                  thickness: 2,
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    _showFiltersModal(context);
+                  },
+                  icon: const Icon(
+                    Icons.filter_alt_outlined,
+                    color: Color.fromRGBO(213, 178, 99, 1),
+                    size: 25,
+                  ),
+                  label: const Text(
+                    "Filters",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -183,35 +231,50 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RadioListTile<String>(
-              title: const Text('Alphabetical'),
-              value: 'name',
-              groupValue: _sortBy,
-              onChanged: (value) {
-                _updateSortBy(value!);
-                Navigator.pop(context);
-              },
+            _buildSortTile(
+              context,
+              'Alphabetical',
+              'name',
             ),
-            RadioListTile<String>(
-              title: const Text('Price: Low to High'),
-              value: 'priceAsc',
-              groupValue: _sortBy,
-              onChanged: (value) {
-                _updateSortBy(value!);
-                Navigator.pop(context);
-              },
+            _buildSortTile(
+              context,
+              'Price: Low to High',
+              'priceAsc',
             ),
-            RadioListTile<String>(
-              title: const Text('Price: High to Low'),
-              value: 'priceDesc',
-              groupValue: _sortBy,
-              onChanged: (value) {
-                _updateSortBy(value!);
-                Navigator.pop(context);
-              },
+            _buildSortTile(
+              context,
+              'Price: High to Low',
+              'priceDesc',
             ),
           ],
         );
+      },
+    );
+  }
+
+  Widget _buildSortTile(BuildContext context, String title, String value) {
+    final isSelected = _sortBy == value;
+
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color:
+              isSelected ? const Color.fromRGBO(213, 178, 99, 1) : Colors.black,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? const Icon(
+              Icons.check,
+              color: Color.fromRGBO(213, 178, 99, 1),
+            )
+          : null,
+      onTap: () {
+        if (!isSelected) {
+          _updateSortBy(value);
+          Navigator.pop(context);
+        }
       },
     );
   }
@@ -322,7 +385,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueGrey),
+                            backgroundColor: Colors.grey,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 12.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                          ),
                           child: const Text('Close'),
                         ),
                       ),
@@ -337,7 +405,13 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                             loadData();
                           },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue),
+                            backgroundColor:
+                                const Color.fromRGBO(213, 178, 99, 1),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 12.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                          ),
                           child: const Text('Search'),
                         ),
                       ),
@@ -376,7 +450,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     List<Widget> list = _products!
         .map((p) => Card(
               elevation: 3,
-              color: Colors.grey[200],
+              color: Colors.blueGrey[50],
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Padding(
@@ -385,12 +459,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   Flexible(
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductDetailsScreen(
-                                      product: p,
-                                    )));
+                        PersistentNavBarNavigator.pushNewScreen(context,
+                            screen: ProductDetailsScreen(
+                              product: p,
+                            ));
                       },
                       child: imageFromBase64String(p.photo!),
                     ),
@@ -407,16 +479,19 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   const SizedBox(height: 4),
                   Text(
                     '${formatNumber(p.price)} \$',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.amber[900],
+                      color: Color.fromRGBO(213, 178, 99, 1),
                     ),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: const Color(0xFF54b5a6),
+                        elevation: 3,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16.0),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0))),
                     onPressed: () {

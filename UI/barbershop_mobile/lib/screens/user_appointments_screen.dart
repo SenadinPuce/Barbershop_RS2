@@ -1,6 +1,7 @@
 import 'package:barbershop_mobile/models/appointment.dart';
 import 'package:barbershop_mobile/providers/appointment_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,10 +39,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            const Text("Back to appointments", style: TextStyle(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
           child: Stack(children: [
         SingleChildScrollView(

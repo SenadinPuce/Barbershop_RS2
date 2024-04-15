@@ -75,44 +75,6 @@ namespace Infrastructure.Data.Repositories
             return order;
         }
 
-        // public async Task<Order> CreateOrderAsync(int clientId, OrderUpsertObject request)
-        // {
-        //     var items = new List<OrderItem>();
-
-        //     foreach (var item in request.Items)
-        //     {
-        //         var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
-        //         var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
-        //         var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
-        //         items.Add(orderItem);
-        //     }
-
-        //     var deliveryMethod = await _context.DeliveryMethods.FindAsync(request.DeliveryMethodId);
-
-        //     var subtotal = items.Sum(item => item.Price * item.Quantity);
-
-        //     var order = _context.Orders.Include(x => x.Address).SingleOrDefault(x => x.PaymentIntentId == request.PaymentIntentId);
-
-        //     if (order != null)
-        //     {
-        //         _mapper.Map(request.Address, order.Address);
-        //         order.Subtotal = subtotal;
-        //         _context.Orders.Update(order);
-        //     }
-        //     else
-        //     {
-        //         var address = _mapper.Map<Address>(request.Address);
-        //         order = new Order(items, clientId, deliveryMethod, subtotal, request.PaymentIntentId, address);
-        //         _context.Orders.Add(order);
-        //     }
-
-        //     var result = await _context.SaveChangesAsync();
-
-        //     if (result <= 0) return null;
-
-        //     return order;
-        // }
-
         public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
             return await _context.DeliveryMethods.ToListAsync();

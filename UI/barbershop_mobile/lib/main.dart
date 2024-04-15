@@ -1,3 +1,5 @@
+import 'package:barbershop_mobile/providers/payment_provider.dart';
+import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/navigation.dart';
 import 'package:barbershop_mobile/screens/news_details_screen.dart';
 import 'package:barbershop_mobile/utils/constants.dart';
@@ -47,6 +49,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => OrderProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => DeliveryMethodProvider()),
+      ChangeNotifierProvider(create: (_) => PaymentProvider()),
     ],
     child: const MyApp(),
   ));
@@ -72,7 +75,7 @@ class MyApp extends StatelessWidget {
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
-          Navigation.routeName: (context) => const Navigation(),
+          Navigation.routeName: (context) =>  const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
           NewsDetailsScreen.routeName: (context) => NewsDetailsScreen(),
           AppointmentsListScreen.routeName: (context) =>
@@ -80,6 +83,7 @@ class MyApp extends StatelessWidget {
           UserAppointmentsScreen.routeName: (context) =>
               const UserAppointmentsScreen(),
           ProductsListScreen.routeName: (context) => const ProductsListScreen(),
+          CartScreen.routeName: (context) => const CartScreen(),
           ReviewsListScreen.routeName: (context) => const ReviewsListScreen(),
           ReviewAddScreen.routeName: (context) => const ReviewAddScreen(),
           ProfileScreen.routeName: (context) => const ProfileScreen(),

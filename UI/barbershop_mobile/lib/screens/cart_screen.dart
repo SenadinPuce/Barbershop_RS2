@@ -1,6 +1,8 @@
 import 'package:barbershop_mobile/screens/checkout_screen.dart';
+import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/order_summary.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart.dart';
@@ -9,6 +11,7 @@ import '../utils/util.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+  static const routeName = '/cart';
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -21,41 +24,48 @@ class _CartScreenState extends State<CartScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _cartProvider = context.watch<CartProvider>();
+
+    if (_cartProvider.cart.items.isEmpty) {
+      _cartProvider.selectedDeliveryMethod = null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Back to Shop", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
-      body: SafeArea(
-          child: Stack(children: [
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              _buildProductCardList(),
-              const SizedBox(
-                height: 80,
-              )
-            ],
-          ),
-        ),
-        if (_cartProvider.cart.items.isEmpty)
-          const Center(
-            child: Text(
-              'Your Cart is currently empty.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        appBar: const BackButtonAppBar(),
+        body: Stack(children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                _buildProductCardList(),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (_cartProvider.cart.items.isNotEmpty)
+                  OrderSummaryWidget(
+                    cartProvider: _cartProvider,
+                  ),
+                const SizedBox(
+                  height: 80,
+                )
+              ],
             ),
-          )
-        else
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: _buildProceedButton(),
           ),
-      ])),
-    );
+          if (_cartProvider.cart.items.isEmpty)
+            const Center(
+              child: Text(
+                'Your Cart is currently empty.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            )
+          else
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildProceedButton(),
+            ),
+        ]));
   }
 
   Widget _buildProductCardList() {
@@ -79,7 +89,7 @@ class _CartScreenState extends State<CartScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -110,7 +120,7 @@ class _CartScreenState extends State<CartScreen> {
                       style: const TextStyle(fontSize: 16),
                     ),
                     const Divider(
-                      color: Colors.amber,
+                      color: Color.fromRGBO(213, 178, 99, 1),
                       thickness: 2.0,
                     ),
                     Text(
@@ -124,8 +134,8 @@ class _CartScreenState extends State<CartScreen> {
               const SizedBox(width: 16),
               IconButton(
                 icon: const Icon(
-                  Icons.remove_shopping_cart,
-                  color: Colors.red,
+                  Icons.delete_outlined,
+                  color: Color(0xfff71133),
                   size: 30,
                 ),
                 onPressed: () {
@@ -146,7 +156,7 @@ class _CartScreenState extends State<CartScreen> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
               shape: RoundedRectangleBorder(
@@ -154,12 +164,21 @@ class _CartScreenState extends State<CartScreen> {
               minimumSize: const Size(double.infinity, 45),
               elevation: 3),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CheckoutScreen()));
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: const CheckoutScreen());
           },
-          child: const Text(
-            'Proceed to Checkout',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Proceed to Checkout',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Icon(Icons.arrow_forward)
+            ],
           ),
         ),
       ),

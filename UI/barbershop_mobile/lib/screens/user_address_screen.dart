@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../models/address.dart';
 import '../providers/account_provider.dart';
+import '../widgets/back_button_app_bar.dart';
 
 class UserAddressScreen extends StatefulWidget {
   const UserAddressScreen({super.key});
@@ -42,10 +43,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text("Back to profile", style: GoogleFonts.tiltNeon(fontSize: 25)),
-      ),
+      appBar: const BackButtonAppBar(),
       body: SafeArea(
           child: Stack(
         children: [
