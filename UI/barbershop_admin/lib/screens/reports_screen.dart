@@ -23,38 +23,38 @@ class _ReportsScreenState extends State<ReportsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      title: 'Reports',
-      child: Column(
-        children: [
-          Container(
-            decoration: const BoxDecoration(color: Colors.lightBlueAccent),
-            child: TabBar(
-              controller: _tabController,
-              indicator: const BoxDecoration(color: Colors.blue),
-              labelColor: Colors.white,
-              tabs: const [
-                Tab(
-                  text: 'Generate barbers report',
-                  icon: Icon(Icons.work_rounded),
-                ),
-                Tab(
-                  text: 'Generate orders report',
-                  icon: Icon(Icons.show_chart_rounded),
-                )
-              ],
-            ),
+    return Column(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(84, 181, 166, 0.7),
           ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: TabBarView(
-              controller: _tabController,
-              children: const [BarbersReportScreen(), OrdersReportScreen()],
-            ),
-          ))
-        ],
-      ),
+          child: TabBar(
+            controller: _tabController,
+            indicator:
+                const BoxDecoration(color: Color.fromRGBO(84, 181, 166, 1)),
+            labelColor: Colors.white,
+            tabs: const [
+              Tab(
+                text: 'Generate barbers report',
+                icon: Icon(Icons.work_rounded),
+              ),
+              Tab(
+                text: 'Generate orders report',
+                icon: Icon(Icons.show_chart_rounded),
+              )
+            ],
+          ),
+        ),
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: TabBarView(
+            controller: _tabController,
+            children: const [BarbersReportScreen(), OrdersReportScreen()],
+          ),
+        ))
+      ],
     );
   }
 }

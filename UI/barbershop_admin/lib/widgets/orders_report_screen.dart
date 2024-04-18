@@ -57,7 +57,7 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
           Container()
         else
           Card(
-            color: Colors.blue,
+            color: const Color.fromRGBO(84, 181, 166, 1),
             elevation: 10,
             child: Padding(
               padding: const EdgeInsets.all(15),
@@ -175,18 +175,14 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
         const SizedBox(
           width: 8,
         ),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              _loadOrders();
-            },
-            child: const Text("Generate"),
-          ),
+        ElevatedButton(
+          onPressed: () async {
+            setState(() {
+              isLoading = true;
+            });
+            _loadOrders();
+          },
+          child: const Text("Generate"),
         ),
       ],
     );

@@ -3,13 +3,14 @@ using AutoMapper;
 using Core.Entities;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    // [Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -22,6 +23,7 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users-with-roles")]
         public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] UserSearchObject search)
         {
@@ -49,7 +51,7 @@ namespace API.Controllers
             return Ok(userDtos);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("edit-roles/{username}")]
 
         public async Task<ActionResult<AppUserDto>> EditRoles(string username, [FromBody] string roles)
@@ -77,6 +79,7 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserDto>> GetUserById(int id)
         {
@@ -91,6 +94,7 @@ namespace API.Controllers
 
             return Ok(_mapper.Map<AppUserDto>(user));
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<AppUserDto>> UpdateUser(int id, [FromBody] AppUserUpdateRequest update)

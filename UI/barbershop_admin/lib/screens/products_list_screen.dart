@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:barbershop_admin/screens/user_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/brand.dart';
@@ -10,8 +9,7 @@ import '../providers/product_brand_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/product_type_provider.dart';
 import '../utils/util.dart';
-import '../widgets/master_screen.dart';
-import 'product_detail_screen.dart';
+import 'product_details_screen.dart';
 
 class ProductsListScreen extends StatefulWidget {
   const ProductsListScreen({super.key});
@@ -27,37 +25,43 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   List<Product>? products;
   TextEditingController _productNameController = TextEditingController();
   List<ProductBrand>? _productBrandsList;
-  ProductBrand? _selectedBrand;
+  int? _selectedBrandId;
   List<ProductType>? _productTypesList;
-  ProductType? _selectedType;
+  int? _selectedTypeId;
   String? _sortBy;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadProducts();
+
+    loadData();
   }
 
-  Future<void> loadProducts() async {
+  loadData() async {
     _productProvider = context.read<ProductProvider>();
     _productBrandProvider = context.read<ProductBrandProvider>();
     _productTypeProvider = context.read<ProductTypeProvider>();
 
-    if (_productBrandsList == null) {
-      var brands = await _productBrandProvider.get();
-      _productBrandsList = List.from(brands);
-    }
+    var brandsData = await _productBrandProvider.get();
+    _productBrandsList = brandsData;
 
-    if (_productTypesList == null) {
-      var types = await _productTypeProvider.get();
-      _productTypesList = List.from(types);
-    }
+    var typesData = await _productTypeProvider.get();
+    _productTypesList = typesData;
 
+    setState(() {
+      _productBrandsList = brandsData;
+      _productTypesList = typesData;
+    });
+
+    loadProducts();
+  }
+
+  loadProducts() async {
     var productData = await _productProvider.get(filter: {
       'name': _productNameController.text,
-      'productBrandId': _selectedBrand?.id,
-      'productTypeId': _selectedType?.id,
+      'productBrandId': _selectedBrandId,
+      'productTypeId': _selectedTypeId,
       'sortBy': _sortBy,
       'includeProductTypes': true,
       'includeProductBrands': true,
@@ -72,89 +76,94 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      title: "Products",
-      child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildSearch(),
-              const SizedBox(
-                height: 8,
-              ),
-              _buildDataListView()
-            ],
-          )),
-    );
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildSearch(),
+            const SizedBox(
+              height: 20,
+            ),
+            _buildDataListView()
+          ],
+        ));
   }
 
   Widget _buildSearch() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
           child: TextFormField(
             decoration: const InputDecoration(
               labelText: "Product name",
-              contentPadding: EdgeInsets.all(0),
+              hintText: "Enter product name",
+              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             ),
             controller: _productNameController,
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: DropdownButtonFormField<ProductBrand>(
+          child: DropdownButtonFormField<int>(
             decoration: InputDecoration(
-                labelText: "Brand",
-                contentPadding: const EdgeInsets.all(0),
-                suffix: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedBrand = null;
-                      });
-                    },
-                    icon: const Icon(Icons.close)),
-                hintText: 'Select brand'),
-            value: _selectedBrand,
-            items: _productBrandsList?.map((ProductBrand brand) {
-              return DropdownMenuItem<ProductBrand>(
+              labelText: "Brand",
+              hintText: 'Select brand',
+              alignLabelWithHint: true,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              suffix: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedBrandId = null;
+                    });
+                  },
+                  icon: const Icon(Icons.close)),
+            ),
+            value: _selectedBrandId,
+            items: _productBrandsList?.map((brand) {
+              return DropdownMenuItem<int>(
                 alignment: AlignmentDirectional.center,
-                value: brand,
+                value: brand.id,
                 child: Text(brand.name.toString()),
               );
             }).toList(),
-            onChanged: (ProductBrand? newValue) {
+            onChanged: (newValue) {
               setState(() {
-                _selectedBrand = newValue;
+                _selectedBrandId = newValue;
               });
             },
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: DropdownButtonFormField<ProductType>(
+          child: DropdownButtonFormField<int>(
             decoration: InputDecoration(
-                labelText: "Type",
-                contentPadding: const EdgeInsets.all(0),
-                suffix: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedType = null;
-                      });
-                    },
-                    icon: const Icon(Icons.close)),
-                hintText: 'Select type'),
-            value: _selectedType,
+              labelText: "Type",
+              hintText: 'Select type',
+              alignLabelWithHint: true,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              suffix: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedTypeId = null;
+                    });
+                  },
+                  icon: const Icon(Icons.close)),
+            ),
+            value: _selectedTypeId,
             items: _productTypesList?.map((ProductType type) {
-              return DropdownMenuItem<ProductType>(
+              return DropdownMenuItem<int>(
                 alignment: AlignmentDirectional.center,
-                value: type,
+                value: type.id,
                 child: Text(type.name.toString()),
               );
             }).toList(),
-            onChanged: (ProductType? newValue) {
+            onChanged: (newValue) {
               setState(() {
-                _selectedType = newValue;
+                _selectedTypeId = newValue;
               });
             },
           ),
@@ -164,7 +173,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           child: DropdownButtonFormField<String?>(
             decoration: InputDecoration(
               labelText: "Sort by",
-              contentPadding: const EdgeInsets.all(0),
+              hintText: 'Sort by',
+              alignLabelWithHint: true,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               suffix: IconButton(
                 onPressed: () {
                   setState(() {
@@ -173,7 +185,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 },
                 icon: const Icon(Icons.close),
               ),
-              hintText: 'Sort by',
             ),
             value: _sortBy,
             items: {
@@ -198,91 +209,89 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         const SizedBox(
           width: 8,
         ),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              loadProducts();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-            ),
-            child: const Text("Search"),
+        ElevatedButton(
+          onPressed: () async {
+            setState(() {
+              isLoading = true;
+            });
+            loadProducts();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
           ),
+          child: const Text("Search"),
         ),
         const SizedBox(
           width: 8,
         ),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () async {
-              isLoading = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProductDetailScreen(
-                        productBrands: _productBrandsList,
-                        productTypes: _productTypesList,
-                      )));
-
-              if (isLoading) {
-                setState(() {
-                  loadProducts();
-                });
-              }
-            },
-            child: const Text("Add new product"),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
+          onPressed: () async {
+            isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ProductDetailsScreen(
+                      productBrands: _productBrandsList,
+                      productTypes: _productTypesList,
+                    )));
+
+            if (isLoading == true) {
+              setState(() {});
+              loadProducts();
+            }
+          },
+          child: const Text("Add new product"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return Expanded(
-      child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: DataTable(
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Expanded(
+            child: SingleChildScrollView(
+                child: DataTable(
               showCheckboxColumn: false,
+              headingRowColor: MaterialStateColor.resolveWith(
+                (states) {
+                  return const Color.fromRGBO(236, 239, 241, 1);
+                },
+              ),
               columns: const [
                 DataColumn(
                   label:
-                      Text('ID', style: TextStyle(fontStyle: FontStyle.italic)),
+                      Text('ID', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Name',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Price',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Brand',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Type',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Picture',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Edit',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 DataColumn(
                   label: Text('Delete',
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
               rows: (products ?? [])
@@ -303,7 +312,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         DataCell(IconButton(
                           icon: const Icon(
                             Icons.edit_document,
-                            color: Colors.green,
+                            color: Color.fromRGBO(84, 181, 166, 1),
                           ),
                           onPressed: () {
                             _editProduct(p);
@@ -312,7 +321,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         DataCell(IconButton(
                           icon: const Icon(
                             Icons.delete,
-                            color: Colors.red,
+                            color: Color(0xfff71133),
                           ),
                           onPressed: () {
                             _deleteProduct(p);
@@ -321,20 +330,19 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                       ]))
                   .toList(),
             )),
-    );
+          );
   }
 
   void _editProduct(Product p) async {
     isLoading = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ProductDetailScreen(
+        builder: (context) => ProductDetailsScreen(
               product: p,
               productBrands: _productBrandsList,
               productTypes: _productTypesList,
             )));
-    if (isLoading) {
-      setState(() {
-        loadProducts();
-      });
+    if (isLoading == true) {
+      setState(() {});
+      loadProducts();
     }
   }
 
@@ -347,7 +355,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             content: const Text(
                 'Are you sure you want to delete this product? This action is not reversible.'),
             actions: [
-              TextButton(
+              OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

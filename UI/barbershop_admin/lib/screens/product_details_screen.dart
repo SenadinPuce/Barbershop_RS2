@@ -14,14 +14,14 @@ import '../models/product.dart';
 import '../models/type.dart';
 import '../providers/product_provider.dart';
 import '../utils/util.dart';
-import '../widgets/master_screen.dart';
 
-class ProductDetailScreen extends StatefulWidget {
+class ProductDetailsScreen extends StatefulWidget {
+  static const routeName = '/product-details';
   Product? product;
   List<ProductBrand>? productBrands;
   List<ProductType>? productTypes;
 
-  ProductDetailScreen({
+  ProductDetailsScreen({
     Key? key,
     this.product,
     this.productBrands,
@@ -29,10 +29,10 @@ class ProductDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late ProductProvider _productProvider;
@@ -41,7 +41,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   File? _image;
   String? _base64Image;
   Product? editedProduct;
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -77,145 +76,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               .id
           : null,
     };
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-        title: 'Product details',
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildForm(),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            width: 150,
-                            height: 40,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                if (editedProduct != null) {
-                                  Navigator.of(context).pop(true);
-                                } else {
-                                  Navigator.of(context).pop(false);
-                                }
-                              },
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.blue),
-                              ),
-                              child: const Text("Close"),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          SizedBox(
-                              width: 150,
-                              height: 40,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green),
-                                onPressed: () async {
-                                  if (_formKey.currentState
-                                          ?.saveAndValidate() ==
-                                      true) {
-                                    try {
-                                      var request = Map.from(
-                                          _formKey.currentState!.value);
-
-                                      request['photo'] = _base64Image;
-
-                                      if (widget.product == null) {
-                                        editedProduct = await _productProvider
-                                            .insert(request: request);
-                                      } else {
-                                        editedProduct =
-                                            await _productProvider.update(
-                                          widget.product!.id!,
-                                          request,
-                                        );
-                                      }
-
-                                      setState(() {});
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: const Row(
-                                          children: [
-                                            Icon(
-                                              Icons.check_circle,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(width: 8.0),
-                                            Text("Product saved successfully.")
-                                          ],
-                                        ),
-                                        duration: const Duration(seconds: 1),
-                                        backgroundColor: Colors.green,
-                                        action: SnackBarAction(
-                                          label: 'Dismiss',
-                                          onPressed: () {
-                                            ScaffoldMessenger.of(context)
-                                                .hideCurrentSnackBar();
-                                          },
-                                          textColor: Colors.white,
-                                        ),
-                                      ));
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: const Row(
-                                            children: [
-                                              Icon(
-                                                Icons.error,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(width: 8.0),
-                                              Text(
-                                                'Failed to save product. Please try again.',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
-                                          duration: const Duration(seconds: 1),
-                                          backgroundColor: Colors.red,
-                                          action: SnackBarAction(
-                                            label: 'Dismiss',
-                                            onPressed: () {
-                                              ScaffoldMessenger.of(context)
-                                                  .hideCurrentSnackBar();
-                                            },
-                                            textColor: Colors.white,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                                child: const Text("Save changes"),
-                              ))
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-        ));
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildForm(),
+              const SizedBox(height: 20),
+              _buildButtons()
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildForm() {
@@ -257,7 +136,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   decoration: InputDecoration(
                     label: const Text(
                       'Image',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
                     ),
                     errorText: null,
                     enabledBorder: OutlineInputBorder(
@@ -301,20 +180,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.orange),
+                      border: Border.all(
+                          color: const Color.fromRGBO(213, 178, 99, 1)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.photo, color: Colors.orange),
+                        Icon(Icons.photo,
+                            color: Color.fromRGBO(213, 178, 99, 1)),
                         SizedBox(width: 8.0),
                         Text(
                           'Select image',
-                          style: TextStyle(color: Colors.orange),
+                          style:
+                              TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
                         ),
                         SizedBox(width: 8.0),
-                        Icon(Icons.file_upload, color: Colors.orange),
+                        Icon(Icons.file_upload,
+                            color: Color.fromRGBO(213, 178, 99, 1)),
                       ],
                     ),
                   ),
@@ -404,5 +287,101 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         _base64Image = base64Encode(_image!.readAsBytesSync());
       });
     }
+  }
+
+  Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        OutlinedButton(
+          onPressed: () {
+            if (editedProduct != null) {
+              Navigator.of(context).pop(true);
+            } else {
+              Navigator.of(context).pop(false);
+            }
+          },
+          child: const Text(
+            "Close",
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (_formKey.currentState?.saveAndValidate() == true) {
+              try {
+                var request = Map.from(_formKey.currentState!.value);
+
+                request['photo'] = _base64Image;
+
+                if (widget.product == null) {
+                  editedProduct =
+                      await _productProvider.insert(request: request);
+                } else {
+                  editedProduct = await _productProvider.update(
+                    widget.product!.id!,
+                    request,
+                  );
+                }
+
+                setState(() {});
+
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 8.0),
+                      Text("Product saved successfully.")
+                    ],
+                  ),
+                  duration: const Duration(seconds: 1),
+                  backgroundColor: Colors.green,
+                  action: SnackBarAction(
+                    label: 'Dismiss',
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                    textColor: Colors.white,
+                  ),
+                ));
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Row(
+                      children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'Failed to save product. Please try again.',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    duration: const Duration(seconds: 1),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'Dismiss',
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      },
+                      textColor: Colors.white,
+                    ),
+                  ),
+                );
+              }
+            }
+          },
+          child: const Text("Save changes"),
+        )
+      ],
+    );
   }
 }

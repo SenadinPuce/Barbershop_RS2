@@ -9,7 +9,7 @@ import '../models/order.dart';
 import '../providers/orders_provider.dart';
 import '../utils/util.dart';
 import '../widgets/master_screen.dart';
-import 'order_detail_screen.dart';
+import 'order_details_screen.dart';
 
 class OrdersListScreen extends StatefulWidget {
   const OrdersListScreen({super.key});
@@ -30,10 +30,10 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
   void initState() {
     super.initState();
 
-    _loadOrders();
+    loadOrders();
   }
 
-  Future<void> _loadOrders() async {
+  Future<void> loadOrders() async {
     _orderProvider = context.read<OrderProvider>();
 
     var ordersData = await _orderProvider.get(filter: {
@@ -53,37 +53,37 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      title: 'Orders',
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            _buildSearch(),
-            const SizedBox(
-              height: 8,
-            ),
-            _buildDataListView()
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSearch(),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildDataListView()
+        ],
       ),
     );
   }
 
   Widget _buildSearch() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
             child: DateTimeFormField(
           decoration: const InputDecoration(
             labelText: 'From date',
-            floatingLabelStyle: TextStyle(color: Colors.blue),
+            hintText: 'Select date',
+            floatingLabelStyle:
+                TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: Icon(
-                Icons.calendar_today,
-                color: Colors.blue,
-              ),
+              child: Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(213, 178, 99, 1)),
             ),
           ),
           initialValue: _selectedDateFrom,
@@ -104,13 +104,14 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
             child: DateTimeFormField(
           decoration: const InputDecoration(
             labelText: 'To date',
-            floatingLabelStyle: TextStyle(color: Colors.blue),
+            hintText: 'Select date',
+            floatingLabelStyle:
+                TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: Icon(
-                Icons.calendar_today,
-                color: Colors.blue,
-              ),
+              child: Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(213, 178, 99, 1)),
             ),
           ),
           initialValue: _selectedDateTo,
@@ -130,17 +131,20 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
         Expanded(
             child: DropdownButtonFormField<String>(
           decoration: InputDecoration(
-              labelText: "Status",
-              contentPadding: const EdgeInsets.all(0),
-              suffix: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _selectedStatus = null;
-                  });
-                },
-              ),
-              hintText: 'Select status'),
+            labelText: "Status",
+            hintText: 'Select status',
+            alignLabelWithHint: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            suffix: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                setState(() {
+                  _selectedStatus = null;
+                });
+              },
+            ),
+          ),
           value: _selectedStatus,
           items: ['Pending', 'Payment Received', 'Payment Failed', 'Completed']
               .map((String value) => DropdownMenuItem(
@@ -158,135 +162,108 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
         const SizedBox(
           width: 8,
         ),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              _loadOrders();
-            },
-            child: const Text("Search"),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
           ),
+          onPressed: () async {
+            setState(() {
+              isLoading = true;
+            });
+            loadOrders();
+          },
+          child: const Text("Search"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return Expanded(
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  columns: const [
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Client username',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Delivery method',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Shipping price',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Subtotal',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Total',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Order date',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Status',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Complete',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    )),
-                    DataColumn(
-                        label: Expanded(
-                      child: Text(
-                        'Details',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ))
-                  ],
-                  rows: (orders ?? [])
-                      .map((Order o) => DataRow(cells: [
-                            DataCell(Text(o.id.toString())),
-                            DataCell(Text(o.clientUsername.toString())),
-                            DataCell(
-                                Text(o.deliveryMethod!.shortName.toString())),
-                            DataCell(Text(o.deliveryMethod!.price.toString())),
-                            DataCell(Text(o.subtotal.toString())),
-                            DataCell(Text(o.total.toString())),
-                            DataCell(Text(getDate(o.orderDate))),
-                            DataCell(Text(o.status.toString())),
-                            DataCell(IconButton(
-                              icon: const Icon(Icons.check_box_outlined),
-                              color: Colors.green,
-                              disabledColor: Colors.grey,
-                              onPressed: (o.status == 'Payment Received')
-                                  ? () {
-                                      _completeOrder(o);
-                                    }
-                                  : null,
-                            )),
-                            DataCell(IconButton(
-                                icon: const Icon(Icons.info),
-                                color: Colors.blue,
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrderDetailsScreen(order: o)));
-                                }))
-                          ]))
-                      .toList(),
-                ),
-              ));
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Expanded(
+            child: SingleChildScrollView(
+            child: DataTable(
+              showCheckboxColumn: false,
+              headingRowColor: MaterialStateColor.resolveWith(
+                (states) {
+                  return const Color.fromRGBO(236, 239, 241, 1);
+                },
+              ),
+              columns: const [
+                DataColumn(
+                    label: Text(
+                  'ID',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Client',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Delivery method',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Total',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Order date',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Status',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Complete',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+                DataColumn(
+                    label: Text(
+                  'Details',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ))
+              ],
+              rows: (orders ?? [])
+                  .map((Order o) => DataRow(cells: [
+                        DataCell(Text(o.id.toString())),
+                        DataCell(Text(o.clientUsername.toString())),
+                        DataCell(Text(o.deliveryMethod!.shortName.toString())),
+                        DataCell(Text(o.total.toString())),
+                        DataCell(Text(getDate(o.orderDate))),
+                        DataCell(Text(o.status.toString())),
+                        DataCell(IconButton(
+                          icon: const Icon(Icons.check_box_outlined),
+                          color: const Color.fromRGBO(84, 181, 166, 1),
+                          disabledColor: Colors.grey,
+                          onPressed: (o.status == 'Payment Received')
+                              ? () {
+                                  _completeOrder(o);
+                                }
+                              : null,
+                        )),
+                        DataCell(IconButton(
+                            icon: const Icon(Icons.info),
+                            color: const Color.fromRGBO(99, 134, 213, 1),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderDetailsScreen(order: o)));
+                            }))
+                      ]))
+                  .toList(),
+            ),
+          ));
   }
 
   void _completeOrder(Order o) {
@@ -298,7 +275,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
             content: const Text(
                 'Are you sure you want to mark this order as completed? This action is not reversible.'),
             actions: [
-              TextButton(
+              OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

@@ -74,7 +74,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
-   Future<T> insert({dynamic request, String? extraRoute}) async {
+  Future<T> insert({dynamic request, String? extraRoute}) async {
     var url = "$apiUrl$_endpoint";
 
     if (extraRoute != null && extraRoute.trim().isEmpty == false) {
@@ -95,7 +95,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
- Future<T> update(int id, {dynamic request, String? extraRoute}) async {
+  Future<T> update(int id, {dynamic request, String? extraRoute}) async {
     var url = "$apiUrl$_endpoint";
 
     if (extraRoute != null && extraRoute.trim().isEmpty == false) {
@@ -140,6 +140,14 @@ abstract class BaseProvider<T> with ChangeNotifier {
       return true;
     } else if (response.statusCode == 401) {
       throw Exception("Unauthorized");
+    } else if (response.statusCode == 400) {
+      throw Exception("Bad request: ${response.body}");
+    } else if (response.statusCode == 403) {
+      throw Exception("Forbidden method: ${response.body}");
+    } else if (response.statusCode == 404) {
+      throw Exception("Not found: ${response.body}");
+    } else if (response.statusCode == 500) {
+      throw Exception("Internal server error: ${response.body}");
     } else {
       print("Error response: ${response.statusCode}");
       print("Response body: ${response.body}");

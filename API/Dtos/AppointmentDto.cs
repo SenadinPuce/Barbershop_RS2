@@ -12,6 +12,7 @@ namespace API.Dtos
         public string BarberFullName { get; set; }
         public int? ClientId { get; set; }
         public string ClientUsername { get; set; }
+        public string ClientFullName { get; set; }
         public int? ServiceId { get; set; }
         public string ServiceName { get; set; }
         public decimal ServicePrice { get; set; }

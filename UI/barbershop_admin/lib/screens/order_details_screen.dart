@@ -19,94 +19,88 @@ class OrderDetailsScreen extends StatefulWidget {
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-        title: 'Order details',
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  'User Information',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                _userInformation(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Shipping address',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                _addressInformation(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Delivery information',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                _deliveryInformation(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Order items',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                _orderItemsInformation(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'Order summary',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-                _summaryInformation(),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      width: 150,
-                      height: 40,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.blue),
-                        ),
-                        child: const Text("Close"),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'User Information',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              _userInformation(),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                'Shipping address',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              _addressInformation(),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                'Delivery information',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              _deliveryInformation(),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                'Order items',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              _orderItemsInformation(),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                'Order summary',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              _summaryInformation(),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    height: 40,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Close"),
+                    ),
+                  )
+                ],
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _userInformation() {

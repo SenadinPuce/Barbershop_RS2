@@ -1,14 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:barbershop_admin/models/service.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/service_provider.dart';
 import '../utils/util.dart';
-import '../widgets/master_screen.dart';
-import 'service_detail_screen.dart';
+import 'service_details_screen.dart';
 
 class ServicesListScreen extends StatefulWidget {
   const ServicesListScreen({super.key});
@@ -26,10 +24,10 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadServices();
+    loadServices();
   }
 
-  Future<void> _loadServices() async {
+  Future<void> loadServices() async {
     _serviceProvider = context.read<ServiceProvider>();
 
     var servicesData = await _serviceProvider
@@ -43,152 +41,150 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-      title: 'Services',
-      child: Padding(
-        padding: const EdgeInsets.all(15),
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildSearch(),
             const SizedBox(
-              height: 8,
+              height: 20,
             ),
             _buildDataListView()
           ],
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildSearch() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
             child: TextFormField(
           decoration: const InputDecoration(
             labelText: 'Service name',
+            hintText: 'Enter service name',
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           ),
           controller: _serviceNameController,
         )),
         const SizedBox(width: 8),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                _loadServices();
-              },
-              child: const Text("Search")),
-        ),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
+            ),
+            onPressed: () async {
+              setState(() {
+                isLoading = true;
+              });
+              loadServices();
+            },
+            child: const Text("Search")),
         const SizedBox(
           width: 8,
         ),
-        SizedBox(
-          width: 150,
-          height: 40,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            onPressed: () async {
-              isLoading = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ServiceDetailScreen()));
-              if (isLoading) {
-                setState(() {
-                  _loadServices();
-                });
-              }
-            },
-            child: const Text("Add new service"),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
+          onPressed: () async {
+            isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ServiceDetailsScreen()));
+            if (isLoading) {
+              setState(() {});
+              loadServices();
+            }
+          },
+          child: const Text("Add new service"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return Expanded(
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  child: DataTable(
-                    showCheckboxColumn: false,
-                    columns: const [
-                      DataColumn(
-                          label: Text(
-                        'ID',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        'Name',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        'Price',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        'Description',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      )),
-                      DataColumn(
-                        label: Text('Edit',
-                            style: TextStyle(fontStyle: FontStyle.italic)),
-                      ),
-                      DataColumn(
-                          label: Text(
-                        'Delete',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      )),
-                    ],
-                    rows: (services ?? [])
-                        .map((Service s) => DataRow(cells: [
-                              DataCell(Text(s.id.toString())),
-                              DataCell(Text(s.name.toString())),
-                              DataCell(Text(formatNumber(s.price))),
-                              DataCell(Text(s.description.toString())),
-                              DataCell(IconButton(
-                                icon: const Icon(
-                                  Icons.edit_document,
-                                  color: Colors.green,
-                                ),
-                                onPressed: () {
-                                  _editService(s);
-                                },
-                              )),
-                              DataCell(IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  _deleteService(s);
-                                },
-                              ))
-                            ]))
-                        .toList(),
-                  ),
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Expanded(
+            child: SingleChildScrollView(
+              child: DataTable(
+                showCheckboxColumn: false,
+                headingRowColor: MaterialStateColor.resolveWith(
+                  (states) {
+                    return const Color.fromRGBO(236, 239, 241, 1);
+                  },
                 ),
-              ));
+                columns: const [
+                  DataColumn(
+                      label: Text(
+                    'ID',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Name',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Price',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Description',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                    label: Text('Edit',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  DataColumn(
+                      label: Text(
+                    'Delete',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                ],
+                rows: (services ?? [])
+                    .map((Service s) => DataRow(cells: [
+                          DataCell(Text(s.id.toString())),
+                          DataCell(Text(s.name.toString())),
+                          DataCell(Text(formatNumber(s.price))),
+                          DataCell(Text(s.description.toString())),
+                          DataCell(IconButton(
+                            icon: const Icon(
+                              Icons.edit_document,
+                              color: Color.fromRGBO(84, 181, 166, 1),
+                            ),
+                            onPressed: () {
+                              _editService(s);
+                            },
+                          )),
+                          DataCell(IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Color(0xfff71133),
+                            ),
+                            onPressed: () {
+                              _deleteService(s);
+                            },
+                          ))
+                        ]))
+                    .toList(),
+              ),
+            ),
+          );
   }
 
   void _editService(Service s) async {
     isLoading = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ServiceDetailScreen(
+        builder: (context) => ServiceDetailsScreen(
               service: s,
             )));
     if (isLoading) {
-      setState(() {
-        _loadServices();
-      });
+      setState(() {});
+      loadServices();
     }
   }
 
@@ -201,7 +197,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
             content: const Text(
                 'Are you sure you want to delete this service? This action is not reversible.'),
             actions: [
-              TextButton(
+              OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

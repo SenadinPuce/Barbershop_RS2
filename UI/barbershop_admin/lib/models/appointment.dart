@@ -11,8 +11,10 @@ class Appointment {
   String? status;
   int? barberId;
   String? barberUsername;
+  String? barberFullName;
   int? clientId;
   String? clientUsername;
+  String? clientFullName;
   int? serviceId;
   String? serviceName;
   double? servicePrice;
@@ -25,8 +27,10 @@ class Appointment {
       this.status,
       this.barberId,
       this.barberUsername,
+      this.barberFullName,
       this.clientId,
       this.clientUsername,
+      this.clientFullName,
       this.serviceId,
       this.serviceName,
       this.servicePrice});

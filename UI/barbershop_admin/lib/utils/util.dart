@@ -10,6 +10,17 @@ class Authorization {
   static String? token;
 }
 
+String toTitleCase(String text) {
+  if (text.isEmpty) return '';
+  return text.toLowerCase().split(' ').map((word) {
+    if (word.isNotEmpty) {
+      return word[0].toUpperCase() + word.substring(1);
+    } else {
+      return '';
+    }
+  }).join(' ');
+}
+
 Image imageFromBase64String(String base64Image) {
   return Image.memory(
     base64Decode(base64Image),
@@ -33,7 +44,11 @@ String getDate(DateTime? value) {
 }
 
 String getTime(DateTime? value) {
-  return "${value?.hour}:${value?.minute}";
+  if (value == null) return '';
+
+  final format = DateFormat('h:mm');
+
+  return format.format(value);
 }
 
 String formatDate(DateTime? date) {

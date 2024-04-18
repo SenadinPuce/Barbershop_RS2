@@ -1,7 +1,7 @@
-import 'package:barbershop_admin/main.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/appointments_list_screen.dart';
+import '../screens/login_screen.dart';
 import '../screens/orders_list_screen.dart';
 import '../screens/products_list_screen.dart';
 import '../screens/reports_screen.dart';
@@ -28,6 +28,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         title: Text(widget.title ?? ""),
       ),
       drawer: Drawer(
@@ -136,7 +137,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LoginPage(),
+                      builder: (context) => const LoginScreen(),
                     ),
                   );
                 },
