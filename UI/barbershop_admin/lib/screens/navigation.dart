@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:barbershop_admin/screens/login_screen.dart';
+import 'package:barbershop_admin/screens/news_list_screen.dart';
 import 'package:barbershop_admin/screens/products_list_screen.dart';
 import 'package:barbershop_admin/screens/users_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +41,6 @@ class _NavigationState extends State<Navigation> {
       widget: const UsersListScreen(),
     ),
     NavigationItem(
-      icon: const Icon(Icons.category),
-      label: "Products",
-      widget: const ProductsListScreen(),
-    ),
-    NavigationItem(
-      icon: const Icon(Icons.cut),
-      label: "Services",
-      widget: const ServicesListScreen(),
-    ),
-    NavigationItem(
       icon: const Icon(Icons.calendar_today),
       label: "Appointments",
       widget: const AppointmentsListScreen(),
@@ -60,12 +51,27 @@ class _NavigationState extends State<Navigation> {
       widget: const OrdersListScreen(),
     ),
     NavigationItem(
+      icon: const Icon(Icons.category),
+      label: "Products",
+      widget: const ProductsListScreen(),
+    ),
+    NavigationItem(
+      icon: const Icon(Icons.cut),
+      label: "Services",
+      widget: const ServicesListScreen(),
+    ),
+    NavigationItem(
+      icon: const Icon(Icons.newspaper),
+      label: "News",
+      widget: const NewsListScreen(),
+    ),
+    NavigationItem(
       icon: const Icon(Icons.bar_chart),
       label: "Reports",
       widget: const ReportsScreen(),
     ),
     NavigationItem(
-      icon: const Icon(Icons.settings),
+      icon: const Icon(Icons.person),
       label: "Profile",
       widget: Container(),
     ),

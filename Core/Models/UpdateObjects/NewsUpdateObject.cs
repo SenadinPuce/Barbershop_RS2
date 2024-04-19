@@ -12,8 +12,5 @@ namespace Core.Models.UpdateObjects
 
         [Required]
         public string Photo { get; set; }
-
-        [Required]
-        public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
     }
 }

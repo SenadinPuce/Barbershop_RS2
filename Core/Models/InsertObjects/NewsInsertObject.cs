@@ -14,9 +14,6 @@ namespace Core.Models.InsertObjects
         public string Photo { get; set; }
 
         [Required]
-        public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
-
-        [Required]
         public int AuthorId { get; set; }
     }
 }

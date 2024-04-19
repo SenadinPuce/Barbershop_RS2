@@ -23,7 +23,7 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Barber")]
         [HttpGet("users-with-roles")]
         public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] UserSearchObject search)
         {

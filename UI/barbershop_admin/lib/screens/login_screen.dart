@@ -115,7 +115,7 @@ class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                                 var password = _passwordController.text;
 
                                 try {
-                                  await _accountProvider.loginAsync(
+                                  await _accountProvider.loginAdminAsync(
                                       username, password);
 
                                   Navigator.pushReplacementNamed(

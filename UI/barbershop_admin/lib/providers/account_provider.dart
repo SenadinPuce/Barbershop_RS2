@@ -9,8 +9,8 @@ class AccountProvider with ChangeNotifier {
 
   AccountProvider();
 
-  Future<void> loginAsync(String username, String password) async {
-    String endpoint = '${baseUrl}login';
+  Future<void> loginAdminAsync(String username, String password) async {
+    String endpoint = '${baseUrl}login/admin';
 
     var headers = createHeaders();
 
@@ -25,6 +25,7 @@ class AccountProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
+      Authorization.id = data['id'];
       Authorization.username = data['username'];
       Authorization.email = data['email'];
       Authorization.token = data['token'];

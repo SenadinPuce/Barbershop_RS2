@@ -14,6 +14,7 @@ import '../models/product.dart';
 import '../models/type.dart';
 import '../providers/product_provider.dart';
 import '../utils/util.dart';
+import '../widgets/CustomPhotoFormField.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details';
@@ -62,7 +63,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       'name': widget.product?.name,
       'description': widget.product?.description,
       'price': formatNumber(widget.product?.price).toString(),
-      'photo': widget.product?.photo,
       'productTypeId': widget.product != null
           ? _productTypesList
               ?.firstWhere(
@@ -129,85 +129,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             const SizedBox(
               width: 8,
             ),
-            Expanded(
-                child: Column(
-              children: [
-                InputDecorator(
-                  decoration: InputDecoration(
-                    label: const Text(
-                      'Image',
-                      style: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
-                    ),
-                    errorText: null,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: _base64Image != null
-                      ? SizedBox(
-                          height: 150,
-                          width: 120,
-                          child: imageFromBase64String(_base64Image!),
-                        )
-                      : const SizedBox(
-                          height: 150,
-                          width: 150,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'No image selected',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                                SizedBox(width: 3),
-                                Icon(
-                                  Icons.add_photo_alternate,
-                                  color: Colors.grey,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                ),
-                const SizedBox(height: 3),
-                InkWell(
-                  onTap: getImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromRGBO(213, 178, 99, 1)),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.photo,
-                            color: Color.fromRGBO(213, 178, 99, 1)),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Select image',
-                          style:
-                              TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
-                        ),
-                        SizedBox(width: 8.0),
-                        Icon(Icons.file_upload,
-                            color: Color.fromRGBO(213, 178, 99, 1)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )),
+            CustomPhotoFormField(
+              name: 'photo',
+              validator: (value) {
+                if (_base64Image == null) {
+                  return 'Please select an image';
+                }
+                return null;
+              },
+              onImageSelected: getImage,
+              base64Image: _base64Image,
+            ),
           ],
         ),
         const SizedBox(
-          height: 50,
+          height: 20,
         ),
         FormBuilderTextField(
           name: 'description',

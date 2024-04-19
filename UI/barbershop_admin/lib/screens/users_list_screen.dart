@@ -147,51 +147,67 @@ class _UsersListScreenState extends State<UsersListScreen> {
                 ),
                 columns: const [
                   DataColumn(
-                    label: Text(
-                      'ID',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text(
+                        'ID',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                                  softWrap:  true
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'First Name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text(
+                        'First Name',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                                  softWrap:  true
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Last Name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text(
+                        'Last Name',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                                  softWrap:  true
+                      ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Username',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text('Username',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Email',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text('Email',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Phone Number',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text('Phone Number',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          softWrap: true),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'User Roles',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text('User Roles',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          softWrap: true),
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      'Edit Roles',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                      child: Text(
+                        'Edit Roles',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        softWrap: true,
+                      ),
                     ),
                   ),
                   // DataColumn(

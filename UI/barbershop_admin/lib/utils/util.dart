@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Authorization {
+  static int? id;
   static String? username;
   static String? email;
   static String? token;
@@ -22,10 +23,7 @@ String toTitleCase(String text) {
 }
 
 Image imageFromBase64String(String base64Image) {
-  return Image.memory(
-    base64Decode(base64Image),
-    fit: BoxFit.contain,
-  );
+  return Image.memory(base64Decode(base64Image), fit: BoxFit.fill, width: 65, height: 65,);
 }
 
 String formatNumber(dynamic value) {

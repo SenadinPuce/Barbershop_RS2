@@ -225,45 +225,61 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
               ),
               columns: const [
                 DataColumn(
-                    label: Text(
-                  'ID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'ID',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                  label: Text(
-                    'Date',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  label: Expanded(
+                    child: Text(
+                      'Date',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 DataColumn(
-                    label: Text(
-                  'Time',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Time',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Service',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Service',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Barber',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Barber',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Client',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Client',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Status',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Status',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Complete',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Complete',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
                     label: Expanded(
@@ -305,9 +321,10 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                             ),
                             color: const Color(0xfff71133),
                             disabledColor: Colors.grey,
-                            onPressed: a.status == 'Free'
-                                ? () => _deleteAppointment(a)
-                                : null,
+                            onPressed:
+                                a.status == 'Free' || a.status == 'Canceled'
+                                    ? () => _deleteAppointment(a)
+                                    : null,
                           ),
                         )
                       ]))

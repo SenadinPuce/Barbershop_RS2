@@ -9,5 +9,6 @@ namespace API.Dtos
         public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
 
         public int AuthorId { get; set; }
+        public string AuthorFullName { get; set; }
     }
 }

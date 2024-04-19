@@ -35,11 +35,11 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByNameAsync(loginDto.Username);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("Invalid username or password.");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) return Unauthorized("Invalid username or password.");
 
             return new AuthorizationDto
             {
@@ -49,6 +49,41 @@ namespace API.Controllers
                 Token = await _tokenService.CreateToken(user)
             };
         }
+
+        [HttpPost("login/admin")]
+        public async Task<ActionResult<AuthorizationDto>> LoginAdmin(LoginDto loginDto)
+        {
+            var user = await _userManager.FindByNameAsync(loginDto.Username);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+            if (!result.Succeeded)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (!roles.Contains("Admin") && !roles.Contains("Barber"))
+            {
+                return Forbid();
+            }
+
+            return new AuthorizationDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Token = await _tokenService.CreateToken(user)
+            };
+        }
+
+
 
         [HttpPost("register")]
         public async Task<ActionResult<AuthorizationDto>> Register(RegisterDto registerDto)

@@ -194,44 +194,60 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
               ),
               columns: const [
                 DataColumn(
-                    label: Text(
-                  'ID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'ID',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Client',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Client',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Delivery method',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Delivery method',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    softWrap: true,
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Total',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Total',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Order date',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text('Order date',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      softWrap: true),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Status',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Status',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Complete',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Complete',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 )),
                 DataColumn(
-                    label: Text(
-                  'Details',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                    label: Expanded(
+                  child: Text(
+                    'Details',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ))
               ],
               rows: (orders ?? [])

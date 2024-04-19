@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, use_build_context_synchronously
+import 'dart:io';
+
+import 'package:barbershop_admin/providers/news_provider.dart';
 import 'package:barbershop_admin/providers/product_provider.dart';
 import 'package:barbershop_admin/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'providers/account_provider.dart';
 import 'providers/orders_provider.dart';
 import 'providers/user_provider.dart';
@@ -14,7 +18,16 @@ import 'providers/service_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/navigation.dart';
 
-void main() {
+void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(900, 600));
+  }
+
+
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AccountProvider()),
@@ -25,6 +38,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => ServiceProvider()),
       ChangeNotifierProvider(create: (_) => AppointmentProvider()),
       ChangeNotifierProvider(create: (_) => OrderProvider()),
+      ChangeNotifierProvider(create: (_) => NewsProvider()),
     ],
     child: const MyApp(),
   ));

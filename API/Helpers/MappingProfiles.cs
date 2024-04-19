@@ -39,7 +39,8 @@ namespace API.Helpers
                .ForMember(d => d.Id, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
                .ForMember(d => d.Photo, o => o.MapFrom(s => s.ItemOrdered.Photo));
-            CreateMap<News, NewsDto>();
+            CreateMap<News, NewsDto>()
+                .ForMember(d => d.AuthorFullName, o => o.MapFrom(s => s.Author.FirstName + ' ' + s.Author.LastName));
             CreateMap<NewsInsertObject, News>();
             CreateMap<NewsUpdateObject, News>();
             CreateMap<Review, ReviewDto>()

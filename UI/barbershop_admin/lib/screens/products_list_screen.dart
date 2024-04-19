@@ -58,6 +58,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   loadProducts() async {
+    setState(() {});
     var productData = await _productProvider.get(filter: {
       'name': _productNameController.text,
       'productBrandId': _selectedBrandId,
@@ -168,7 +169,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             },
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
         Expanded(
           child: DropdownButtonFormField<String?>(
             decoration: InputDecoration(
@@ -255,6 +256,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             child: SingleChildScrollView(
                 child: DataTable(
               showCheckboxColumn: false,
+              dataRowMaxHeight: 70,
               headingRowColor: MaterialStateColor.resolveWith(
                 (states) {
                   return const Color.fromRGBO(236, 239, 241, 1);
@@ -262,36 +264,51 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ),
               columns: const [
                 DataColumn(
-                  label:
-                      Text('ID', style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                      child: Text('ID',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
                 ),
                 DataColumn(
-                  label: Text('Name',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Name',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Price',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Price',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Brand',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Brand',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Type',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Type',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Picture',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Picture',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Edit',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Edit',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
                 DataColumn(
-                  label: Text('Delete',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: Expanded(
+                    child: Text('Delete',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                 ),
               ],
               rows: (products ?? [])
@@ -302,10 +319,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         DataCell(Text(p.productBrand.toString())),
                         DataCell(Text(p.productType.toString())),
                         DataCell(p.photo != ""
-                            ? Container(
-                                padding: const EdgeInsets.all(1),
-                                width: 100,
-                                height: 100,
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 1, horizontal: 0),
                                 child: imageFromBase64String(p.photo!),
                               )
                             : const Text("")),
