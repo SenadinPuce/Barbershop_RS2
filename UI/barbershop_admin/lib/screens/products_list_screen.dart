@@ -169,7 +169,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             },
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<String?>(
             decoration: InputDecoration(

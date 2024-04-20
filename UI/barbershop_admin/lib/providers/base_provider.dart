@@ -13,7 +13,20 @@ abstract class BaseProvider<T> with ChangeNotifier {
     _endpoint = endpoint;
   }
 
-  //fake delay added
+  Future<T> getById(int id) async {
+    var url = Uri.parse("$apiUrl$_endpoint/$id");
+
+    Map<String, String> headers = createHeaders();
+
+    var response = await http.get(url, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
 
   Future<List<T>> get({dynamic filter, String? extraRoute}) async {
     var url = "$apiUrl$_endpoint";

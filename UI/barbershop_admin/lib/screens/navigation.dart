@@ -2,6 +2,7 @@
 import 'package:barbershop_admin/screens/login_screen.dart';
 import 'package:barbershop_admin/screens/news_list_screen.dart';
 import 'package:barbershop_admin/screens/products_list_screen.dart';
+import 'package:barbershop_admin/screens/profile_screen.dart';
 import 'package:barbershop_admin/screens/users_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +74,7 @@ class _NavigationState extends State<Navigation> {
     NavigationItem(
       icon: const Icon(Icons.person),
       label: "Profile",
-      widget: Container(),
+      widget: const ProfileScreen(),
     ),
   ];
 
