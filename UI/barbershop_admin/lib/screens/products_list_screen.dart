@@ -319,9 +319,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         DataCell(Text(p.productBrand.toString())),
                         DataCell(Text(p.productType.toString())),
                         DataCell(p.photo != ""
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 1, horizontal: 0),
+                            ? Container(
+                                width: 70,
+                                height: 70,
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
                                 child: imageFromBase64String(p.photo!),
                               )
                             : const Text("")),

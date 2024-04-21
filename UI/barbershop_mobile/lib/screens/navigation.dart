@@ -37,7 +37,7 @@ class _NavigationState extends State<Navigation> {
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home, size: iconSize),
         title: "Home",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
+        activeColorPrimary: Color.fromRGBO(213, 178, 99, 1),
         inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(

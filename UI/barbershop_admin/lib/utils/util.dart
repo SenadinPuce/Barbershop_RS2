@@ -23,7 +23,7 @@ String toTitleCase(String text) {
 }
 
 Image imageFromBase64String(String base64Image) {
-  return Image.memory(base64Decode(base64Image), fit: BoxFit.fill, width: 65, height: 65,);
+  return Image.memory(base64Decode(base64Image), fit: BoxFit.fill, gaplessPlayback: true,);
 }
 
 String formatNumber(dynamic value) {

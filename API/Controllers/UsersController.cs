@@ -79,7 +79,6 @@ namespace API.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserDto>> GetUserById(int id)
         {

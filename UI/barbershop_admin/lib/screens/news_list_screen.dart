@@ -172,9 +172,11 @@ class _NewsListScreenState extends State<NewsListScreen> {
                           DataCell(Text(n.id.toString())),
                           DataCell(Text(n.title.toString())),
                           DataCell(n.photo != ""
-                              ? Padding(
+                              ? Container(
+                                  width: 70,
+                                  height: 70,
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 1, horizontal: 0),
+                                      vertical: 2, horizontal: 0),
                                   child: imageFromBase64String(n.photo!),
                                 )
                               : const Text("")),
