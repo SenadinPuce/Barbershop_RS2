@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{BFAE13AE-B554-474D-8A29-541746751378}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailNotificationService", "EmailNotificationService\EmailNotificationService.csproj", "{C53A14B0-1DE0-499E-8E20-6F93469D0E42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{BFAE13AE-B554-474D-8A29-541746751378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFAE13AE-B554-474D-8A29-541746751378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFAE13AE-B554-474D-8A29-541746751378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C53A14B0-1DE0-499E-8E20-6F93469D0E42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C53A14B0-1DE0-499E-8E20-6F93469D0E42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C53A14B0-1DE0-499E-8E20-6F93469D0E42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C53A14B0-1DE0-499E-8E20-6F93469D0E42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

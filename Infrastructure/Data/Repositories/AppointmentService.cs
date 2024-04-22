@@ -1,31 +1,54 @@
 using AutoMapper;
+using Core;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
+using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Data.Repositories
 {
     public class AppointmentService : BaseCRUDService<Appointment, AppointmentSearchObject, AppointmentInsertObject, AppointmentUpdateObject>
         , IAppointmentService
     {
-        public AppointmentService(BarbershopContext context, IMapper mapper) : base(context, mapper)
+        private readonly IMessageProducer _messageProducer;
+
+        public AppointmentService(BarbershopContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
+            _messageProducer = messageProducer;
         }
 
         public async Task<Appointment> UpdateAppointmentStatus(int id, string status)
         {
             if (!string.IsNullOrWhiteSpace(status))
             {
-                var appointment = await _context.Appointments.FindAsync(id);
+                var appointment = await _context.Appointments
+                    .Include(a => a.Client)
+                    .Include(a => a.Barber)
+                    .Include(a => a.Service)
+                    .FirstOrDefaultAsync(a => a.Id == id);
 
                 if (appointment != null)
                 {
                     var appointmentStatus = (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), status, ignoreCase: true);
 
                     appointment.Status = appointmentStatus;
+
+                    if (appointment.Status == AppointmentStatus.Reserved)
+                    {
+                        var message = new AppointmentMessage
+                        {
+                            AppointmentId = appointment.Id,
+                            ClientEmail = appointment.Client.Email,
+                            Service = appointment.Service.Name,
+                            BarberFullName = $"{appointment.Barber.FirstName} {appointment.Barber.LastName}",
+                            DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
+                        };
+                        _messageProducer.SendMessage(message);
+                    }
 
                     await _context.SaveChangesAsync();
 
@@ -43,7 +66,7 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Appointment> AddFilter(IQueryable<Appointment> query, AppointmentSearchObject search)
         {
-             if (search.ClientId.HasValue && search.ClientId.Value > 0)
+            if (search.ClientId.HasValue && search.ClientId.Value > 0)
             {
                 query = query.Where(a => a.ClientId == search.ClientId);
             }
