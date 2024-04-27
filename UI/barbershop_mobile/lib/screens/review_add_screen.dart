@@ -1,6 +1,7 @@
 import 'package:barbershop_mobile/providers/review_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -31,9 +32,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BackButtonAppBar(onPressed: (() {
-        Navigator.pop(context, true);
-      })),
+      appBar: CustomAppBar(title: 'Your review'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -126,7 +125,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
               Map request = {
                 "Rating": _rating.toInt(),
                 "Comment": _commentController.text,
-                "UserId": Authorization.id
+                "ClientId": Authorization.id
               };
 
               await _reviewProvider.insert(request: request);

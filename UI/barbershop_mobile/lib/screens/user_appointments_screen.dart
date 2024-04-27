@@ -2,6 +2,7 @@ import 'package:barbershop_mobile/models/appointment.dart';
 import 'package:barbershop_mobile/providers/appointment_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackButtonAppBar(),
+      appBar: CustomAppBar(title: 'Your appointemnts'),
       body: SafeArea(
           child: Stack(children: [
         SingleChildScrollView(
@@ -59,6 +60,18 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
     if (isLoading) {
       return Container();
     } else {
+      if (_appointments != null && _appointments!.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("You don't have any booked appointments.",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        );
+      }
       return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -93,7 +106,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    'Date: ${formatDate(a?.startTime) ?? ''}',
+                    formatDate(a?.startTime) ?? '',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -111,7 +124,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    'Time: ${formatTime(a?.startTime)} - ${formatTime(a?.endTime)}',
+                    '${formatTime(a?.startTime)} - ${formatTime(a?.endTime)}',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -129,7 +142,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    'Barber: ${a?.barberFullName ?? ''}',
+                    a?.barberFullName ?? '',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -146,10 +159,15 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                   const SizedBox(
                     width: 15,
                   ),
-                  Text(
-                    'Service: ${a?.serviceName} - ${a?.servicePrice} \$',
-                    style: const TextStyle(fontSize: 17),
-                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: a!.services!.map((service) {
+                      return Text(
+                        '${service.name} - ${service.price} \$',
+                        style: const TextStyle(fontSize: 17),
+                      );
+                    }).toList(),
+                  )
                 ],
               ),
               const SizedBox(
@@ -199,11 +217,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     );
 
                     if (confirmCancel == true) {
-                      Map request = {
-                        "ClientId": Authorization.id,
-                        "ServiceId": a?.serviceId,
-                        "Status": "Canceled"
-                      };
+                      Map request = {"Status": "Canceled"};
 
                       await _appointmentProvider.update(a!.id!,
                           request: request);

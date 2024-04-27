@@ -1,6 +1,7 @@
 import 'package:barbershop_mobile/models/order.dart';
 import 'package:barbershop_mobile/providers/order_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -46,7 +47,7 @@ class _UserOrdersScreenState extends State<UserOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackButtonAppBar(),
+      appBar: CustomAppBar(title: 'Your orders'),
       body: SafeArea(
           child: Stack(
         children: [

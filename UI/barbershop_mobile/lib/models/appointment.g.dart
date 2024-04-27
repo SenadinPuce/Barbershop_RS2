@@ -17,13 +17,12 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
       durationInMinutes: json['durationInMinutes'] as int?,
       status: json['status'] as String?,
       barberId: json['barberId'] as int?,
-      barberUsername: json['barberUsername'] as String?,
+      barberFullName: json['barberFullName'] as String?,
       clientId: json['clientId'] as int?,
-      clientUsername: json['clientUsername'] as String?,
-      serviceId: json['serviceId'] as int?,
-      serviceName: json['serviceName'] as String?,
-      servicePrice: (json['servicePrice'] as num?)?.toDouble(),
-    )..barberFullName = json['barberFullName'] as String?;
+      services: (json['services'] as List<dynamic>?)
+          ?.map((e) => Service.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
 
 Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
     <String, dynamic>{
@@ -33,11 +32,7 @@ Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
       'durationInMinutes': instance.durationInMinutes,
       'status': instance.status,
       'barberId': instance.barberId,
-      'barberUsername': instance.barberUsername,
       'barberFullName': instance.barberFullName,
       'clientId': instance.clientId,
-      'clientUsername': instance.clientUsername,
-      'serviceId': instance.serviceId,
-      'serviceName': instance.serviceName,
-      'servicePrice': instance.servicePrice,
+      'services': instance.services,
     };

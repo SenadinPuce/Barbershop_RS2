@@ -7,6 +7,5 @@ namespace Core.Interfaces
 {
     public interface IAppointmentService : ICRUDService<Appointment, AppointmentSearchObject, AppointmentInsertObject, AppointmentUpdateObject>
     {
-        Task<Appointment> UpdateAppointmentStatus(int id, string status);
     }
 }

@@ -1,29 +1,38 @@
 using Core.Interfaces;
 using EasyNetQ;
 using Microsoft.Extensions.Configuration;
-using RabbitMQ.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services
 {
     public class MessageProducer : IMessageProducer
     {
         private readonly IConfiguration _config;
-        public MessageProducer(IConfiguration config)
+        private readonly ILogger<MessageProducer> _logger;
+        public MessageProducer(IConfiguration config, ILogger<MessageProducer> logger)
         {
+            _logger = logger;
             _config = config;
         }
 
-        public void SendMessage<T>(T obj)
+        public async Task SendMessage<T>(T obj)
         {
-            var rabbitMQConfig = _config.GetSection("RabbitMQ");
-            var hostName = rabbitMQConfig["HostName"];
-            var userName = rabbitMQConfig["UserName"];
-            var password = rabbitMQConfig["Password"];
+            try
+            {
+                var rabbitMQConfig = _config.GetSection("RabbitMQ");
+                var hostName = rabbitMQConfig["HostName"];
+                var userName = rabbitMQConfig["UserName"];
+                var password = rabbitMQConfig["Password"];
 
-            var connectionString = $"host={hostName};username={userName};password={password}";
+                var connectionString = $"host={hostName};username={userName};password={password}";
 
-            using var bus = RabbitHutch.CreateBus(connectionString);
-            bus.PubSub.Publish(obj);
+                using var bus = RabbitHutch.CreateBus(connectionString);
+                await bus.PubSub.PublishAsync(obj);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex.Message, "An error occurred while establishing a connection to the RabbitMQ server");
+            }
         }
     }
 }

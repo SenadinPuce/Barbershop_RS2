@@ -20,7 +20,9 @@ namespace Infrastructure.Data.Repositories
         public async Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(TimeSlotSearchObject search)
         {
             List<Appointment> bookedAppointments = await _context.Appointments
-            .Where(x => x.StartTime.Date.CompareTo(search.Date.Date) == 0 && x.BarberId == search.BarberId)
+            .Where(x => x.StartTime.Date.CompareTo(search.Date.Date) == 0 
+                && x.BarberId == search.BarberId 
+                && x.Status == AppointmentStatus.Reserved)
             .Include(x => x.AppointmentServices).ThenInclude(x => x.Service)
             .ToListAsync();
 

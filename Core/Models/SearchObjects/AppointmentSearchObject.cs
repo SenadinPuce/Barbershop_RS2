@@ -9,7 +9,7 @@ namespace Core.Models.SearchObjects
         public string Status { get; set; }
         public bool IncludeBarber { get; set; } = true;
         public bool IncludeClient { get; set; } = true;
-        public bool IncludeService { get; set; } = true;
+        public bool IncludeServices { get; set; } = true;
 
     }
 }

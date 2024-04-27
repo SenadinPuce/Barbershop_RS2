@@ -1,5 +1,6 @@
 import 'package:barbershop_mobile/screens/checkout_screen.dart';
 import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:barbershop_mobile/widgets/order_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -33,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const BackButtonAppBar(),
+        appBar: CustomAppBar(title: 'Your cart'),
         body: Stack(children: [
           SingleChildScrollView(
             padding: const EdgeInsets.all(20),

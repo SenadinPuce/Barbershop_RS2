@@ -9,6 +9,7 @@ import 'package:barbershop_mobile/providers/payment_provider.dart';
 import 'package:barbershop_mobile/screens/payment_success.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -167,7 +168,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackButtonAppBar(),
+      appBar: CustomAppBar(title: 'Checkout'),
       body: SafeArea(
         child: Stack(
           children: [

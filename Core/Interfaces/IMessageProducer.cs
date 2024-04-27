@@ -2,6 +2,6 @@ namespace Core.Interfaces
 {
     public interface IMessageProducer
     {
-        public void SendMessage<T>(T obj);
+        public Task SendMessage<T>(T obj);
     }
 }

@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/custom_app_bar.dart';
+
 class ReviewsListScreen extends StatefulWidget {
   static const routeName = '/Reviews';
   const ReviewsListScreen({super.key});
@@ -40,6 +42,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(
@@ -59,14 +62,13 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
       ]),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final result = await PersistentNavBarNavigator.pushNewScreen(context,
+          await PersistentNavBarNavigator.pushNewScreen(context,
               screen: const ReviewAddScreen());
-          if (result != null && result == true) {
-            setState(() {
-              isLoading = true;
-            });
-            loadData();
-          }
+
+          setState(() {
+            isLoading = true;
+          });
+          loadData();
         },
         backgroundColor: const Color.fromRGBO(99, 134, 213, 1),
         label: const Text("Rate Us"),
@@ -176,7 +178,8 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
     List<Widget> stars = [];
     for (int i = 0; i < 5; i++) {
       IconData iconData = i < rating ? Icons.star : Icons.star_border;
-      Color color = i < rating ? const Color.fromRGBO(213, 178, 99, 1) : Colors.grey;
+      Color color =
+          i < rating ? const Color.fromRGBO(213, 178, 99, 1) : Colors.grey;
       stars.add(
         Icon(
           iconData,

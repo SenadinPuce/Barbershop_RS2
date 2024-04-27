@@ -14,7 +14,7 @@ namespace Infrastructure.Data.Repositories
         , IAppointmentService
     {
         private readonly IMessageProducer _messageProducer;
-        private readonly BarbershopContext _context;
+        private new readonly BarbershopContext _context;
 
         public AppointmentService(BarbershopContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
@@ -22,7 +22,7 @@ namespace Infrastructure.Data.Repositories
             _messageProducer = messageProducer;
         }
 
-        public async Task<Appointment> UpdateAppointmentStatus(int id, string status)
+        public async Task<Appointment> Up(int id, string status)
         {
             if (!string.IsNullOrWhiteSpace(status))
             {
@@ -38,25 +38,24 @@ namespace Infrastructure.Data.Repositories
 
                     appointment.Status = appointmentStatus;
 
-                    if (appointment.Status == AppointmentStatus.Reserved)
-                    {
-                        var message = new AppointmentMessage
-                        {
-                            AppointmentId = appointment.Id,
-                            ClientEmail = appointment.Client.Email,
-                            // Service = appointment.Service.Name,
-                            BarberFullName = $"{appointment.Barber.FirstName} {appointment.Barber.LastName}",
-                            DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
-                        };
-                        _messageProducer.SendMessage(message);
-                    }
-
                     await _context.SaveChangesAsync();
 
                     return appointment;
                 }
             }
             return null;
+        }
+
+        public override async Task<Appointment> Update(int id, AppointmentUpdateObject update)
+        {
+            var appointment = await _context.Appointments
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            _mapper.Map(update, appointment);
+
+            await _context.SaveChangesAsync();
+
+            return appointment;
         }
 
         public override async Task<Appointment> Insert(AppointmentInsertObject insert)
@@ -84,8 +83,23 @@ namespace Infrastructure.Data.Repositories
                     appointment.AppointmentServices.Add(appointmentService);
                 }
             }
+
             _context.Appointments.Add(appointment);
+
             await _context.SaveChangesAsync();
+
+            var user = await _context.Users.FindAsync(insert.ClientId);
+            var barber = await _context.Users.FindAsync(insert.BarberId);
+
+            var message = new AppointmentMessage
+            {
+                AppointmentId = appointment.Id,
+                ClientEmail = user.Email,
+                Service = string.Join(", ", appointment.AppointmentServices.Select(x => x.Service.Name)),
+                BarberFullName = $"{barber.FirstName} {barber.LastName}",
+                DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
+            };
+            _ = _messageProducer.SendMessage(message);
 
             return appointment;
         }
@@ -129,10 +143,10 @@ namespace Infrastructure.Data.Repositories
                 query = query.Include(a => a.Client);
             }
 
-            // if (search.IncludeService)
-            // {
-            //     query = query.Include(a => a.Service);
-            // }
+            if (search.IncludeServices)
+            {
+                query = query.Include(a => a.AppointmentServices).ThenInclude(b => b.Service);
+            }
 
             return query;
         }

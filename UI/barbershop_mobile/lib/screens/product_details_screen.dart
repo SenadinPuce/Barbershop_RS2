@@ -3,6 +3,7 @@ import 'package:barbershop_mobile/providers/cart_provider.dart';
 import 'package:barbershop_mobile/providers/product_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BackButtonAppBar(),
+      appBar: CustomAppBar(title: 'Product details'),
       body: SafeArea(
           child: Stack(children: [
         SingleChildScrollView(

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/custom_app_bar.dart';
+
 class AppointmentsListScreen extends StatefulWidget {
   static const routeName = '/appointments';
   const AppointmentsListScreen({super.key});
@@ -44,6 +46,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(

@@ -73,26 +73,6 @@ class _NavigationState extends State<Navigation> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: screenHeight * 0.09,
-        title: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-              child: Image.asset(
-                'assets/images/appbar-logo.png',
-                width: 50,
-                height: 50,
-              ),
-            ),
-            const Text(
-              "Barbershop",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-            )
-          ],
-        ),
-      ),
       body: PersistentTabView(
         context,
         controller: _controller,
@@ -105,6 +85,7 @@ class _NavigationState extends State<Navigation> {
         stateManagement: true,
         hideNavigationBarWhenKeyboardShows: true,
         popAllScreensOnTapOfSelectedTab: true,
+        popAllScreensOnTapAnyTabs: true,
         popActionScreens: PopActionScreensType.all,
         itemAnimationProperties: const ItemAnimationProperties(
           duration: Duration(milliseconds: 200),

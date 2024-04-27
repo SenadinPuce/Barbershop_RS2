@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../utils/util.dart';
+import '../widgets/custom_app_bar.dart';
 import 'user_appointments_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       body: Column(
         children: [
           Expanded(
@@ -140,9 +142,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Authorization.email = "";
           Authorization.token = "";
 
-          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+          PersistentNavBarNavigator.pushNewScreen(
             context,
-            settings: const RouteSettings(name: LoginScreen.routeName),
             screen: const LoginScreen(),
             withNavBar: false,
           );
