@@ -7,7 +7,7 @@ class Review {
   int? id;
   int? rating;
   String? comment;
-  int? userId;
+  int? clientId;
   String? clientFirstName;
   String? clientLastName;
   DateTime? createdDateTime;
@@ -16,7 +16,7 @@ class Review {
     this.id,
     this.rating,
     this.comment,
-    this.userId,
+    this.clientId,
     this.createdDateTime,
   });
 

@@ -4,19 +4,16 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    [Migration("20240116120449_InitialCreate")]
-    partial class InitialCreate
+    partial class BarbershopContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,16 +193,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("BarberId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DurationInMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ServiceId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
@@ -221,11 +209,52 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("ServiceId")
-                        .IsUnique()
-                        .HasFilter("[ServiceId] IS NOT NULL");
-
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("Core.Entities.AppointmentService", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppointmentId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("AppointmentServices");
+                });
+
+            modelBuilder.Entity("Core.Entities.News", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("News");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.DeliveryMethod", b =>
@@ -394,6 +423,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
@@ -403,12 +435,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Reviews");
                 });
@@ -423,6 +452,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationInMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -557,23 +589,48 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.AppUser", "Barber")
                         .WithMany()
                         .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
-
-                    b.HasOne("Core.Entities.Service", "Service")
-                        .WithOne()
-                        .HasForeignKey("Core.Entities.Appointment", "ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Barber");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("Core.Entities.AppointmentService", b =>
+                {
+                    b.HasOne("Core.Entities.Appointment", "Appointment")
+                        .WithMany("AppointmentServices")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Service", "Service")
+                        .WithMany("AppointmentServices")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Core.Entities.News", b =>
+                {
+                    b.HasOne("Core.Entities.AppUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
@@ -656,13 +713,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entities.Review", b =>
                 {
-                    b.HasOne("Core.Entities.AppUser", "User")
+                    b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -711,9 +768,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("UserRoles");
                 });
 
+            modelBuilder.Entity("Core.Entities.Appointment", b =>
+                {
+                    b.Navigation("AppointmentServices");
+                });
+
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Core.Entities.Service", b =>
+                {
+                    b.Navigation("AppointmentServices");
                 });
 #pragma warning restore 612, 618
         }

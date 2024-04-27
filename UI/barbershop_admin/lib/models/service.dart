@@ -10,12 +10,14 @@ class Service {
   String? name;
   String? description;
   double? price;
+  int? durationInMinutes;
 
   Service({
     this.id,
     this.name,
     this.description,
     this.price,
+    this.durationInMinutes
   });
 
   factory Service.fromJson(Map<String, dynamic> json) =>

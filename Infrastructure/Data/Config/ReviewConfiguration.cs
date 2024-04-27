@@ -8,7 +8,7 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
-            builder.HasOne(r => r.User).WithMany().OnDelete(DeleteBehavior.Cascade).IsRequired();
+            builder.HasOne(r => r.Client).WithMany().HasForeignKey(x => x.ClientId).IsRequired();
         }
     }
 }

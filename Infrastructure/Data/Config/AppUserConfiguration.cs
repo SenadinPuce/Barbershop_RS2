@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

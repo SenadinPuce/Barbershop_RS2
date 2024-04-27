@@ -55,13 +55,6 @@ namespace Infrastructure.Data
                 context.Addresses.AddRange(addresses);
             }
 
-            if (!context.Reviews.Any())
-            {
-                var reviewsData = File.ReadAllText(path + @"/Data/SeedData/reviews.json");
-                var reviews = JsonSerializer.Deserialize<List<Review>>(reviewsData);
-                context.Reviews.AddRange(reviews);
-            }
-
             // Users seed
 
             if (!userManager.Users.Any())
@@ -132,6 +125,13 @@ namespace Infrastructure.Data
                 }
             }
 
+            if (!context.Reviews.Any())
+            {
+                var reviewsData = File.ReadAllText(path + @"/Data/SeedData/reviews.json");
+                var reviews = JsonSerializer.Deserialize<List<Review>>(reviewsData);
+                context.Reviews.AddRange(reviews);
+            }
+
             if (!context.News.Any())
             {
                 var newsData = File.ReadAllText(path + @"/Data/SeedData/news.json");
@@ -152,16 +152,38 @@ namespace Infrastructure.Data
             if (!context.Appointments.Any())
             {
                 var appointmentsData = File.ReadAllText(path + @"/Data/SeedData/appointments.json");
-                var appointments = JsonSerializer.Deserialize<List<Appointment>>(appointmentsData);
+                var appointments = JsonSerializer.Deserialize<List<AppointmentModel>>(appointmentsData);
 
-                foreach (var item in appointments)
+                foreach (var appointmentData in appointments)
                 {
-                    if (item.ClientId.HasValue && item.ClientId.Value > 0)
+                    var appointment = new Appointment
                     {
-                        item.Status = AppointmentStatus.Reserved;
+                        StartTime = appointmentData.StartTime,
+                        BarberId = appointmentData.BarberId,
+                        ClientId = appointmentData.ClientId,
+                        AppointmentServices = new List<AppointmentService>()
+                    };
+
+
+                    foreach (var serviceId in appointmentData.ServiceIds)
+                    {
+                        Service service = await context.Services.FindAsync(serviceId);
+
+                        if (service != null)
+                        {
+                            var appointmentService = new AppointmentService
+                            {
+                                Appointment = appointment,
+                                ServiceId = service.Id,
+                                Service = service
+                            };
+                            appointment.AppointmentServices.Add(appointmentService);
+                        }
+
                     }
+                    context.Appointments.Add(appointment);
                 }
-                context.Appointments.AddRange(appointments);
+
             }
 
 

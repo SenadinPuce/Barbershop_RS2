@@ -2,26 +2,31 @@
     {
         "Name": "Haircut",
         "Description": "Classic haircut for men",
-        "Price": 20.00
+        "Price": 20.00,
+        "DurationInMinutes": 20
     },
     {
         "Name": "Beard Trim",
         "Description": "Precision beard trimming and shaping",
-        "Price": 10.00
+        "Price": 10.00,
+        "DurationInMinutes": 15
     },
     {
         "Name": "Hot Towel Shave",
         "Description": "Relaxing hot towel shave experience",
-        "Price": 30.00
+        "Price": 30.00,
+        "DurationInMinutes": 20
     },
     {
         "Name": "Kids Haircut",
         "Description": "Gentle haircut for kids",
-        "Price": 15.00
+        "Price": 15.00,
+        "DurationInMinutes": 20
     },
     {
         "Name": "Head Massage",
         "Description": "Soothing head massage for relaxation",
-        "Price": 25.00
+        "Price": 25.00,
+        "DurationInMinutes": 15
     }
 ]

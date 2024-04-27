@@ -1,4 +1,6 @@
 import 'package:barbershop_mobile/providers/payment_provider.dart';
+import 'package:barbershop_mobile/providers/reservation_provider.dart';
+import 'package:barbershop_mobile/providers/time_slot_provider.dart';
 import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/navigation.dart';
 import 'package:barbershop_mobile/screens/news_details_screen.dart';
@@ -50,6 +52,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => DeliveryMethodProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
+      ChangeNotifierProvider(create: (_) => ReservationProvider()),
+      ChangeNotifierProvider(create: (_) => TimeSlotProvider()),
     ],
     child: const MyApp(),
   ));

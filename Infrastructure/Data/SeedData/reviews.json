@@ -2,16 +2,16 @@
     {
         "Rating": 5,
         "Comment": "Very satisfied!",
-        "UserId": 1
+        "ClientId": 1
     },
     {
         "Rating": 4,
         "Comment": "Excellent service.",
-        "UserId": 1
+        "ClientId": 1
     },
     {
         "Rating": 5,
         "Comment": "Absolutely fantastic!",
-        "UserId": 1
+        "ClientId": 1
       }
 ]

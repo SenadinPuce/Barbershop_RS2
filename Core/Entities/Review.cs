@@ -6,8 +6,8 @@ namespace Core.Entities
         public int Rating { get; set; }
         public string Comment { get; set; }
 
-        public int UserId { get; set; }
-        public virtual AppUser User { get; set; }
+        public int ClientId { get; set; }
+        public virtual AppUser Client { get; set; }
         
         public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
     }

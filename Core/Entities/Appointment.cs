@@ -4,17 +4,14 @@ namespace Core.Entities
     {
         public int Id { get; set; }
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public int DurationInMinutes { get; set; }
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Free;
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Reserved;
 
         public int BarberId { get; set; }
         public virtual AppUser Barber { get; set; }
 
-        public int? ClientId { get; set; }
+        public int ClientId { get; set; }
         public virtual AppUser Client { get; set; }
 
-        public int? ServiceId { get; set; }
-        public virtual Service Service { get; set; }
+        public virtual List<AppointmentService> AppointmentServices { get; set; }
     }
 }

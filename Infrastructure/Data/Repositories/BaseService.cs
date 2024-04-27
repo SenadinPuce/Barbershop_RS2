@@ -13,7 +13,7 @@ namespace Infrastructure.Data.Repositories
             _context = context;
         }
 
-        public async Task<List<TDb>> GetAsync(TSearch search)
+        public virtual async Task<List<TDb>> GetAsync(TSearch search)
         {
             var query = _context.Set<TDb>().AsQueryable();
 

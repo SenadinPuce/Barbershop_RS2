@@ -1,10 +1,13 @@
-namespace Core.Models.InsertObjects
+using Core.Entities;
+
+namespace Infrastructure.Data
 {
-    public class AppointmentInsertObject
+    public class AppointmentModel
     {
         public DateTime StartTime { get; set; }
         public int BarberId { get; set; }
         public int ClientId { get; set; }
-        public List<int> ServiceIds { get; set; }
+
+        public virtual List<int> ServiceIds { get; set; }
     }
 }

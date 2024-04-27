@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../utils/util.dart';
+import 'user_appointments_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -94,6 +95,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
           thickness: 1.5,
         ),
         ListTile(
+          leading: const Icon(
+            Icons.calendar_today,
+            color: Color.fromRGBO(213, 178, 99, 1),
+          ),
+          title:
+              const Text("Appointments", style: TextStyle(color: Colors.black)),
+          subtitle: const Text("View your appointments",
+              style: TextStyle(color: Colors.black54)),
+          trailing: const Icon(Icons.arrow_forward,
+              color: Color.fromRGBO(57, 131, 120, 1)),
+          onTap: () {
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: const UserAppointmentsScreen());
+          },
+        ),
+        const Divider(
+          thickness: 1.5,
+        ),
+        ListTile(
           leading:
               const Icon(Icons.history, color: Color.fromRGBO(213, 178, 99, 1)),
           title: const Text("Order History",
@@ -125,7 +145,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             settings: const RouteSettings(name: LoginScreen.routeName),
             screen: const LoginScreen(),
             withNavBar: false,
-            pageTransitionAnimation: PageTransitionAnimation.slideUp,
           );
         },
         style: ElevatedButton.styleFrom(

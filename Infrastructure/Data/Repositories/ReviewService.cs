@@ -16,7 +16,7 @@ namespace Infrastructure.Data.Repositories
         {
             if (search.IncludeClient)
             {
-                query = query.Include(x => x.User);
+                query = query.Include(x => x.Client);
             }
             return query;
         }

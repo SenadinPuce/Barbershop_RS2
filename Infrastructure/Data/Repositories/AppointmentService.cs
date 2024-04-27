@@ -1,13 +1,12 @@
 using AutoMapper;
 using Core;
 using Core.Entities;
+using AppointmentBarberService = Core.Entities.AppointmentService;
 using Core.Interfaces;
 using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
-using EasyNetQ;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -15,9 +14,11 @@ namespace Infrastructure.Data.Repositories
         , IAppointmentService
     {
         private readonly IMessageProducer _messageProducer;
+        private readonly BarbershopContext _context;
 
         public AppointmentService(BarbershopContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
+            _context = context;
             _messageProducer = messageProducer;
         }
 
@@ -28,7 +29,7 @@ namespace Infrastructure.Data.Repositories
                 var appointment = await _context.Appointments
                     .Include(a => a.Client)
                     .Include(a => a.Barber)
-                    .Include(a => a.Service)
+                    // .Include(a => a.Service)
                     .FirstOrDefaultAsync(a => a.Id == id);
 
                 if (appointment != null)
@@ -43,7 +44,7 @@ namespace Infrastructure.Data.Repositories
                         {
                             AppointmentId = appointment.Id,
                             ClientEmail = appointment.Client.Email,
-                            Service = appointment.Service.Name,
+                            // Service = appointment.Service.Name,
                             BarberFullName = $"{appointment.Barber.FirstName} {appointment.Barber.LastName}",
                             DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
                         };
@@ -58,10 +59,35 @@ namespace Infrastructure.Data.Repositories
             return null;
         }
 
-        public override async Task BeforeInsert(Appointment entity, AppointmentInsertObject insert)
+        public override async Task<Appointment> Insert(AppointmentInsertObject insert)
         {
-            await base.BeforeInsert(entity, insert);
-            entity.EndTime = insert.StartTime.AddMinutes(insert.DurationInMinutes);
+            var appointment = new Appointment
+            {
+                StartTime = insert.StartTime,
+                BarberId = insert.BarberId,
+                ClientId = insert.ClientId,
+                AppointmentServices = new List<AppointmentBarberService>()
+            };
+
+            foreach (var serviceId in insert.ServiceIds)
+            {
+                Service service = await _context.Services.FindAsync(serviceId);
+
+                if (service != null)
+                {
+                    var appointmentService = new AppointmentBarberService
+                    {
+                        Appointment = appointment,
+                        ServiceId = service.Id,
+                        Service = service
+                    };
+                    appointment.AppointmentServices.Add(appointmentService);
+                }
+            }
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+
+            return appointment;
         }
 
         public override IQueryable<Appointment> AddFilter(IQueryable<Appointment> query, AppointmentSearchObject search)
@@ -80,7 +106,7 @@ namespace Infrastructure.Data.Repositories
             }
             if (search.DateTo != null)
             {
-                query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault().Date);
+                // query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault().Date);
             }
             if (!string.IsNullOrWhiteSpace(search.Status))
             {
@@ -103,10 +129,10 @@ namespace Infrastructure.Data.Repositories
                 query = query.Include(a => a.Client);
             }
 
-            if (search.IncludeService)
-            {
-                query = query.Include(a => a.Service);
-            }
+            // if (search.IncludeService)
+            // {
+            //     query = query.Include(a => a.Service);
+            // }
 
             return query;
         }

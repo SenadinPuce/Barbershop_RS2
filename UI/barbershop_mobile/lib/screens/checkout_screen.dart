@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'package:barbershop_mobile/models/customer_payment.dart';
 import 'package:barbershop_mobile/models/delivery_method.dart';
 import 'package:barbershop_mobile/providers/account_provider.dart';
 import 'package:barbershop_mobile/providers/cart_provider.dart';
@@ -17,11 +15,9 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:collection/collection.dart';
 
 import '../models/address.dart' as BarbershopAddress;
-import '../utils/constants.dart';
 import '../widgets/order_summary.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -53,7 +49,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _cartProvider = context.watch<CartProvider>();
-  }
+  } 
 
   Future loadData() async {
     _deliveryMethodProvider = context.read<DeliveryMethodProvider>();

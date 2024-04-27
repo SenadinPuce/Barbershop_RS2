@@ -27,8 +27,8 @@ namespace API.Helpers
             CreateMap<Appointment, AppointmentDto>()
                 .ForMember(d => d.BarberUsername, o => o.MapFrom(s => s.Barber.UserName))
                 .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
-                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name))
-                .ForMember(d => d.ServicePrice, o => o.MapFrom(s => s.Service.Price))
+                // .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service.Name))
+                // .ForMember(d => d.ServicePrice, o => o.MapFrom(s => s.Service.Price))
                 .ForMember(d => d.BarberFullName, o => o.MapFrom(s => s.Barber.FirstName + ' ' + s.Barber.LastName))
                 .ForMember(d => d.ClientFullName, o => o.MapFrom(s => s.Client.FirstName + ' ' + s.Client.LastName));
             CreateMap<Order, OrderDto>()
@@ -44,8 +44,8 @@ namespace API.Helpers
             CreateMap<NewsInsertObject, News>();
             CreateMap<NewsUpdateObject, News>();
             CreateMap<Review, ReviewDto>()
-                .ForMember(d => d.ClientFirstName, o => o.MapFrom(s => s.User.FirstName))
-                .ForMember(d => d.ClientLastName, o => o.MapFrom(s => s.User.LastName));
+                .ForMember(d => d.ClientFirstName, o => o.MapFrom(s => s.Client.FirstName))
+                .ForMember(d => d.ClientLastName, o => o.MapFrom(s => s.Client.LastName));
             CreateMap<ReviewUpsertObject, Review>();
             CreateMap<DeliveryMethod, DeliveryMethodDto>();
             CreateMap<DeliveryMethodUpsertObject, DeliveryMethod>();

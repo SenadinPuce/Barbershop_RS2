@@ -31,6 +31,7 @@ namespace API.Extensions
             services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

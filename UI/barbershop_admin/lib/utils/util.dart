@@ -55,14 +55,7 @@ String formatDate(DateTime? date) {
       : "Select a date";
 }
 
-String formatTime(TimeOfDay? date) {
-  return date != null
-      ? DateFormat('h:mm a').format(DateTime(
-          2000,
-          1,
-          1,
-          date.hour,
-          date.minute,
-        ))
-      : "Select a time";
+String? formatTime(DateTime? value) {
+  if (value != null) return DateFormat('HH:mm').format(value).toString();
+  return null;
 }
