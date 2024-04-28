@@ -6,6 +6,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart';
+import '../utils/util.dart';
+import 'user_details_screen.dart';
 
 class UsersListScreen extends StatefulWidget {
   const UsersListScreen({super.key});
@@ -18,9 +20,6 @@ class _UsersListScreenState extends State<UsersListScreen> {
   late UserProvider _userProvider;
   List<User>? users;
   TextEditingController _usernameController = TextEditingController();
-  String? _selectedRole;
-  final _formKey = GlobalKey<FormBuilderState>();
-  Map<String, dynamic> _initialValue = {};
   bool isLoading = true;
 
   @override
@@ -29,19 +28,13 @@ class _UsersListScreenState extends State<UsersListScreen> {
     loadUsers();
   }
 
-  final List<FormBuilderFieldOption<String>> _rolesOptions = [
-    const FormBuilderFieldOption(value: 'Client', child: Text('Client')),
-    const FormBuilderFieldOption(value: 'Barber', child: Text('Barber')),
-    const FormBuilderFieldOption(value: 'Admin', child: Text('Admin')),
-  ];
-
   Future<void> loadUsers() async {
     _userProvider = context.read<UserProvider>();
 
     var data = await _userProvider.getUsers(
       filter: {
         'username': _usernameController.text,
-        'roleName': _selectedRole,
+        'roleName': 'Barber',
       },
     );
 
@@ -83,40 +76,6 @@ class _UsersListScreenState extends State<UsersListScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              labelText: "Role",
-              hintText: "Select role",
-              alignLabelWithHint: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              suffix: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _selectedRole = null;
-                  });
-                },
-              ),
-            ),
-            value: _selectedRole,
-            items: ['Client', 'Barber', 'Admin']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                alignment: AlignmentDirectional.center,
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedRole = newValue;
-              });
-            },
-          ),
-        ),
-        const SizedBox(width: 8),
         ElevatedButton(
           onPressed: () async {
             isLoading = true;
@@ -126,6 +85,23 @@ class _UsersListScreenState extends State<UsersListScreen> {
             backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
           ),
           child: const Text("Search"),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
+          ),
+          onPressed: () async {
+            isLoading = await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => UserDetailsScreen()));
+            if (isLoading) {
+              setState(() {});
+              loadUsers();
+            }
+          },
+          child: const Text("Add new barber"),
         ),
       ],
     );
@@ -140,6 +116,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
             child: SingleChildScrollView(
               child: DataTable(
                 showCheckboxColumn: false,
+                dataRowMaxHeight: 70,
                 headingRowColor: MaterialStateColor.resolveWith(
                   (states) {
                     return const Color.fromRGBO(236, 239, 241, 1);
@@ -148,43 +125,39 @@ class _UsersListScreenState extends State<UsersListScreen> {
                 columns: const [
                   DataColumn(
                     label: Expanded(
-                      child: Text(
-                        'ID',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                                  softWrap:  true
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'First Name',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                                  softWrap:  true
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text(
-                        'Last Name',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                                  softWrap:  true
-                      ),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
-                      child: Text('Username',
+                      child: Text('ID',
                           style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                          softWrap: true),
                     ),
                   ),
                   DataColumn(
                     label: Expanded(
-                      child: Text('Email',
+                      child: Text('First Name',
                           style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                          softWrap: true),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text('Last Name',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          softWrap: true),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Photo',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
+                        'Email',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                   DataColumn(
@@ -196,25 +169,20 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   ),
                   DataColumn(
                     label: Expanded(
-                      child: Text('User Roles',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          softWrap: true),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
                       child: Text(
-                        'Edit Roles',
+                        'Edit',
                         style: TextStyle(fontWeight: FontWeight.bold),
                         softWrap: true,
                       ),
                     ),
                   ),
-                  // DataColumn(
-                  //     label: Text(
-                  //   'Details',
-                  //   ,
-                  // ))
+                  DataColumn(
+                      label: Expanded(
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  )),
                 ],
                 rows: (users ?? [])
                     .map(
@@ -223,25 +191,41 @@ class _UsersListScreenState extends State<UsersListScreen> {
                           DataCell(Text(u.id.toString())),
                           DataCell(Text(u.firstName.toString())),
                           DataCell(Text(u.lastName.toString())),
-                          DataCell(Text(u.username.toString())),
+                          DataCell(u.photo != ""
+                              ? Container(
+                                  width: 70,
+                                  height: 70,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 0),
+                                  child: imageFromBase64String(u.photo!),
+                                )
+                              : const Text("")),
                           DataCell(Text(u.email.toString())),
                           DataCell(Text(u.phoneNumber.toString())),
-                          DataCell(Text(u.roles?.join(', ') ?? '')),
                           DataCell(IconButton(
                               icon: const Icon(Icons.edit_document),
                               color: const Color.fromRGBO(84, 181, 166, 1),
-                              onPressed: () {
-                                _editRoles(u);
+                              onPressed: () async {
+                                isLoading = await Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) => UserDetailsScreen(
+                                              user: u,
+                                            )));
+                                if (isLoading) {
+                                  setState(() {
+                                    loadUsers();
+                                  });
+                                }
                               })),
-                          // DataCell(IconButton(
-                          //     icon: const Icon(Icons.info),
-                          //     color: Colors.blue,
-                          //     onPressed: () {
-                          //       Navigator.of(context).push(MaterialPageRoute(
-                          //           builder: (context) => UserDetailScreen(
-                          //                 user: u,
-                          //               )));
-                          //     }))
+                          DataCell(IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Color(0xfff71133),
+                            ),
+                            onPressed: () {
+                              _deleteUser(u);
+                            },
+                          ))
                         ],
                       ),
                     )
@@ -251,102 +235,82 @@ class _UsersListScreenState extends State<UsersListScreen> {
           );
   }
 
-  void _editRoles(User u) {
-    _initialValue = {'roles': u.roles};
-
+  void _deleteUser(User u) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Edit roles'),
-            content: FormBuilder(
-                key: _formKey,
-                initialValue: _initialValue,
-                child: FormBuilderCheckboxGroup(
-                    orientation: OptionsOrientation.vertical,
-                    activeColor: const Color.fromRGBO(213, 178, 99, 1),
-                    decoration: const InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                        border: OutlineInputBorder(),
-                        labelText: "Roles"),
-                    name: 'roles',
-                    options: _rolesOptions)),
+            title: const Text('Delete'),
+            content: const Text(
+                'Are you sure you want to delete this barber? This action is not reversible.'),
             actions: [
               OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Close')),
+                  child: const Text("No")),
               ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    try {
-                      if (_formKey.currentState!.saveAndValidate()) {
-                        List<String>? selectedRoles =
-                            _formKey.currentState?.fields['roles']?.value;
+                child: const Text("Yes"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  try {
+                    await _userProvider.delete(u.id!);
 
-                        await _userProvider.updateUserRoles(
-                            u.username, selectedRoles?.join(",") ?? "");
+                    setState(() {
+                      users?.removeWhere((element) => element.id == u.id);
+                    });
 
-                        setState(() {
-                          loadUsers();
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Row(
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 8.0),
-                              Text("User roles saved successfully.")
-                            ],
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.white,
                           ),
-                          duration: const Duration(seconds: 1),
-                          backgroundColor: Colors.green,
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                            },
-                            textColor: Colors.white,
-                          ),
-                        ));
-                      }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Row(
-                            children: [
-                              Icon(
-                                Icons.error,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 8.0),
-                              Text(
-                                'Failed to update user roles. Please try again.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          duration: const Duration(seconds: 1),
-                          backgroundColor: Colors.red,
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                            },
-                            textColor: Colors.white,
-                          ),
+                          SizedBox(width: 8.0),
+                          Text("User deleted successfully.")
+                        ],
+                      ),
+                      duration: const Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      action: SnackBarAction(
+                        label: 'Dismiss',
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        },
+                        textColor: Colors.white,
+                      ),
+                    ));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(
+                              Icons.error,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Failed to delete user. Please try again.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
                         ),
-                      );
-                    }
-                  },
-                  child: const Text("Save changes"))
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: Colors.red,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           );
         });

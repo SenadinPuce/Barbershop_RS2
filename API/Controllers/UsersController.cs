@@ -1,4 +1,5 @@
 using API.Dtos;
+using API.Errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Models.SearchObjects;
@@ -51,31 +52,29 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("edit-roles/{username}")]
-
-        public async Task<ActionResult<AppUserDto>> EditRoles(string username, [FromBody] string roles)
+        [HttpPost()]
+        public async Task<ActionResult<AppUserDto>> Insert(RegisterDto registerDto)
         {
-            if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
-
-            var selectedRoles = roles.Split(",").ToArray();
-
-            var user = await _userManager.FindByNameAsync(username);
-
-            if (user == null) return NotFound();
-
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-
-            if (!result.Succeeded) return BadRequest("Failed to add to roles");
-
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-
-            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
+            var user = new AppUser
+            {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
+                UserName = registerDto.UserName,
+                Email = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
+                Photo = registerDto.Photo
+            };
 
 
-            return Ok(_mapper.Map<AppUserDto>(await _userManager.FindByNameAsync(username)));
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
 
+            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
+
+            var roleAddResult = await _userManager.AddToRoleAsync(user, "Barber");
+
+            if (!roleAddResult.Succeeded) return BadRequest(new ApiResponse(400, "Failed to add to role"));
+
+            return Ok(_mapper.Map<AppUserDto>(user));
         }
 
         [HttpGet("{id}")]
@@ -95,7 +94,7 @@ namespace API.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AppUserDto>> UpdateUser(int id, [FromBody] AppUserUpdateRequest update)
+        public async Task<ActionResult<AppUserDto>> Update(int id, [FromBody] AppUserUpdateRequest update)
         {
             if (update == null) return BadRequest();
 
@@ -119,6 +118,26 @@ namespace API.Controllers
             }
 
             return Ok(_mapper.Map<AppUserDto>(user));
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new ApiResponse(404, "User not found"));
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new ApiResponse(400, "Failed to delete user"));
+            }
+
+            return Ok(new ApiResponse(200, "User deleted successfully"));
         }
     }
 }

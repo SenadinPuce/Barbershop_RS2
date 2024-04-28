@@ -34,6 +34,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
       'name': widget.service?.name,
       'price': formatNumber(widget.service?.price).toString(),
       'description': widget.service?.description,
+      'durationInMinutes':widget.service?.durationInMinutes.toString()
     };
 
     _serviceProvider = context.read<ServiceProvider>();
@@ -79,6 +80,18 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                       errorText: 'Enter a valid decimal number'),
                 ]),
                 decoration: const InputDecoration(labelText: 'Price'),
+              )),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: FormBuilderTextField(
+                name: 'durationInMinutes',
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.integer()
+                ]),
+                decoration: const InputDecoration(labelText: 'Duration (minutes)'),
               )),
             ],
           ),

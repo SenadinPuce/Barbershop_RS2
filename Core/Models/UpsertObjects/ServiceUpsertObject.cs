@@ -13,7 +13,10 @@ namespace Core.Models.UpsertObjects
 
     [Required]
     [Range(0.1, double.MaxValue, ErrorMessage = "Price must be greater than zero")]
-
     public decimal Price { get; set; }
+
+    [Required]
+    [Range(5, 60, ErrorMessage = "The service must last at least 5 minutes")]
+    public int DurationInMinutes { get; set; }
   }
 }

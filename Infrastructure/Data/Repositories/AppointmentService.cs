@@ -114,13 +114,13 @@ namespace Infrastructure.Data.Repositories
             {
                 query = query.Where(a => a.BarberId == search.BarberId);
             }
-            if (search.DateFrom != null)
+            if (search.DateFrom.HasValue)
             {
-                query = query.Where(a => a.StartTime.Date >= search.DateFrom.GetValueOrDefault().Date);
+                query = query.Where(a => a.StartTime.Date >= search.DateFrom.Value.Date);
             }
-            if (search.DateTo != null)
+            if (search.DateTo.HasValue)
             {
-                // query = query.Where(a => a.EndTime.Date <= search.DateTo.GetValueOrDefault().Date);
+                query = query.Where(a => a.StartTime.Date <= search.DateTo.Value.Date);
             }
             if (!string.IsNullOrWhiteSpace(search.Status))
             {

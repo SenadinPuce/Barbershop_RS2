@@ -28,6 +28,7 @@ class AccountProvider with ChangeNotifier {
       Authorization.id = data['id'];
       Authorization.username = data['username'];
       Authorization.email = data['email'];
+      Authorization.role = data['role'];
       Authorization.token = data['token'];
     } else {
       throw Exception("Login failed");
@@ -41,5 +42,22 @@ class AccountProvider with ChangeNotifier {
     };
 
     return headers;
+  }
+
+  Future<bool> register(dynamic request) async {
+    String endpoint = '${baseUrl}register';
+
+    var headers = createHeaders();
+    var uri = Uri.parse(endpoint);
+
+    final body = jsonEncode(request);
+
+    final response = await http.post(uri, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception("Registration failed");
+    }
   }
 }

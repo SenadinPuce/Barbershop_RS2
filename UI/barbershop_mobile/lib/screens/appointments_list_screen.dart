@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:barbershop_mobile/models/user.dart';
 import 'package:barbershop_mobile/providers/reservation_provider.dart';
 import 'package:barbershop_mobile/providers/user_provider.dart';
@@ -122,11 +124,17 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipOval(
-                  child: Image.asset(
-                    'assets/images/placeholder_profile.jpg',
-                    height: 260,
-                    width: 260,
-                  ),
+                  child: b.photo == null
+                      ? Image.asset(
+                          'assets/images/placeholder_profile.jpg',
+                          height: 260,
+                          width: 260,
+                        )
+                      : Image.memory(
+                          base64Decode(b.photo!),
+                          height: 260,
+                          width: 260,
+                        ),
                 ),
                 const SizedBox(height: 15),
                 Text(

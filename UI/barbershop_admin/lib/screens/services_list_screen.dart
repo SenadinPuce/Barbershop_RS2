@@ -133,6 +133,11 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                   )),
                   DataColumn(
                       label: Text(
+                    'Duration (minutes)',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  DataColumn(
+                      label: Text(
                     'Description',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
@@ -151,6 +156,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                           DataCell(Text(s.id.toString())),
                           DataCell(Text(s.name.toString())),
                           DataCell(Text(formatNumber(s.price))),
+                          DataCell(Text(s.durationInMinutes.toString())),
                           DataCell(Text(s.description.toString())),
                           DataCell(IconButton(
                             icon: const Icon(

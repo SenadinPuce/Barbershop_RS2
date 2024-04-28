@@ -103,10 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           name: 'password',
                           validator: FormBuilderValidators.compose([
                             FormBuilderValidators.required(),
-                            FormBuilderValidators.match(
-                                "(?=^.{6,10}\$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\\s).*\$",
-                                errorText:
-                                    "Password must have 1 Uppercase, 1 Lowercase, 1 number, 1 Non alphanumeric and at least 6 characters")
+                            FormBuilderValidators.min(4)
                           ]),
                           obscureText: !isPasswordVisible,
                           decoration: InputDecoration(

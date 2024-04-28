@@ -8,6 +8,7 @@ class Authorization {
   static int? id;
   static String? username;
   static String? email;
+  static String? role;
   static String? token;
 }
 

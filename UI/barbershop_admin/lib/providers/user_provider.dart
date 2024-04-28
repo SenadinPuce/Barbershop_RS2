@@ -12,8 +12,4 @@ class UserProvider extends BaseProvider<User> {
   Future<List<User>> getUsers({dynamic filter}) async {
     return await get(filter: filter, extraRoute: "users-with-roles");
   }
-
-  Future<User> updateUserRoles(String? username, String? roles) async {
-    return await insert(request: roles, extraRoute: "edit-roles/$username");
-  }
 }

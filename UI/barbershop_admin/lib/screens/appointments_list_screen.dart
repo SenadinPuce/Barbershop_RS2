@@ -184,27 +184,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
           },
           child: const Text("Search"),
         ),
-        const SizedBox(
-          width: 8,
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
-          ),
-          onPressed: () async {
-            isLoading = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => AppointmentDetailsScreen(
-                      barbers: _barbersList,
-                    )));
-
-            if (isLoading) {
-              setState(() {
-                _loadAppointments();
-              });
-            }
-          },
-          child: const Text("Add new appointment"),
-        )
       ],
     );
   }
@@ -295,9 +274,17 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                         DataCell(Text(a.id.toString())),
                         DataCell(Text(getDate(a.startTime))),
                         DataCell(Text(getTime(a.startTime))),
-                        DataCell(Text(a.serviceName != null
-                            ? a.serviceName.toString()
-                            : '')),
+                        DataCell(SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: a.services!.map((service) {
+                              return Text(
+                                '${service.name}',
+                              );
+                            }).toList(),
+                          ),
+                        )),
                         DataCell(Text(a.barberFullName.toString())),
                         DataCell(Text(a.clientFullName?.toString() ?? '')),
                         DataCell(Text(a.status.toString())),
@@ -321,10 +308,9 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                             ),
                             color: const Color(0xfff71133),
                             disabledColor: Colors.grey,
-                            onPressed:
-                                a.status == 'Free' || a.status == 'Canceled'
-                                    ? () => _deleteAppointment(a)
-                                    : null,
+                            onPressed: a.status == 'Canceled'
+                                ? () => _deleteAppointment(a)
+                                : null,
                           ),
                         )
                       ]))
@@ -352,7 +338,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                     Navigator.of(context).pop();
                     try {
                       var appointment = await _appointmentProvider
-                          .updateAppointmentStatus(a.id!, 'Completed');
+                          .update(a.id!, {'status': 'Completed'});
 
                       setState(() {
                         a.status = appointment.status;

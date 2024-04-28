@@ -36,11 +36,12 @@ class _NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
 
   final List<NavigationItem> _navigationItems = [
-    NavigationItem(
-      icon: const Icon(Icons.group),
-      label: "Users",
-      widget: const UsersListScreen(),
-    ),
+    if (Authorization.role == "Admin")
+      NavigationItem(
+        icon: const Icon(Icons.group),
+        label: "Barbers",
+        widget: const UsersListScreen(),
+      ),
     NavigationItem(
       icon: const Icon(Icons.calendar_today),
       label: "Appointments",
@@ -66,11 +67,12 @@ class _NavigationState extends State<Navigation> {
       label: "News",
       widget: const NewsListScreen(),
     ),
-    NavigationItem(
-      icon: const Icon(Icons.bar_chart),
-      label: "Reports",
-      widget: const ReportsScreen(),
-    ),
+    if (Authorization.role == "Admin")
+      NavigationItem(
+        icon: const Icon(Icons.bar_chart),
+        label: "Reports",
+        widget: const ReportsScreen(),
+      ),
     NavigationItem(
       icon: const Icon(Icons.person),
       label: "Profile",

@@ -51,7 +51,8 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     var appointmentsData = await _appointmentProvider.get(filter: {
       'dateFrom': _selectedDateFrom,
       'dateTo': _selectedDateTo,
-      'barberId': _selectedBarber?.id
+      'barberId': _selectedBarber?.id,
+      'status': 'Completed'
     });
 
     setState(() {
@@ -105,7 +106,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Number of Completed Appointments: ${_getCompletedAppointmentsCount()}',
+                    'Number of Completed Appointments: ${appointments?.length ?? 0}',
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -238,23 +239,30 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     );
   }
 
-  int? _getCompletedAppointmentsCount() {
+  int _getNumberOfMinutesWorked() {
+    if (appointments == null) {
+      return 0;
+    }
+
     return appointments
-        ?.where((appointment) => appointment.status == 'Completed')
-        .length;
+        !.map<int>((appointment) =>
+            appointment.services?.fold<int>(
+                0,
+                (previousValue, service) =>
+                    previousValue + (service.durationInMinutes ?? 0)) ??
+            0)
+        .fold<int>(0, (previousValue, element) => previousValue + element);
   }
 
-  int? _getNumberOfMinutesWorked() {
-    return appointments
-        ?.where((appointment) => appointment.status == 'Completed')
-        .map<int>((appointment) => appointment.durationInMinutes!)
-        .fold(0, (previousValue, element) => previousValue! + element);
-  }
+  double _getTotalIncome() {
+    if (appointments == null) {
+      return 0.0;
+    }
 
-  double? _getTotalIncome() {
     return appointments
-        ?.where((appointment) => appointment.status == 'Completed')
-        .map<double>((appointment) => appointment.servicePrice!)
+        !.map<double>((appointment) => appointment.services!
+            .map<double>((service) => service.price ?? 0.0)
+            .fold(0, (previousValue, element) => previousValue + element))
         .fold(0, (previousValue, element) => previousValue! + element);
   }
 }
