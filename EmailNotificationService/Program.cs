@@ -11,16 +11,14 @@ class Program
     {
         _cancellationTokenSource = new CancellationTokenSource();
 
-        string hostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
-        string username = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest";
-        string password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest";
+        var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "rabbitmq";
+        var userName = Environment.GetEnvironmentVariable("RabbitMQ_UserName") ?? "guest";
+        var password = Environment.GetEnvironmentVariable("RabbitMQ_Password") ?? "guest";
 
-        var connectionString = $"host={hostName};username={username};password={password}";
+        var connectionString = $"host={hostName};username={userName};password={password}";
 
         using var bus = RabbitHutch.CreateBus(connectionString);
         bus.PubSub.Subscribe<AppointmentMessage>("mail_service", SendEmailNotificationAsync);
-
-
         Console.WriteLine("Listening for messages. Press CTRL+C to exit.");
 
         Console.CancelKeyPress += (sender, e) =>
@@ -29,10 +27,8 @@ class Program
             _cancellationTokenSource.Cancel();
         };
 
-
         await WaitForCancellationAsync();
     }
-
     static async Task WaitForCancellationAsync()
     {
         try

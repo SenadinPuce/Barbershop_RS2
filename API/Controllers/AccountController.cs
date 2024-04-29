@@ -131,12 +131,12 @@ namespace API.Controllers
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
 
-            if (user.Address == null) return NotFound(new ApiResponse(404));
+            if (user.Address == null) return new AddressDto();
 
             return _mapper.Map<AddressDto>(user.Address);
         }
 
-        // [Authorize]
+        [Authorize]
         [HttpPut("address")]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressUpsertObject addressUpsert)
         {

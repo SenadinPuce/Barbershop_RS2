@@ -15,23 +15,32 @@ namespace Infrastructure.Services
             _config = config;
         }
 
-        public async Task SendMessage<T>(T obj)
+        public void SendMessage<T>(T obj)
         {
             try
             {
-                var rabbitMQConfig = _config.GetSection("RabbitMQ");
-                var hostName = rabbitMQConfig["HostName"];
-                var userName = rabbitMQConfig["UserName"];
-                var password = rabbitMQConfig["Password"];
+                var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "rabbitmq";
+                var userName = Environment.GetEnvironmentVariable("RabbitMQ_UserName") ?? "guest";
+                var password = Environment.GetEnvironmentVariable("RabbitMQ_Password") ?? "guest";
 
                 var connectionString = $"host={hostName};username={userName};password={password}";
 
+                _logger.LogInformation($"Connecting to RabbitMQ with connection string: {connectionString}");
+
                 using var bus = RabbitHutch.CreateBus(connectionString);
-                await bus.PubSub.PublishAsync(obj);
+                bus.PubSub.Publish(obj);
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Task was canceled during message publishing");
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogError(ex, "Task was canceled");
             }
             catch (Exception ex)
             {
-                _logger.LogInformation(ex.Message, "An error occurred while establishing a connection to the RabbitMQ server");
+                _logger.LogError(ex.Message, "An error occurred while establishing a connection to the RabbitMQ server");
             }
         }
     }

@@ -67,7 +67,7 @@ namespace Infrastructure.Data
                         LastName = "User",
                         Email = "user@test.com",
                         PhoneNumber = "061-111-111",
-                        UserName = "user",
+                        UserName = "mobile",
                         Address = new Address
                         {
                             FirstName = "First name user",
@@ -102,7 +102,7 @@ namespace Infrastructure.Data
                         LastName = "Admin",
                         Email= "admin@test.com",
                         PhoneNumber = "061-444-444",
-                        UserName = "admin"
+                        UserName = "desktop"
                     }
                 };
 
@@ -121,9 +121,9 @@ namespace Infrastructure.Data
                 foreach (var user in users)
                 {
                     await userManager.CreateAsync(user, "test");
-                    if (user.UserName == "user") await userManager.AddToRoleAsync(user, "Client");
+                    if (user.UserName == "mobile") await userManager.AddToRoleAsync(user, "Client");
                     if (user.UserName == "barber1" || user.UserName == "barber2") await userManager.AddToRoleAsync(user, "Barber");
-                    if (user.UserName == "admin") await userManager.AddToRoleAsync(user, "Admin");
+                    if (user.UserName == "desktop") await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
 

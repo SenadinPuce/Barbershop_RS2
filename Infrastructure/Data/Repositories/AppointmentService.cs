@@ -22,29 +22,7 @@ namespace Infrastructure.Data.Repositories
             _messageProducer = messageProducer;
         }
 
-        public async Task<Appointment> Up(int id, string status)
-        {
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                var appointment = await _context.Appointments
-                    .Include(a => a.Client)
-                    .Include(a => a.Barber)
-                    // .Include(a => a.Service)
-                    .FirstOrDefaultAsync(a => a.Id == id);
 
-                if (appointment != null)
-                {
-                    var appointmentStatus = (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), status, ignoreCase: true);
-
-                    appointment.Status = appointmentStatus;
-
-                    await _context.SaveChangesAsync();
-
-                    return appointment;
-                }
-            }
-            return null;
-        }
 
         public override async Task<Appointment> Update(int id, AppointmentUpdateObject update)
         {
@@ -99,7 +77,7 @@ namespace Infrastructure.Data.Repositories
                 BarberFullName = $"{barber.FirstName} {barber.LastName}",
                 DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
             };
-            _ = _messageProducer.SendMessage(message);
+            _messageProducer.SendMessage(message);
 
             return appointment;
         }
