@@ -84,7 +84,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(
@@ -467,7 +469,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                               product: p,
                             ));
                       },
-                      child: imageFromBase64String(p.photo!),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: imageFromBase64String(p.photo!),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -499,6 +504,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                             borderRadius: BorderRadius.circular(10.0))),
                     onPressed: () {
                       _cartProvider.addToCart(p);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            backgroundColor: Colors.green,
+                            showCloseIcon: true,
+                            closeIconColor: Colors.white,
+                            duration: Duration(seconds: 2),
+                            content: Text('Product added to cart')),
+                      );
                     },
                     icon: const Icon(Icons.shopping_cart),
                     label: const Text('Add to Cart'),

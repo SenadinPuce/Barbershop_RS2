@@ -18,6 +18,8 @@ class UserDataScreen extends StatefulWidget {
 class _UserDataScreenState extends State<UserDataScreen> {
   late UserProvider _userProvider;
   final _formKey = GlobalKey<FormBuilderState>();
+  TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
   User? _user;
   bool isLoading = true;
   bool isFormEdited = false;
@@ -119,6 +121,52 @@ class _UserDataScreenState extends State<UserDataScreen> {
             decoration:
                 const InputDecoration(labelText: 'Phone Number (optional)'),
           ),
+          const SizedBox(
+            height: 5,
+          ),
+          FormBuilderTextField(
+            onChanged: (value) {
+              setState(() {
+                _passwordController.text = value!;
+              });
+            },
+            name: "password",
+            decoration: InputDecoration(
+              labelText: 'Password (optional)',
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+            ),
+            obscureText: !_isPasswordVisible,
+            controller: _passwordController,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.minLength(4, allowEmpty: true),
+            ]),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          FormBuilderTextField(
+              decoration: const InputDecoration(
+                labelText: 'Confirm password',
+              ),
+              obscureText: true,
+              name: "confirmPassword",
+              validator: (value) {
+                if (_passwordController.text.isNotEmpty) {
+                  if (value != _passwordController.text) {
+                    return 'Password do not match';
+                  }
+                }
+                return null;
+              }),
           const SizedBox(height: 20),
           _buildSubmitButton()
         ],

@@ -181,6 +181,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     child: Text(
                       'Delete',
                       style: TextStyle(fontWeight: FontWeight.bold),
+                      softWrap: true,
                     ),
                   )),
                 ],

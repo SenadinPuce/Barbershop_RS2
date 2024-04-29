@@ -36,7 +36,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   bool _isPasswordVisible = false;
   TextEditingController _passwordController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -51,8 +50,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       "username": widget.user?.username,
       "email": widget.user?.email,
       "phoneNumber": widget.user?.phoneNumber,
-      "password": _passwordController.text,
-
     };
 
     _userProvider = context.read<UserProvider>();
@@ -197,7 +194,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             children: [
               Expanded(
                 child: FormBuilderTextField(
-                   name: "password",
+                  onChanged: (value) {
+                    setState(() {
+                      _passwordController.text = value!;
+                    });
+                  },
+                  name: "password",
                   decoration: InputDecoration(
                     labelText: 'Password',
                     suffixIcon: IconButton(
@@ -217,7 +219,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   controller: _passwordController,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(4)
+                    FormBuilderValidators.minLength(4),
+
                   ]),
                 ),
               ),
@@ -270,6 +273,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               var request = Map.from(_formKey.currentState!.value);
 
               request['photo'] = _base64Image;
+              request['password'] = _passwordController.text;
 
               try {
                 if (widget.user == null) {

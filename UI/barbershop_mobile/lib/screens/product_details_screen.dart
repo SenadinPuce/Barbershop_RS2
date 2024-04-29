@@ -170,6 +170,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
             onPressed: () {
               _cartProvider.addToCart(widget.product!, quantity: _quantity);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    backgroundColor: Colors.green,
+                    showCloseIcon: true,
+                    closeIconColor: Colors.white,
+                    duration: Duration(seconds: 2),
+                    content: Text('Product added to cart')),
+              );
             },
             icon: const Icon(
               Icons.shopping_cart,

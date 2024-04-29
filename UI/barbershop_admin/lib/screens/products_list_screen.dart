@@ -108,6 +108,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<int>(
+            isExpanded: true,
             decoration: InputDecoration(
               labelText: "Brand",
               hintText: 'Select brand',
@@ -140,6 +141,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<int>(
+            isExpanded: true,
             decoration: InputDecoration(
               labelText: "Type",
               hintText: 'Select type',
@@ -172,6 +174,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: DropdownButtonFormField<String?>(
+            isExpanded: true,
             decoration: InputDecoration(
               labelText: "Sort by",
               hintText: 'Sort by',
@@ -322,7 +325,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                             ? Container(
                                 width: 70,
                                 height: 70,
-                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 0),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 0),
                                 child: imageFromBase64String(p.photo!),
                               )
                             : const Text("")),

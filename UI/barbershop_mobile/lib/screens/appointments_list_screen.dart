@@ -48,7 +48,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(automaticallyImplyLeading: false,),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(
@@ -129,11 +129,13 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                           'assets/images/placeholder_profile.jpg',
                           height: 260,
                           width: 260,
+                          gaplessPlayback: true,
                         )
                       : Image.memory(
                           base64Decode(b.photo!),
                           height: 260,
                           width: 260,
+                          gaplessPlayback: true
                         ),
                 ),
                 const SizedBox(height: 15),

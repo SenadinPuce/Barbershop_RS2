@@ -94,10 +94,13 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 100,
-                width: 100,
-                child: imageFromBase64String(item.product.photo!),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: imageFromBase64String(item.product.photo!),
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(

@@ -117,38 +117,53 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                 ),
                 columns: const [
                   DataColumn(
-                      label: Text(
-                    'ID',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'ID',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
                   DataColumn(
-                      label: Text(
-                    'Name',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'Name',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
                   DataColumn(
-                      label: Text(
-                    'Price',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'Price',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
                   DataColumn(
-                      label: Text(
-                    'Duration (minutes)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'Duration (minutes)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      softWrap: true,
+                    ),
                   )),
                   DataColumn(
-                      label: Text(
-                    'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'Description',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
                   DataColumn(
-                    label: Text('Edit',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: Expanded(
+                      child: Text('Edit',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
                   ),
                   DataColumn(
-                      label: Text(
-                    'Delete',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      label: Expanded(
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
                 ],
                 rows: (services ?? [])
