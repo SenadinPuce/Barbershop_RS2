@@ -35,7 +35,10 @@ class NewsDetailsScreen extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                if (news?.photo != null) imageFromBase64String(news!.photo!),
+                if (news?.photo != null)
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: imageFromBase64String(news!.photo!)),
                 const SizedBox(
                   height: 16,
                 ),

@@ -24,7 +24,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   late AccountProvider _accountProvider;
-  bool isPasswordVisible = false;
+  TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
@@ -100,28 +101,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 5,
                         ),
                         FormBuilderTextField(
-                          name: 'password',
+                          onChanged: (value) {
+                            setState(() {
+                              _passwordController.text = value!;
+                            });
+                          },
+                          name: "password",
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          obscureText: !_isPasswordVisible,
+                          controller: _passwordController,
                           validator: FormBuilderValidators.compose([
                             FormBuilderValidators.required(),
-                            FormBuilderValidators.min(4)
+                            FormBuilderValidators.minLength(
+                              4,
+                            ),
                           ]),
-                          obscureText: !isPasswordVisible,
-                          decoration: InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'Enter Password',
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isPasswordVisible = !isPasswordVisible;
-                                  });
-                                },
-                                icon: Icon(
-                                  isPasswordVisible
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                              )),
                         ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        FormBuilderTextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Confirm password',
+                            ),
+                            obscureText: true,
+                            name: "confirmPassword",
+                            validator: (value) {
+                              if (_passwordController.text.isNotEmpty) {
+                                if (value != _passwordController.text) {
+                                  return 'Password do not match';
+                                }
+                              }
+                              return null;
+                            }),
                       ],
                     )),
                 const SizedBox(
@@ -132,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       try {
                         if (_formKey.currentState?.saveAndValidate() == true) {
                           var request = Map.from(_formKey.currentState!.value);
-
+                        
                           await _accountProvider.register(request);
 
                           PersistentNavBarNavigator.pushNewScreen(context,

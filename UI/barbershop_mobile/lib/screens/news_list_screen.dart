@@ -111,10 +111,13 @@ class _NewsListScreenState extends State<NewsListScreen> {
                 news?.photo != null
                     ? Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: imageFromBase64String(news!.photo!),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: imageFromBase64String(news!.photo!),
+                          ),
                         ),
                       )
                     : const SizedBox(width: 100),

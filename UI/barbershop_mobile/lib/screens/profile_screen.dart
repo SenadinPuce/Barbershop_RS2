@@ -142,8 +142,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Authorization.email = "";
           Authorization.token = "";
 
-          PersistentNavBarNavigator.pushNewScreen(
+          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
             context,
+            settings: const RouteSettings(name: LoginScreen.routeName),
             screen: const LoginScreen(),
             withNavBar: false,
           );
