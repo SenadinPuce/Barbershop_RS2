@@ -6,26 +6,43 @@ using Core;
 class Program
 {
     private static CancellationTokenSource _cancellationTokenSource;
+    private static IBus _bus;
 
     static async Task Main(string[] args)
     {
         _cancellationTokenSource = new CancellationTokenSource();
 
-        var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "rabbitmq";
+        var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "localhost";
         var userName = Environment.GetEnvironmentVariable("RabbitMQ_UserName") ?? "guest";
         var password = Environment.GetEnvironmentVariable("RabbitMQ_Password") ?? "guest";
 
         var connectionString = $"host={hostName};username={userName};password={password}";
 
-        using var bus = RabbitHutch.CreateBus(connectionString);
-        bus.PubSub.Subscribe<AppointmentMessage>("mail_service", SendEmailNotificationAsync);
-        Console.WriteLine("Listening for messages. Press CTRL+C to exit.");
+        int currentRetry = 0;
+         _bus = RabbitHutch.CreateBus(connectionString);
+         
+        while (true)
+        {
+            try
+            {
+
+                _bus.PubSub.Subscribe<AppointmentMessage>("mail_service", SendEmailNotificationAsync);
+                Console.WriteLine("Listening for messages. Press CTRL+C to exit.");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error connecting to RabbitMQ (Attempt {currentRetry + 1}): {ex.Message}");
+                currentRetry++;
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, currentRetry)));
+            }
+        }
 
         Console.CancelKeyPress += (sender, e) =>
-        {
-            e.Cancel = true;
-            _cancellationTokenSource.Cancel();
-        };
+               {
+                   e.Cancel = true;
+                   _cancellationTokenSource.Cancel();
+               };
 
         await WaitForCancellationAsync();
     }
