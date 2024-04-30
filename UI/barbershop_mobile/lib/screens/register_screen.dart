@@ -158,11 +158,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       try {
                         if (_formKey.currentState?.saveAndValidate() == true) {
                           var request = Map.from(_formKey.currentState!.value);
-                        
+
                           await _accountProvider.register(request);
 
-                          PersistentNavBarNavigator.pushNewScreen(context,
-                              screen: const Navigation());
+                          Navigator.pushReplacementNamed(
+                              context, Navigation.routeName);
                         }
                       } on Exception catch (e) {
                         showDialog(
