@@ -30,7 +30,7 @@ services:
       - barbershopnet24
 
   email-notification-service:
-    restart: on-failure
+    restart: unless-stopped
     build:
       context: .
       dockerfile: EmailNotificationService\Dockerfile
