@@ -2,10 +2,8 @@
 import 'package:barbershop_mobile/providers/cart_provider.dart';
 import 'package:barbershop_mobile/providers/product_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
@@ -230,10 +228,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   Flexible(
                     child: InkWell(
                       onTap: () {
-                        PersistentNavBarNavigator.pushNewScreen(context,
-                            screen: ProductDetailsScreen(
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsScreen(
                               product: p,
-                            ));
+                            ),
+                          ),
+                        );
                       },
                       child: imageFromBase64String(p.photo!),
                     ),
@@ -267,6 +269,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             borderRadius: BorderRadius.circular(10.0))),
                     onPressed: () {
                       _cartProvider.addToCart(p);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            backgroundColor: Colors.green,
+                            showCloseIcon: true,
+                            closeIconColor: Colors.white,
+                            duration: Duration(seconds: 2),
+                            content: Text('Product added to cart')),
+                      );
                     },
                     icon: const Icon(Icons.shopping_cart),
                     label: const Text('Add to Cart'),

@@ -46,7 +46,6 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   collection: ^1.17.2
   flutter_stripe: ^9.2.2
-  persistent_bottom_nav_bar: ^5.0.2
 
 dev_dependencies:
 

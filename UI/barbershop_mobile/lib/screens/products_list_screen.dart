@@ -9,7 +9,6 @@ import 'package:barbershop_mobile/screens/cart_screen.dart';
 import 'package:barbershop_mobile/screens/product_details_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/custom_app_bar.dart';
@@ -75,18 +74,18 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       },
     );
 
-    setState(() {
-      _products = productsData;
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _products = productsData;
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        automaticallyImplyLeading: false,
-      ),
+      appBar: CustomAppBar(),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(
@@ -106,9 +105,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           ),
       ]),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'btn_cart',
         onPressed: () async {
-          PersistentNavBarNavigator.pushNewScreen(context,
-              screen: const CartScreen());
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CartScreen(),
+            ),
+          );
         },
         backgroundColor: const Color.fromRGBO(99, 134, 213, 1),
         label: const Text("Your Cart"),
@@ -464,10 +468,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   Flexible(
                     child: InkWell(
                       onTap: () {
-                        PersistentNavBarNavigator.pushNewScreen(context,
-                            screen: ProductDetailsScreen(
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsScreen(
                               product: p,
-                            ));
+                            ),
+                          ),
+                        );
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),

@@ -2,10 +2,8 @@ import 'package:barbershop_mobile/providers/reservation_provider.dart';
 import 'package:barbershop_mobile/providers/service_provider.dart';
 import 'package:barbershop_mobile/screens/time_slots_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/service.dart';
@@ -148,10 +146,14 @@ class _ServicesListState extends State<ServicesList> {
               : () {
                   _reservationProvider.selectedServices = _selectedServices;
 
-                  PersistentNavBarNavigator.pushNewScreen(context,
-                      screen: TimeSlotsScreen(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TimeSlotsScreen(
                         barberId: _reservationProvider.barberId!,
-                      ));
+                      ),
+                    ),
+                  );
                 },
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,

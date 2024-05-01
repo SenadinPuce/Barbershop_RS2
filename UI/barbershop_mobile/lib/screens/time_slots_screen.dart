@@ -6,11 +6,9 @@ import 'package:barbershop_mobile/providers/reservation_provider.dart';
 import 'package:barbershop_mobile/providers/time_slot_provider.dart';
 import 'package:barbershop_mobile/screens/reservation_success.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/service.dart';
@@ -277,7 +275,8 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: _isSelectedList[index] ? Colors.blue : Colors.grey,
+                      color:
+                          _isSelectedList[index] ? Colors.green : Colors.grey,
                       width: 1.0,
                     ),
                     borderRadius: BorderRadius.circular(5.0),
@@ -287,8 +286,9 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
                       formatTime(timeSlot.dateTime)!,
                       style: TextStyle(
                         fontSize: 15,
-                        color:
-                            _isSelectedList[index] ? Colors.blue : Colors.black,
+                        color: _isSelectedList[index]
+                            ? Colors.green
+                            : Colors.black,
                       ),
                     ),
                   ),
@@ -339,9 +339,14 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
 
                     await _appointmentProvider.insert(request: request);
 
-                    PersistentNavBarNavigator.pushNewScreen(context,
-                        screen: const ReservationSuccessScreen());
-                  } on Exception catch (e) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ReservationSuccessScreen(),
+                        ),
+                        (route) => route.isFirst);
+                  } on Exception {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(

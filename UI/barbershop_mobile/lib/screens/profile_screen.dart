@@ -3,7 +3,6 @@ import 'package:barbershop_mobile/screens/user_address_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
 import 'package:barbershop_mobile/screens/user_orders_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../utils/util.dart';
 import '../widgets/custom_app_bar.dart';
@@ -71,8 +70,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.arrow_forward,
               color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: const UserDataScreen());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserDataScreen(),
+              ),
+            );
           },
         ),
         const Divider(
@@ -89,8 +92,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.arrow_forward,
               color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: const UserAddressScreen());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserAddressScreen(),
+              ),
+            );
           },
         ),
         const Divider(
@@ -108,8 +115,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.arrow_forward,
               color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: const UserAppointmentsScreen());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserAppointmentsScreen(),
+              ),
+            );
           },
         ),
         const Divider(
@@ -125,8 +136,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           trailing: const Icon(Icons.arrow_forward,
               color: Color.fromRGBO(57, 131, 120, 1)),
           onTap: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: const UserOrdersScreen());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserOrdersScreen(),
+              ),
+            );
           },
         ),
       ],
@@ -141,12 +156,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Authorization.username = "";
           Authorization.email = "";
           Authorization.token = "";
+          Authorization.id = 0;
 
-          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-            context,
-            settings: const RouteSettings(name: LoginScreen.routeName),
-            screen: const LoginScreen(),
-            withNavBar: false,
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (BuildContext context) => LoginScreen(),
+            ),
+            (_) => false,
           );
         },
         style: ElevatedButton.styleFrom(

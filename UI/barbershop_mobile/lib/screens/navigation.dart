@@ -1,104 +1,109 @@
+import 'package:barbershop_mobile/screens/login_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:barbershop_mobile/screens/appointments_list_screen.dart';
 import 'package:barbershop_mobile/screens/news_list_screen.dart';
 import 'package:barbershop_mobile/screens/products_list_screen.dart';
 import 'package:barbershop_mobile/screens/profile_screen.dart';
 import 'package:barbershop_mobile/screens/reviews_list_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class Navigation extends StatefulWidget {
   static const routeName = '/home';
 
-  const Navigation({super.key});
+  const Navigation({Key? key}) : super(key: key);
 
   @override
   State<Navigation> createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
+  late final List<GlobalKey<NavigatorState>> _navigatorKeys;
 
-  List<Widget> _buildScreens() {
-    return [
-      const NewsListScreen(),
-      const AppointmentsListScreen(),
-      const ProductsListScreen(),
-      const ReviewsListScreen(),
-      const ProfileScreen()
-    ];
-  }
+  final List<Widget> _screens = [
+    const NewsListScreen(),
+    const AppointmentsListScreen(),
+    const ProductsListScreen(),
+    const ReviewsListScreen(),
+    const ProfileScreen(),
+  ];
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    double iconSize = MediaQuery.of(context).size.height * 0.04;
-    double labelFontSize = 14.0;
+  final List<IconData> _icons = const [
+    Icons.home,
+    Icons.calendar_today,
+    Icons.shopping_cart,
+    Icons.reviews,
+    Icons.person,
+  ];
 
-    return [
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.home, size: iconSize),
-        title: "Home",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.calendar_today, size: iconSize),
-        title: "Appointments",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.shopping_cart, size: iconSize),
-        title: "Shop",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.reviews, size: iconSize),
-        title: "Reviews",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.person, size: iconSize),
-        contentPadding: 0,
-        title: "Profile",
-        activeColorPrimary: const Color.fromRGBO(213, 178, 99, 1),
-        inactiveColorPrimary: Colors.white,
-      ),
-    ];
+  final List<String> _labels = const [
+    "News",
+    "Appointments",
+    "Shop",
+    "Reviews",
+    "Profile",
+  ];
+
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _navigatorKeys =
+        List.generate(_screens.length, (index) => GlobalKey<NavigatorState>());
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      body: PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: const Color.fromRGBO(57, 131, 120, 1),
-        handleAndroidBackButtonPress: true,
-        resizeToAvoidBottomInset: true,
-        stateManagement: true,
-        hideNavigationBarWhenKeyboardShows: true,
-        popAllScreensOnTapOfSelectedTab: true,
-        popAllScreensOnTapAnyTabs: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: const ItemAnimationProperties(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
+    return WillPopScope(
+      onWillPop: () async {
+        final navigator = _navigatorKeys[_currentIndex].currentState!;
+        if (navigator.canPop()) {
+          navigator.pop();
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: buildNavigator(),
+        bottomNavigationBar: Theme(
+          data: Theme.of(context)
+              .copyWith(canvasColor: const Color.fromRGBO(57, 131, 120, 1)),
+          child: BottomNavigationBar(
+            showUnselectedLabels: true,
+            currentIndex: _currentIndex,
+            onTap: (int index) {
+              if (_currentIndex == index) {
+                _navigatorKeys[_currentIndex]
+                    .currentState!
+                    .popUntil((route) => route.isFirst);
+              } else {
+                setState(() {
+                  _currentIndex = index;
+                });
+              }
+            },
+            items: List.generate(_icons.length, (index) {
+              return BottomNavigationBarItem(
+                  icon: Icon(
+                    _icons[index],
+                    size: 40,
+                  ),
+                  label: _labels[index]);
+            }),
+            selectedItemColor: const Color.fromRGBO(213, 178, 99, 1),
+            unselectedItemColor: Colors.white,
+          ),
         ),
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
-        ),
-        navBarStyle: NavBarStyle.style3,
-        navBarHeight: screenHeight * 0.09,
       ),
+    );
+  }
+
+  buildNavigator() {
+    return Navigator(
+      key: _navigatorKeys[_currentIndex],
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+            builder: (_) => _screens.elementAt(_currentIndex));
+      },
     );
   }
 }

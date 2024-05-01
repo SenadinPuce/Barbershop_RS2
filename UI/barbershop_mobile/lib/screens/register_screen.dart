@@ -4,13 +4,10 @@ import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/account_provider.dart';
 import 'navigation.dart';
-import 'news_list_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
@@ -202,10 +199,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     TextButton(
                         onPressed: () {
-                          PersistentNavBarNavigator.pushNewScreen(context,
-                              screen: const LoginScreen(),
-                              pageTransitionAnimation:
-                                  PageTransitionAnimation.cupertino);
+                          Navigator.pushReplacementNamed(
+                              context, LoginScreen.routeName);
                         },
                         child: const Text(
                           'Log in',

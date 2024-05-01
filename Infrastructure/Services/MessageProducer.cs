@@ -19,7 +19,7 @@ namespace Infrastructure.Services
         {
             try
             {
-                var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "rabbitmq";
+                var hostName = Environment.GetEnvironmentVariable("RabbitMQ_HostName") ?? "localhost";
                 var userName = Environment.GetEnvironmentVariable("RabbitMQ_UserName") ?? "guest";
                 var password = Environment.GetEnvironmentVariable("RabbitMQ_Password") ?? "guest";
 

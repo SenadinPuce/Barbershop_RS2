@@ -8,13 +8,11 @@ import 'package:barbershop_mobile/providers/order_provider.dart';
 import 'package:barbershop_mobile/providers/payment_provider.dart';
 import 'package:barbershop_mobile/screens/payment_success.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
@@ -50,7 +48,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _cartProvider = context.watch<CartProvider>();
-  } 
+  }
 
   Future loadData() async {
     _deliveryMethodProvider = context.read<DeliveryMethodProvider>();
@@ -130,14 +128,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
       await Stripe.instance.presentPaymentSheet();
 
-      PersistentNavBarNavigator.pushNewScreen(context,
-          screen: const PaymentSuccessScreen());
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PaymentSuccessScreen(),
+          ),
+          (route) => route.isFirst);
 
       print('Payment sheet presented successfully');
       print('Payment successfully completed');
     } on Exception catch (e) {
       if (e is StripeException) {
         print('Error from Stripe: ${e.error.localizedMessage}');
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Error from stripe'),
+                  content: const Text(
+                      'An unknown error occurred. Please try again later.'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("Ok"))
+                  ],
+                ));
       } else {
         print('Unforeseen error: ${e}');
       }

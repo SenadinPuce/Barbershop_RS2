@@ -4,10 +4,7 @@ import 'package:barbershop_mobile/models/user.dart';
 import 'package:barbershop_mobile/providers/reservation_provider.dart';
 import 'package:barbershop_mobile/providers/user_provider.dart';
 import 'package:barbershop_mobile/screens/services_list_screen.dart';
-import 'package:barbershop_mobile/screens/user_appointments_screen.dart';
-import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/custom_app_bar.dart';
@@ -48,7 +45,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(automaticallyImplyLeading: false,),
+      appBar: CustomAppBar(),
       body: Stack(children: [
         SingleChildScrollView(
             child: Column(
@@ -131,12 +128,8 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                           width: 260,
                           gaplessPlayback: true,
                         )
-                      : Image.memory(
-                          base64Decode(b.photo!),
-                          height: 260,
-                          width: 260,
-                          gaplessPlayback: true
-                        ),
+                      : Image.memory(base64Decode(b.photo!),
+                          height: 260, width: 260, gaplessPlayback: true),
                 ),
                 const SizedBox(height: 15),
                 Text(
@@ -161,8 +154,12 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                   onPressed: () async {
                     _reservationProvider.barberId = b.id;
 
-                    PersistentNavBarNavigator.pushNewScreen(context,
-                        screen: const ServicesList());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ServicesList(),
+                      ),
+                    );
                   },
                   child: const Text(
                     'Book Appointment',

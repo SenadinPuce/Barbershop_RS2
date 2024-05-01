@@ -1,9 +1,5 @@
-import 'package:barbershop_mobile/screens/appointments_list_screen.dart';
-import 'package:barbershop_mobile/screens/news_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import 'products_list_screen.dart';
 
 class ReservationSuccessScreen extends StatelessWidget {
   const ReservationSuccessScreen({Key? key});
@@ -43,11 +39,7 @@ class ReservationSuccessScreen extends StatelessWidget {
                           vertical: 16.0, horizontal: 24.0),
                     ),
                     onPressed: () {
-                      PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                          context,
-                          screen: const AppointmentsListScreen(),
-                          settings: const RouteSettings(
-                              name: AppointmentsListScreen.routeName));
+                      Navigator.popUntil(context, (route) => route.isFirst);
                     },
                     child: const Text(
                       'Close',

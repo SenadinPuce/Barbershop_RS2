@@ -16,11 +16,11 @@ class TimeRangeDisplay extends StatelessWidget {
       children: [
         Text(
           'Start time : $startTime',
-          style: const TextStyle(fontSize: 16, color: Colors.blue),
+          style: const TextStyle(fontSize: 16, color: Colors.green),
         ),
         Text(
           'End time: $endTime',
-          style: const TextStyle(fontSize: 16, color: Colors.blue),
+          style: const TextStyle(fontSize: 16, color: Colors.green),
         ),
       ],
     );

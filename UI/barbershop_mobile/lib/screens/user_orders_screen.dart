@@ -3,11 +3,8 @@ import 'package:barbershop_mobile/providers/order_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/back_button_app_bar.dart';
 import 'order_details_screen.dart';
 
 class UserOrdersScreen extends StatefulWidget {
@@ -91,10 +88,12 @@ class _UserOrdersScreenState extends State<UserOrdersScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: InkWell(
           onTap: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: OrderDetailsScreen(
-                  order: order,
-                ));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderDetailsScreen(order: order),
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(20.0),

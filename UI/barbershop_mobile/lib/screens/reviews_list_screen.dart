@@ -3,8 +3,6 @@ import 'package:barbershop_mobile/providers/review_provider.dart';
 import 'package:barbershop_mobile/screens/review_add_screen.dart';
 import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/custom_app_bar.dart';
@@ -61,9 +59,14 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           ),
       ]),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'btn_add',
         onPressed: () async {
-          await PersistentNavBarNavigator.pushNewScreen(context,
-              screen: const ReviewAddScreen());
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReviewAddScreen(),
+            ),
+          );
 
           setState(() {
             isLoading = true;

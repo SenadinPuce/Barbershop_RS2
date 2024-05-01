@@ -1,9 +1,7 @@
 import 'package:barbershop_mobile/screens/checkout_screen.dart';
-import 'package:barbershop_mobile/widgets/back_button_app_bar.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:barbershop_mobile/widgets/order_summary.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart.dart';
@@ -168,8 +166,12 @@ class _CartScreenState extends State<CartScreen> {
               minimumSize: const Size(double.infinity, 45),
               elevation: 3),
           onPressed: () {
-            PersistentNavBarNavigator.pushNewScreen(context,
-                screen: const CheckoutScreen());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CheckoutScreen(),
+              ),
+            );
           },
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,

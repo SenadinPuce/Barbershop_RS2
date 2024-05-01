@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   String? title;
-  bool? automaticallyImplyLeading;
 
   CustomAppBar({
     Key? key,
     this.title,
-    this.automaticallyImplyLeading,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: automaticallyImplyLeading ?? true,
       centerTitle: true,
       title: Text(
         title ?? "Barbershop",
