@@ -26,14 +26,29 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
   void initState() {
     super.initState();
     _orderProvider = context.read<OrderProvider>();
+
+    DateTime now = DateTime.now();
+    _selectedDateFrom = DateTime(now.year, now.month, 1);
+    _selectedDateTo = now;
   }
 
   Future<void> _loadOrders() async {
-    var ordersData = await _orderProvider.get(
-        filter: {'dateFrom': _selectedDateFrom, 'dateTo': _selectedDateTo});
+    var completedOrdersData = await _orderProvider.get(filter: {
+      'dateFrom': _selectedDateFrom,
+      'dateTo': _selectedDateTo,
+      'status': 'Completed'
+    });
+
+    var payedOrdersData = await _orderProvider.get(filter: {
+      'dateFrom': _selectedDateFrom,
+      'dateTo': _selectedDateTo,
+      'status': 'Payment Received'
+    });
 
     setState(() {
-      orders = ordersData;
+      orders = [];
+      orders?.addAll(completedOrdersData);
+      orders?.addAll(payedOrdersData);
       isLoading = false;
     });
   }
@@ -100,7 +115,7 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
                     height: 16,
                   ),
                   Text(
-                    'Total Revenue: \$${_getTotalRevenue()}',
+                    'Total Revenue: ${_getTotalRevenue()} \$',
                     style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -197,9 +212,7 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
   }
 
   double? _getTotalRevenue() {
-    return orders
-        ?.where((order) =>
-            order.status == 'Completed' || order.status == 'Payment Received')
+    return orders!
         .map<double>((order) => order.total!)
         .fold(0, (previousValue, element) => previousValue! + element);
   }

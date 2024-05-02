@@ -35,6 +35,10 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     _userProvider = context.read<UserProvider>();
 
     _loadBarbers();
+
+    DateTime now = DateTime.now();
+    _selectedDateFrom = DateTime(now.year, now.month, 1);
+    _selectedDateTo = now;
   }
 
   Future<void> _loadBarbers() async {
@@ -123,7 +127,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                     height: 16,
                   ),
                   Text(
-                    'Total Income Made: \$${_getTotalIncome()}',
+                    'Total Income Made: ${_getTotalIncome()} \$',
                     style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -244,8 +248,8 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
       return 0;
     }
 
-    return appointments
-        !.map<int>((appointment) =>
+    return appointments!
+        .map<int>((appointment) =>
             appointment.services?.fold<int>(
                 0,
                 (previousValue, service) =>
@@ -259,8 +263,8 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
       return 0.0;
     }
 
-    return appointments
-        !.map<double>((appointment) => appointment.services!
+    return appointments!
+        .map<double>((appointment) => appointment.services!
             .map<double>((service) => service.price ?? 0.0)
             .fold(0, (previousValue, element) => previousValue + element))
         .fold(0, (previousValue, element) => previousValue! + element);
