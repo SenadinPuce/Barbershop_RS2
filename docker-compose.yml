@@ -38,8 +38,8 @@ services:
       - RabbitMQ_HostName=rabbitmq
       - RabbitMQ_UserName=guest
       - RabbitMQ_Password=guest
-      - OUTLOOK_MAIL=barbershop_rs2@outlook.com
-      - OUTLOOK_PASS=Barbershop!
+      - Outlook_Mail=barbershop_rs2@outlook.com
+      - Outlook_Password=Barbershop!
     depends_on:
       - rabbitmq
       - barbershop-sql
@@ -55,7 +55,7 @@ services:
       context: .
       dockerfile: API\Dockerfile
     environment:
-      - ConnectionStrings:DefaultConnection=Server=barbershop-sql,1433;Database=Barbershop;User=sa;Password=QWElkj132!;ConnectRetryCount=0;TrustServerCertificate=True;
+      - ConnectionStrings:DefaultConnection=Server=barbershop-sql,1433;Database=180044;User=sa;Password=QWElkj132!;ConnectRetryCount=0;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Development
       - RabbitMQ_HostName=rabbitmq
       - RabbitMQ_UserName=guest
