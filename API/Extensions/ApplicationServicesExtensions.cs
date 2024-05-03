@@ -15,7 +15,10 @@ namespace API.Extensions
         {
             services.AddDbContext<BarbershopContext>(opt =>
             {
-                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"), builder =>
+                {
+                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                });
             });
 
             services.AddScoped<IProductService, ProductService>();
