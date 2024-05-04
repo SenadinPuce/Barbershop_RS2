@@ -6,15 +6,6 @@ The backend architecture consists of a primary .NET Web API serving as the centr
 Communication between components is facilitated through RabbitMQ messaging, enabling efficient event-based interactions. 
 The main .NET Web API handles core business logic and data management, while the separate email notification service API manages and dispatches email alerts triggered by system events.
 
-For testing purposes, the email notification service uses the following credentials to authenticate with the email server:
-
-Email: 
->barbershop_rs2@outlook.com
-Password: 
->Barbershop!
->
-These credentials are employed to verify the functionality of the email sending process within the system.
-
 All data is stored and managed in a SQL Server database, ensuring a reliable and scalable foundation for the entire system.
 
 ## Login Credentials
@@ -79,8 +70,23 @@ flutter run
 
 ```
 
-## Outlook mail credentials 
+## Outlook mail credentials
 
+For testing purposes, the email notification service uses the following credentials to authenticate with the email server:
+
+Email: 
+```
+barbershop_rs2@outlook.com
+
+```
+
+Password: 
+```
+Barbershop!
+
+```
+
+These credentials are employed to verify the functionality of the email sending process within the system.
 
 ## Payment Integration (Stripe)
 
