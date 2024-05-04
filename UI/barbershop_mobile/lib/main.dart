@@ -68,13 +68,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Barbershop mobile',
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          appBarTheme: const AppBarTheme(
-            color: Color.fromRGBO(57, 131, 120, 1),
-            foregroundColor: Colors.white,
-          ),
-          fontFamily: GoogleFonts.roboto().fontFamily,
-        ),
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: const AppBarTheme(
+              color: Color.fromRGBO(57, 131, 120, 1),
+              foregroundColor: Colors.white,
+            ),
+            fontFamily: GoogleFonts.roboto().fontFamily,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+            )),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+                foregroundColor: Colors.white)),
         initialRoute: '/login',
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
