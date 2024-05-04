@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
-import 'package:barbershop_admin/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -34,7 +33,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
       'name': widget.service?.name,
       'price': formatNumber(widget.service?.price).toString(),
       'description': widget.service?.description,
-      'durationInMinutes':widget.service?.durationInMinutes.toString()
+      'durationInMinutes': widget.service?.durationInMinutes.toString()
     };
 
     _serviceProvider = context.read<ServiceProvider>();
@@ -91,7 +90,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                   FormBuilderValidators.required(),
                   FormBuilderValidators.integer()
                 ]),
-                decoration: const InputDecoration(labelText: 'Duration (minutes)'),
+                decoration:
+                    const InputDecoration(labelText: 'Duration (minutes)'),
               )),
             ],
           ),
@@ -146,31 +146,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
                   editedService = await _serviceProvider.update(
                       widget.service!.id!, request);
                 }
-
-                setState(() {});
-
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 8.0),
-                      Text("Service saved successfully.")
-                    ],
-                  ),
-                  duration: const Duration(seconds: 1),
-                  backgroundColor: Colors.green,
-                  action: SnackBarAction(
-                    label: 'Dismiss',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    textColor: Colors.white,
-                  ),
-                ));
-              } on Exception catch (e) {
+                Navigator.of(context).pop(true);
+              } on Exception {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Row(

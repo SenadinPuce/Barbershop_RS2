@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../models/order.dart';
 import '../providers/orders_provider.dart';
 import '../utils/util.dart';
-import '../widgets/master_screen.dart';
 import 'order_details_screen.dart';
 
 class OrdersListScreen extends StatefulWidget {

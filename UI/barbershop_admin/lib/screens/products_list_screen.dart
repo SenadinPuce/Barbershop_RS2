@@ -58,7 +58,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   loadProducts() async {
-    setState(() {});
     var productData = await _productProvider.get(filter: {
       'name': _productNameController.text,
       'productBrandId': _selectedBrandId,
@@ -242,6 +241,27 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             if (isLoading == true) {
               setState(() {});
               loadProducts();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: const Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text("Product saved successfully.")
+                  ],
+                ),
+                duration: const Duration(seconds: 1),
+                backgroundColor: Colors.green,
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  textColor: Colors.white,
+                ),
+              ));
             }
           },
           child: const Text("Add new product"),
@@ -364,6 +384,27 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     if (isLoading == true) {
       setState(() {});
       loadProducts();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Row(
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.white,
+            ),
+            SizedBox(width: 8.0),
+            Text("Product saved successfully.")
+          ],
+        ),
+        duration: const Duration(seconds: 1),
+        backgroundColor: Colors.green,
+        action: SnackBarAction(
+          label: 'Dismiss',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+          textColor: Colors.white,
+        ),
+      ));
     }
   }
 

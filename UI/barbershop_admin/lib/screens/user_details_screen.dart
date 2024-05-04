@@ -220,7 +220,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(4),
-
                   ]),
                 ),
               ),
@@ -283,27 +282,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       await _userProvider.update(widget.user!.id!, request);
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 8.0),
-                      Text("User saved successfully.")
-                    ],
-                  ),
-                  duration: const Duration(seconds: 1),
-                  backgroundColor: Colors.green,
-                  action: SnackBarAction(
-                    label: 'Dismiss',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    textColor: Colors.white,
-                  ),
-                ));
+                Navigator.of(context).pop(true);
               } on Exception {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

@@ -19,14 +19,12 @@ import 'screens/login_screen.dart';
 import 'screens/navigation.dart';
 
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
 
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(900, 600));
   }
-
-
 
   runApp(MultiProvider(
     providers: [
@@ -52,16 +50,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Barbershop admin',
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
-            color: Color.fromRGBO(57, 131, 120, 1),
-          ),
-          colorScheme: ColorScheme.fromSwatch()
-              .copyWith(primary: const Color.fromRGBO(213, 178, 99, 1)),
+              color: Color.fromRGBO(57, 131, 120, 1),
+              foregroundColor: Colors.white),
           fontFamily: GoogleFonts.roboto().fontFamily,
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(150, 50),
               backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

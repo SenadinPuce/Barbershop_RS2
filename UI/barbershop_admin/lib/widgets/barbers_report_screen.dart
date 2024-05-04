@@ -149,12 +149,12 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
           validator: FormBuilderValidators.required(),
           decoration: const InputDecoration(
             labelText: 'From date',
-            floatingLabelStyle: TextStyle(color: Colors.blue),
+            floatingLabelStyle: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Icon(
                 Icons.calendar_today,
-                color: Colors.blue,
+              color: Color.fromRGBO(213, 178, 99, 1)
               ),
             ),
           ),
@@ -176,12 +176,12 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
             child: DateTimeFormField(
           decoration: const InputDecoration(
             labelText: 'To date',
-            floatingLabelStyle: TextStyle(color: Colors.blue),
+            floatingLabelStyle: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Icon(
                 Icons.calendar_today,
-                color: Colors.blue,
+              color: Color.fromRGBO(213, 178, 99, 1)
               ),
             ),
           ),

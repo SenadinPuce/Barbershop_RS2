@@ -48,43 +48,45 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Expanded(
-              child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                          controller: _usernameController,
-                          validator: FormBuilderValidators.required(),
-                          decoration: const InputDecoration(
-                            labelText: 'Username',
-                            hintText: 'Enter username',
-                            prefixIcon: Icon(Icons.person),
-                          )),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
-                        controller: _passwordController,
-                        validator: FormBuilderValidators.required(),
-                        obscureText: !_isPasswordVisible,
-                        decoration: InputDecoration(
-                            labelText: 'Password',
-                            hintText: 'Enter password',
-                            prefixIcon: const Icon(Icons.password),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
-                                });
-                              },
-                              icon: Icon(_isPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                              color: Colors.black87,
+              child: SingleChildScrollView(
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                            controller: _usernameController,
+                            validator: FormBuilderValidators.required(),
+                            decoration: const InputDecoration(
+                              labelText: 'Username',
+                              hintText: 'Enter username',
+                              prefixIcon: Icon(Icons.person),
                             )),
-                      ),
-                    ],
-                  )),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          validator: FormBuilderValidators.required(),
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                              labelText: 'Password',
+                              hintText: 'Enter password',
+                              prefixIcon: const Icon(Icons.password),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                                icon: Icon(_isPasswordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                color: Colors.black87,
+                              )),
+                        ),
+                      ],
+                    )),
+              ),
             ),
             Column(
               children: [

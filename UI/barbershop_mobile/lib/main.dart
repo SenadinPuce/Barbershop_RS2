@@ -68,18 +68,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Barbershop mobile',
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             color: Color.fromRGBO(57, 131, 120, 1),
+            foregroundColor: Colors.white,
           ),
-          colorScheme: ColorScheme.fromSwatch()
-              .copyWith(primary: const Color.fromRGBO(213, 178, 99, 1)),
           fontFamily: GoogleFonts.roboto().fontFamily,
         ),
         initialRoute: '/login',
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
-          Navigation.routeName: (context) =>  const Navigation(),
+          Navigation.routeName: (context) => const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
           NewsDetailsScreen.routeName: (context) => NewsDetailsScreen(),
           AppointmentsListScreen.routeName: (context) =>

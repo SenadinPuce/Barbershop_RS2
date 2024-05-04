@@ -93,6 +93,27 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
             if (isLoading) {
               setState(() {});
               loadServices();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: const Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text("Service saved successfully.")
+                  ],
+                ),
+                duration: const Duration(seconds: 1),
+                backgroundColor: Colors.green,
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                  textColor: Colors.white,
+                ),
+              ));
             }
           },
           child: const Text("Add new service"),
@@ -206,6 +227,27 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
     if (isLoading) {
       setState(() {});
       loadServices();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Row(
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.white,
+            ),
+            SizedBox(width: 8.0),
+            Text("Service saved successfully.")
+          ],
+        ),
+        duration: const Duration(seconds: 1),
+        backgroundColor: Colors.green,
+        action: SnackBarAction(
+          label: 'Dismiss',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+          textColor: Colors.white,
+        ),
+      ));
     }
   }
 

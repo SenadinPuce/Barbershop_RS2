@@ -262,29 +262,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   );
                 }
 
-                setState(() {});
-
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 8.0),
-                      Text("Product saved successfully.")
-                    ],
-                  ),
-                  duration: const Duration(seconds: 1),
-                  backgroundColor: Colors.green,
-                  action: SnackBarAction(
-                    label: 'Dismiss',
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    textColor: Colors.white,
-                  ),
-                ));
+                Navigator.of(context).pop(true);
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
