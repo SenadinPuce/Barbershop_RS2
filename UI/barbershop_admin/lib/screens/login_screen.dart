@@ -1,38 +1,32 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:barbershop_admin/screens/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/account_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
-  const LoginScreen({Key? key});
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return LoginStatefulWidget();
+  State<LoginScreen> createState() {
+    return _LoginScreenState();
   }
 }
 
-class LoginStatefulWidget extends StatefulWidget {
-  LoginStatefulWidget({Key? key});
-
-  @override
-  _LoginStatefulWidgetState createState() => _LoginStatefulWidgetState();
-}
-
-class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   late AccountProvider _accountProvider;
-  bool isButtonDisabled = true;
-  bool isPasswordVisible = false;
+  bool _isButtonDisabled = true;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
     super.initState();
+
+    _accountProvider = context.read<AccountProvider>();
 
     _usernameController.addListener(_onTextChanged);
     _passwordController.addListener(_onTextChanged);
@@ -40,15 +34,20 @@ class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
 
   void _onTextChanged() {
     setState(() {
-      isButtonDisabled =
+      _isButtonDisabled =
           _usernameController.text.isEmpty || _passwordController.text.isEmpty;
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    _accountProvider = context.read<AccountProvider>();
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
@@ -90,25 +89,25 @@ class _LoginStatefulWidgetState extends State<LoginStatefulWidget> {
                             vertical: 12, horizontal: 16),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            isPasswordVisible
+                            _isPasswordVisible
                                 ? Icons.visibility_off
                                 : Icons.visibility,
                           ),
                           onPressed: () {
                             setState(() {
-                              isPasswordVisible = !isPasswordVisible;
+                              _isPasswordVisible = !_isPasswordVisible;
                             });
                           },
                         ),
                       ),
                       controller: _passwordController,
-                      obscureText: !isPasswordVisible,
+                      obscureText: !_isPasswordVisible,
                     ),
                     const SizedBox(
                       height: 40,
                     ),
                     ElevatedButton(
-                        onPressed: isButtonDisabled
+                        onPressed: _isButtonDisabled
                             ? null
                             : () async {
                                 var username = _usernameController.text;

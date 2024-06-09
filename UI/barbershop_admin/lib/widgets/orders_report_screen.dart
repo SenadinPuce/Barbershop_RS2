@@ -1,7 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
 import '../models/order.dart';
@@ -53,6 +58,55 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
     });
   }
 
+  Future<Uint8List> _generatePdf() async {
+    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
+    final font = await PdfGoogleFonts.nunitoRegular();
+    final fontBold = await PdfGoogleFonts.nunitoBold();
+
+    pdf.addPage(
+      pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Report',
+                  style: pw.TextStyle(
+                    font: fontBold,
+                    fontSize: 14,
+                  ),
+                ),
+                pw.Divider(),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Period: ${getDate(_selectedDateFrom)} - ${getDate(_selectedDateTo)}',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.Text(
+                  'Number of Payed Orders (not shipped yet): ${_getPaymentReceivedOrders()}',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.Text(
+                  'Number of Completed Orders: ${_getCompletedOrdersCount()}',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.SizedBox(height: 16),
+                pw.Text(
+                  'Total Revenue: ${_getTotalRevenue()} \$',
+                  style: pw.TextStyle(
+                    font: fontBold,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            );
+          }),
+    );
+
+    return pdf.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -82,9 +136,10 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
                   const Text(
                     'Report',
                     style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const Divider(),
                   const SizedBox(
@@ -120,6 +175,36 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                              child: PdfPreview(
+                                initialPageFormat: PdfPageFormat.a4,
+                                build: (format) => _generatePdf(),
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                        ),
+                        child: const Text(
+                          'Preview PDF',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

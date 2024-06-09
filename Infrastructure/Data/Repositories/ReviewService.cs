@@ -23,6 +23,10 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Review> AddFilter(IQueryable<Review> query, ReviewSearchObject search)
         {
+            if (search.BarberId != 0)
+            {
+                query = query.Where(x => x.BarberId == search.BarberId);
+            }
             query = query.OrderByDescending(x => x.CreatedDateTime);
 
             return query;

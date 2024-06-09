@@ -9,7 +9,9 @@ import 'package:provider/provider.dart';
 
 class ReviewAddScreen extends StatefulWidget {
   static const routeName = '/review-add';
-  const ReviewAddScreen({Key? key}) : super(key: key);
+  const ReviewAddScreen({required this.barberId, super.key});
+
+  final int barberId;
 
   @override
   State<ReviewAddScreen> createState() => _ReviewAddScreenState();
@@ -18,13 +20,19 @@ class ReviewAddScreen extends StatefulWidget {
 class _ReviewAddScreenState extends State<ReviewAddScreen> {
   late ReviewProvider _reviewProvider;
   double _rating = 0.0;
-  TextEditingController _commentController = TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   void initState() {
     super.initState();
     _reviewProvider = context.read<ReviewProvider>();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -123,7 +131,8 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
               Map request = {
                 "Rating": _rating.toInt(),
                 "Comment": _commentController.text,
-                "ClientId": Authorization.id
+                "ClientId": Authorization.id,
+                "BarberId": widget.barberId,
               };
 
               await _reviewProvider.insert(request: request);

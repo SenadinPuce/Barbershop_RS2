@@ -9,6 +9,7 @@ namespace Core.Entities.OrderAggregate
 		public Order(ICollection<OrderItem> orderItems, int clientId,
 		   DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId, Address address)
 		{
+			OrderNumber = Guid.NewGuid().ToString();
 			ClientId = clientId;
 			DeliveryMethod = deliveryMethod;
 			OrderItems = orderItems;
@@ -18,7 +19,7 @@ namespace Core.Entities.OrderAggregate
 		}
 
 		public int Id { get; set; }
-
+		public string OrderNumber { get; set; }
 		public int ClientId { get; set; }
 		public virtual AppUser Client { get; set; }
 		public DateTime OrderDate { get; set; } = DateTime.UtcNow;

@@ -2,21 +2,15 @@ namespace Core.Entities.OrderAggregate
 {
     public partial class OrderItem
     {
-        public OrderItem()
-        {
-        }
-
-        public OrderItem(ProductItemOrdered itemOrdered, decimal price, int quantity)
-        {
-            ItemOrdered = itemOrdered;
-            Price = price;
-            Quantity = quantity;
-        }
-
         public int Id { get; set; }
-        public ProductItemOrdered ItemOrdered { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+
+        public int OrderId { get; set; }
+        public virtual Order Order { get; set; }
+
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
     }
 
 }

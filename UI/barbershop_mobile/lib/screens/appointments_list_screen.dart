@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:barbershop_mobile/models/user.dart';
 import 'package:barbershop_mobile/providers/reservation_provider.dart';
 import 'package:barbershop_mobile/providers/user_provider.dart';
+import 'package:barbershop_mobile/screens/reviews_list_screen.dart';
 import 'package:barbershop_mobile/screens/services_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -148,7 +149,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 24.0),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
+                          borderRadius: BorderRadius.circular(15.0)),
                       minimumSize: const Size(double.infinity, 45),
                       elevation: 3),
                   onPressed: () async {
@@ -163,6 +164,31 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                   },
                   child: const Text(
                     'Book Appointment',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 24.0),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)),
+                      minimumSize: const Size(double.infinity, 45),
+                      elevation: 3),
+                  onPressed: () async {
+                    _reservationProvider.barberId = b.id;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReviewsListScreen(barberId: b.id!,),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'Reviews',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ),

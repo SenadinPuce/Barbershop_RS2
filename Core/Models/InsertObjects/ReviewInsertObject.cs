@@ -12,4 +12,7 @@ public class ReviewUpsertObject
 
     [Required]
     public int ClientId { get; set; }
+
+    [Required]
+    public int BarberId { get; set; }
 }

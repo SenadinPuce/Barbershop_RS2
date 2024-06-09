@@ -7,6 +7,7 @@ class Review {
   int? id;
   int? rating;
   String? comment;
+  int? barberId;
   int? clientId;
   String? clientFirstName;
   String? clientLastName;
@@ -16,6 +17,7 @@ class Review {
     this.id,
     this.rating,
     this.comment,
+    this.barberId,
     this.clientId,
     this.createdDateTime,
   });

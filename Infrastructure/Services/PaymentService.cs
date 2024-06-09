@@ -52,9 +52,14 @@ namespace Infrastructure.Services
 
             foreach (var item in upsert.Items)
             {
-                var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
-                var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                var product = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
+                var orderItem = new OrderItem()
+                {
+                    ProductId = product.Id,
+                    Price = product.Price,
+                    Quantity = item.Quantity,
+                };
+
                 items.Add(orderItem);
             }
 

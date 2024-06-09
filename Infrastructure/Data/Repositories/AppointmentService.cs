@@ -7,6 +7,7 @@ using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
 using Microsoft.EntityFrameworkCore;
+using CloudinaryDotNet.Actions;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -28,6 +29,11 @@ namespace Infrastructure.Data.Repositories
         {
             var appointment = await _context.Appointments
                 .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (update.Status == "Completed" && appointment.StartTime >= DateTime.Now)
+            {
+                return appointment;
+            }
 
             _mapper.Map(update, appointment);
 
@@ -86,7 +92,9 @@ namespace Infrastructure.Data.Repositories
         {
             if (search.ClientId.HasValue && search.ClientId.Value > 0)
             {
-                query = query.Where(a => a.ClientId == search.ClientId);
+                query = query.Where(a => a.ClientId == search.ClientId && a.StartTime >= DateTime.Now);
+
+
             }
             if (search.BarberId.HasValue && search.BarberId.Value > 0)
             {

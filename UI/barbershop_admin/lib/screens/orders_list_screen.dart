@@ -195,13 +195,6 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                 DataColumn(
                     label: Expanded(
                   child: Text(
-                    'ID',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text(
                     'Client',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -251,8 +244,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
               ],
               rows: (orders ?? [])
                   .map((Order o) => DataRow(cells: [
-                        DataCell(Text(o.id.toString())),
-                        DataCell(Text(o.clientUsername.toString())),
+                        DataCell(Text(o.clientFullName.toString())),
                         DataCell(Text(o.deliveryMethod!.shortName.toString())),
                         DataCell(Text(o.total.toString())),
                         DataCell(Text(getDate(o.orderDate))),

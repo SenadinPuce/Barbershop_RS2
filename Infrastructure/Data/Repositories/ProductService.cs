@@ -104,18 +104,18 @@ namespace Infrastructure.Data.Repositories
                     {
                         if (item.OrderItems.Count > 1)
                         {
-                            var distinctItemId = item.OrderItems.Select(y => y.ItemOrdered.ProductItemId).ToList();
+                            var distinctItemId = item.OrderItems.Select(y => y.ProductId).ToList();
 
                             distinctItemId.ForEach(y =>
                             {
-                                var relatedItems = item.OrderItems.Where(z => z.ItemOrdered.ProductItemId != y);
+                                var relatedItems = item.OrderItems.Where(z => z.ProductId != y);
 
                                 foreach (var z in relatedItems)
                                 {
                                     data.Add(new ProductEntry()
                                     {
                                         ProductID = (uint)y,
-                                        CoPurchaseProductID = (uint)z.ItemOrdered.ProductItemId,
+                                        CoPurchaseProductID = (uint)z.ProductId,
                                     });
                                 }
                             });

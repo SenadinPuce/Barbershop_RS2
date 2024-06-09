@@ -106,15 +106,38 @@ namespace API.Controllers
 
             _mapper.Map(update, user);
 
-            var result = await _userManager.UpdateAsync(user);
+            var updateResult = await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
+            if (!updateResult.Succeeded)
             {
-                foreach (var error in result.Errors)
+                foreach (var error in updateResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
                 return BadRequest(ModelState);
+            }
+            
+            if (!string.IsNullOrEmpty(update.Password))
+            {
+                var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+                if (!removePasswordResult.Succeeded)
+                {
+                    foreach (var error in removePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, update.Password);
+                if (!addPasswordResult.Succeeded)
+                {
+                    foreach (var error in addPasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
             }
 
             return Ok(_mapper.Map<AppUserDto>(user));

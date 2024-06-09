@@ -5,7 +5,8 @@ namespace API.Dtos
     public class OrderDto
     {
         public int Id { get; set; }
-        public string ClientUsername { get; set; }
+        public string OrderNumber { get; set; }
+        public string ClientFullName { get; set; }
         public string ClientEmail { get; set; }
         public string ClientPhoneNumber { get; set; }
         public DateTime OrderDate { get; set; }

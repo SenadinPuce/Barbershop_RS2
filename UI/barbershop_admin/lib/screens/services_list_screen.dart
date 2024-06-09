@@ -18,7 +18,7 @@ class ServicesListScreen extends StatefulWidget {
 class _ServicesListScreenState extends State<ServicesListScreen> {
   late ServiceProvider _serviceProvider;
   List<Service>? services;
-  TextEditingController _serviceNameController = TextEditingController();
+  final TextEditingController _serviceNameController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -37,6 +37,12 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
       services = servicesData;
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _serviceNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -140,13 +146,6 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                   DataColumn(
                       label: Expanded(
                     child: Text(
-                      'ID',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )),
-                  DataColumn(
-                      label: Expanded(
-                    child: Text(
                       'Name',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -189,7 +188,6 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                 ],
                 rows: (services ?? [])
                     .map((Service s) => DataRow(cells: [
-                          DataCell(Text(s.id.toString())),
                           DataCell(Text(s.name.toString())),
                           DataCell(Text(formatNumber(s.price))),
                           DataCell(Text(s.durationInMinutes.toString())),

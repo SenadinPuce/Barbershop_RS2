@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Models.SearchObjects;
@@ -19,6 +15,11 @@ namespace Infrastructure.Data.Repositories
 
         public async Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(TimeSlotSearchObject search)
         {
+            if (search.Date.DayOfWeek == DayOfWeek.Saturday || search.Date.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return new List<TimeSlot>();
+            }
+
             List<Appointment> bookedAppointments = await _context.Appointments
                 .Where(x => x.StartTime.Date.CompareTo(search.Date.Date) == 0
                             && x.BarberId == search.BarberId
@@ -33,7 +34,7 @@ namespace Infrastructure.Data.Repositories
             List<TimeSlot> availableTimeSlots = new List<TimeSlot>();
 
             int intervalMinutes = 5;
-            int minutesToAdd = intervalMinutes - (startTime.Minute % intervalMinutes);
+            int minutesToAdd = startTime.Minute % intervalMinutes == 0 ? 0 : intervalMinutes - (startTime.Minute % intervalMinutes);
             startTime = startTime.AddMinutes(minutesToAdd);
 
             while (startTime < endTime)

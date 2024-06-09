@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
@@ -64,6 +64,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         _base64Image = base64Encode(_image!.readAsBytesSync());
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -176,11 +182,18 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               child: FormBuilderTextField(
                 decoration: const InputDecoration(
                   labelText: 'Phone number',
+                  hintText: 'e.g. 061 234 456',
                 ),
                 name: "phoneNumber",
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
+                inputFormatters: [
+                  PhoneInputFormatter(
+                    defaultCountryCode: 'BA',
+                    allowEndlessPhone: false,
+                  )
+                ],
               ),
             )
           ],

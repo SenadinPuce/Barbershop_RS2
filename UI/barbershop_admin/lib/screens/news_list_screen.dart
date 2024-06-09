@@ -15,7 +15,7 @@ class NewsListScreen extends StatefulWidget {
 
 class _NewsListScreenState extends State<NewsListScreen> {
   late NewsProvider _newsProvider;
-  TextEditingController _newsTitleController = TextEditingController();
+  final TextEditingController _newsTitleController = TextEditingController();
   List<News>? news;
   bool isLoading = true;
 
@@ -35,6 +35,12 @@ class _NewsListScreenState extends State<NewsListScreen> {
       news = newsData;
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _newsTitleController.dispose();
+    super.dispose();
   }
 
   @override
@@ -140,13 +146,6 @@ class _NewsListScreenState extends State<NewsListScreen> {
                   DataColumn(
                       label: Expanded(
                     child: Text(
-                      'ID',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )),
-                  DataColumn(
-                      label: Expanded(
-                    child: Text(
                       'Title',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -190,7 +189,6 @@ class _NewsListScreenState extends State<NewsListScreen> {
                 ],
                 rows: (news ?? [])
                     .map((News n) => DataRow(cells: [
-                          DataCell(Text(n.id.toString())),
                           DataCell(Text(n.title.toString())),
                           DataCell(n.photo != ""
                               ? Container(

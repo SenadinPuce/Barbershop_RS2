@@ -4,6 +4,7 @@ import 'package:barbershop_mobile/utils/util.dart';
 import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,7 @@ class UserDataScreen extends StatefulWidget {
 class _UserDataScreenState extends State<UserDataScreen> {
   late UserProvider _userProvider;
   final _formKey = GlobalKey<FormBuilderState>();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   User? _user;
   bool isLoading = true;
@@ -119,6 +120,13 @@ class _UserDataScreenState extends State<UserDataScreen> {
             name: 'phoneNumber',
             decoration:
                 const InputDecoration(labelText: 'Phone Number (optional)'),
+            inputFormatters: [
+              PhoneInputFormatter(
+                allowEndlessPhone: false,
+                defaultCountryCode: 'BA',
+              )
+            ],
+            keyboardType: TextInputType.number,
           ),
           const SizedBox(
             height: 5,

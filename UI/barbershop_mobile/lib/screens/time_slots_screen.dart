@@ -32,7 +32,7 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
   late AppointmentProvider _appointmentProvider;
   List<TimeSlot> _timeSlots = [];
   List<bool> _isSelectedList = [];
-  DateTime _selectedDate = DateTime.now();
+  late DateTime _selectedDate;
   bool _isLoading = true;
   String _startTime = '';
   String _endTime = '';
@@ -40,6 +40,14 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
   @override
   void initState() {
     super.initState();
+
+    DateTime now = DateTime.now();
+    if (now.weekday == DateTime.saturday) {
+      _selectedDate = now.add(const Duration(days: 2));
+    } else if (now.weekday == DateTime.sunday) {
+      _selectedDate = now.add(const Duration(days: 1));
+    }
+
     _timeSlotProvider = context.read<TimeSlotProvider>();
     _appointmentProvider = context.read<AppointmentProvider>();
     loadTimeSlots();
@@ -178,11 +186,18 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      firstDate: _selectedDate,
+      lastDate: DateTime.now().add(
+        const Duration(days: 365),
+      ),
+      selectableDayPredicate: (DateTime date) {
+        return date.weekday != DateTime.saturday &&
+            date.weekday != DateTime.sunday;
+      },
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {

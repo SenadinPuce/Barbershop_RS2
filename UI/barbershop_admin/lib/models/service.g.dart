@@ -19,5 +19,5 @@ Map<String, dynamic> _$ServiceToJson(Service instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'price': instance.price,
-      'durationInMinutes': instance.durationInMinutes
+      'durationInMinutes': instance.durationInMinutes,
     };

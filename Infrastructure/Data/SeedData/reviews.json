@@ -2,16 +2,19 @@
     {
         "Rating": 5,
         "Comment": "Very satisfied!",
-        "ClientId": 1
+        "ClientId": 1,
+        "BarberId": 2
     },
     {
         "Rating": 4,
         "Comment": "Excellent service.",
-        "ClientId": 1
+        "ClientId": 1,
+        "BarberId": 2
     },
     {
         "Rating": 5,
         "Comment": "Absolutely fantastic!",
-        "ClientId": 1
+        "ClientId": 1,
+        "BarberId": 3
       }
 ]

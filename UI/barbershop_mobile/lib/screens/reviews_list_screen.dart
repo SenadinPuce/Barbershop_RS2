@@ -9,7 +9,9 @@ import '../widgets/custom_app_bar.dart';
 
 class ReviewsListScreen extends StatefulWidget {
   static const routeName = '/Reviews';
-  const ReviewsListScreen({super.key});
+  const ReviewsListScreen({required this.barberId, super.key});
+
+  final int barberId;
 
   @override
   State<ReviewsListScreen> createState() => _ReviewsListScreenState();
@@ -29,7 +31,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
   Future<void> loadData() async {
     _reviewProvider = context.read<ReviewProvider>();
 
-    var reviewsData = await _reviewProvider.get();
+    var reviewsData = await _reviewProvider.get(filter: {'barberId': widget.barberId});
 
     setState(() {
       _reviews = reviewsData;
@@ -64,7 +66,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ReviewAddScreen(),
+              builder: (context) => ReviewAddScreen(barberId: widget.barberId,),
             ),
           );
 
@@ -74,7 +76,7 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           loadData();
         },
         backgroundColor: const Color.fromRGBO(99, 134, 213, 1),
-        label: const Text("Rate Us"),
+        label: const Text("Write A Review"),
         icon: const Icon(
           Icons.rate_review_rounded,
         ),

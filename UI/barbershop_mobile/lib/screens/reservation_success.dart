@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class ReservationSuccessScreen extends StatelessWidget {
-  const ReservationSuccessScreen({Key? key});
+  const ReservationSuccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

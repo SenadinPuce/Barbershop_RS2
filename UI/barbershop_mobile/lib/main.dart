@@ -27,8 +27,6 @@ import 'screens/news_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/register_screen.dart';
-import 'screens/review_add_screen.dart';
-import 'screens/reviews_list_screen.dart';
 import 'screens/products_list_screen.dart';
 import 'screens/user_appointments_screen.dart';
 
@@ -93,8 +91,6 @@ class MyApp extends StatelessWidget {
               const UserAppointmentsScreen(),
           ProductsListScreen.routeName: (context) => const ProductsListScreen(),
           CartScreen.routeName: (context) => const CartScreen(),
-          ReviewsListScreen.routeName: (context) => const ReviewsListScreen(),
-          ReviewAddScreen.routeName: (context) => const ReviewAddScreen(),
           ProfileScreen.routeName: (context) => const ProfileScreen(),
         });
   }

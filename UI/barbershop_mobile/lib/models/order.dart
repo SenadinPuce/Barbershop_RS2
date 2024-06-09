@@ -9,6 +9,7 @@ part 'order.g.dart';
 @JsonSerializable()
 class Order {
   int? id;
+  String? orderNumber;
   String? clientUsername;
   String? clientEmail;
   String? clientPhoneNumber;
@@ -22,6 +23,7 @@ class Order {
 
   Order({
     this.id,
+    this.orderNumber,
     this.clientUsername,
     this.clientEmail,
     this.clientPhoneNumber,

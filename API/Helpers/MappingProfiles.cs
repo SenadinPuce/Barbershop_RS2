@@ -33,13 +33,13 @@ namespace API.Helpers
                 .ForMember(d => d.Services, o => o.MapFrom(o => o.AppointmentServices.Select(y => y.Service)))
                 .ForMember(d => d.EndTime, o => o.MapFrom(src => CalculateEndTime(src)));
             CreateMap<Order, OrderDto>()
-                .ForMember(d => d.ClientUsername, o => o.MapFrom(s => s.Client.UserName))
+                .ForMember(d => d.ClientFullName, o => o.MapFrom(s => s.Client.FirstName + ' ' + s.Client.LastName))
                 .ForMember(d => d.ClientEmail, o => o.MapFrom(s => s.Client.Email))
                 .ForMember(d => d.ClientPhoneNumber, o => o.MapFrom(s => s.Client.PhoneNumber));
             CreateMap<OrderItem, OrderItemDto>()
-               .ForMember(d => d.Id, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
-               .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
-               .ForMember(d => d.Photo, o => o.MapFrom(s => s.ItemOrdered.Photo));
+               .ForMember(d => d.Id, o => o.MapFrom(s => s.ProductId))
+               .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+               .ForMember(d => d.Photo, o => o.MapFrom(s => s.Product.Photo));
             CreateMap<News, NewsDto>()
                 .ForMember(d => d.AuthorFullName, o => o.MapFrom(s => s.Author.FirstName + ' ' + s.Author.LastName));
             CreateMap<NewsInsertObject, News>();

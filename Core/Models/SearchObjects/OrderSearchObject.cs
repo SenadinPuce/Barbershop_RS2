@@ -9,5 +9,5 @@ namespace Core.Models.SearchObjects
         public bool IncludeClient { get; set; } = true;
         public bool IncludeAddress { get; set; } = true;
         public bool IncludeDeliveryMethod { get; set; } = true;
-    }
+     }
 }

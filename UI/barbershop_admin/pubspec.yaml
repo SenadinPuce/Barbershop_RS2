@@ -45,6 +45,9 @@ dependencies:
   date_field: ^3.0.5
   google_fonts: ^4.0.4
   window_manager: ^0.3.5
+  flutter_multi_formatter: ^2.12.8
+  printing: ^5.11.0
+  pdf: ^3.10.8
 
 dev_dependencies:
   json_serializable: ^6.2.0

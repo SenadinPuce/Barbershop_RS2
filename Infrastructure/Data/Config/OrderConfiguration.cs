@@ -15,7 +15,8 @@ namespace Infrastructure.Data.Config
                     o => (OrderStatus)Enum.Parse(typeof(OrderStatus), o)
                 );
             builder.Property(o => o.Subtotal).HasColumnType("decimal(18,2)");
-            builder.HasMany(o => o.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(o => o.OrderItems).WithOne(oi => oi.Order).HasForeignKey(oi => oi.OrderId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(o => o.Client).WithMany().HasForeignKey(o => o.ClientId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(o => o.Address).WithOne().HasForeignKey<Order>(o => o.AddressId).OnDelete(DeleteBehavior.Cascade);
         }

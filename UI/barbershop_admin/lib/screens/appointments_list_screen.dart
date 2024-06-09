@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +9,6 @@ import '../models/user.dart';
 import '../providers/appointment_provider.dart';
 import '../providers/user_provider.dart';
 import '../utils/util.dart';
-import 'appointment_details_screen.dart';
 
 class AppointmentsListScreen extends StatefulWidget {
   const AppointmentsListScreen({super.key});
@@ -28,7 +26,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   DateTime? _selectedDateTo;
   String? _selectedStatus;
   User? _selectedBarber;
-  bool isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -57,7 +55,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
 
     setState(() {
       appointments = appointmentsData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -178,7 +176,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
           ),
           onPressed: () async {
             setState(() {
-              isLoading = true;
+              _isLoading = true;
             });
             _loadAppointments();
           },
@@ -189,7 +187,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   }
 
   Widget _buildDataListView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -203,13 +201,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                 },
               ),
               columns: const [
-                DataColumn(
-                    label: Expanded(
-                  child: Text(
-                    'ID',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )),
                 DataColumn(
                   label: Expanded(
                     child: Text(
@@ -260,18 +251,9 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )),
-                DataColumn(
-                    label: Expanded(
-                  child: Text(
-                    'Delete',
-                    softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ))
               ],
               rows: (appointments ?? [])
                   .map((Appointment a) => DataRow(cells: [
-                        DataCell(Text(a.id.toString())),
                         DataCell(Text(getDate(a.startTime))),
                         DataCell(Text(getTime(a.startTime))),
                         DataCell(SingleChildScrollView(
@@ -301,18 +283,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                                 }
                               : null,
                         )),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                            ),
-                            color: const Color(0xfff71133),
-                            disabledColor: Colors.grey,
-                            onPressed: a.status == 'Canceled'
-                                ? () => _deleteAppointment(a)
-                                : null,
-                          ),
-                        )
                       ]))
                   .toList(),
             ),
@@ -396,89 +366,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                     }
                   },
                   child: const Text("Yes"))
-            ],
-          );
-        }));
-  }
-
-  void _deleteAppointment(Appointment a) {
-    showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return AlertDialog(
-            title: const Text('Delete'),
-            content: const Text(
-                'Are you sure you want to delete this appointment? This action is not reversible.'),
-            actions: [
-              OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('No')),
-              ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    try {
-                      await _appointmentProvider.delete(a.id!);
-
-                      setState(() {
-                        appointments
-                            ?.removeWhere((element) => element.id == a.id);
-
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Row(
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 8.0),
-                              Text("Appointment deleted successfully.")
-                            ],
-                          ),
-                          duration: const Duration(seconds: 1),
-                          backgroundColor: Colors.green,
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                            },
-                            textColor: Colors.white,
-                          ),
-                        ));
-                      });
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Row(
-                            children: [
-                              Icon(
-                                Icons.error,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 8.0),
-                              Text(
-                                'Failed to delete appointment. Please try again.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          duration: const Duration(seconds: 1),
-                          backgroundColor: Colors.red,
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                            },
-                            textColor: Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text('Yes'))
             ],
           );
         }));

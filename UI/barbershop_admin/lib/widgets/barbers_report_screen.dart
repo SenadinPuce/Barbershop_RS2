@@ -1,8 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../models/appointment.dart';
 import '../models/user.dart';
@@ -65,6 +70,55 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     });
   }
 
+  Future<Uint8List> _generatePdf() async {
+    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
+    final font = await PdfGoogleFonts.nunitoRegular();
+    final fontBold = await PdfGoogleFonts.nunitoBold();
+
+    pdf.addPage(
+      pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Report',
+                  style: pw.TextStyle(
+                    font: fontBold,
+                    fontSize: 14,
+                  ),
+                ),
+                pw.Divider(),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Period: ${getDate(_selectedDateFrom)} - ${getDate(_selectedDateTo)}',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.Text(
+                  'Number of Completed Appointments: ${appointments?.length ?? 0}',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.Text(
+                  'Minutes Worked: $getNumberOfMinutesWorked',
+                  style: pw.TextStyle(font: font, fontSize: 10),
+                ),
+                pw.SizedBox(height: 16),
+                pw.Text(
+                  'Total Revenue: $_totalIncome \$',
+                  style: pw.TextStyle(
+                    font: fontBold,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            );
+          }),
+    );
+
+    return pdf.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -117,7 +171,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Minutes Worked: ${_getNumberOfMinutesWorked()}',
+                    'Minutes Worked: $getNumberOfMinutesWorked',
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -127,16 +181,43 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                     height: 16,
                   ),
                   Text(
-                    'Total Income Made: ${_getTotalIncome()} \$',
+                    'Total Income Made: $_totalIncome \$',
                     style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                              child: PdfPreview(
+                                initialPageFormat: PdfPageFormat.a4,
+                                build: (format) => _generatePdf(),
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                        ),
+                        child: const Text(
+                          'Preview PDF',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
-          )
+          ),
       ],
     );
   }
@@ -149,13 +230,12 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
           validator: FormBuilderValidators.required(),
           decoration: const InputDecoration(
             labelText: 'From date',
-            floatingLabelStyle: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
+            floatingLabelStyle:
+                TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: Icon(
-                Icons.calendar_today,
-              color: Color.fromRGBO(213, 178, 99, 1)
-              ),
+              child: Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(213, 178, 99, 1)),
             ),
           ),
           initialValue: _selectedDateFrom,
@@ -176,13 +256,12 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
             child: DateTimeFormField(
           decoration: const InputDecoration(
             labelText: 'To date',
-            floatingLabelStyle: TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
+            floatingLabelStyle:
+                TextStyle(color: Color.fromRGBO(213, 178, 99, 1)),
             suffixIcon: MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: Icon(
-                Icons.calendar_today,
-              color: Color.fromRGBO(213, 178, 99, 1)
-              ),
+              child: Icon(Icons.calendar_today,
+                  color: Color.fromRGBO(213, 178, 99, 1)),
             ),
           ),
           initialValue: _selectedDateTo,
@@ -243,7 +322,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     );
   }
 
-  int _getNumberOfMinutesWorked() {
+  int get getNumberOfMinutesWorked {
     if (appointments == null) {
       return 0;
     }
@@ -258,7 +337,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
         .fold<int>(0, (previousValue, element) => previousValue + element);
   }
 
-  double _getTotalIncome() {
+  double get _totalIncome {
     if (appointments == null) {
       return 0.0;
     }
@@ -267,6 +346,6 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
         .map<double>((appointment) => appointment.services!
             .map<double>((service) => service.price ?? 0.0)
             .fold(0, (previousValue, element) => previousValue + element))
-        .fold(0, (previousValue, element) => previousValue! + element);
+        .fold(0, (previousValue, element) => previousValue + element);
   }
 }

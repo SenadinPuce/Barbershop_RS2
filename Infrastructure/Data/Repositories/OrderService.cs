@@ -43,9 +43,14 @@ namespace Infrastructure.Data.Repositories
 
             foreach (var item in insert.Items)
             {
-                var productItem = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.Photo);
-                var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+                var product = await _context.Products.SingleOrDefaultAsync(x => x.Id == item.Id);
+                var orderItem = new OrderItem()
+                {
+                    ProductId = product.Id,
+                    Price = product.Price,
+                    Quantity = item.Quantity,
+                };
+
                 items.Add(orderItem);
             }
 
@@ -82,7 +87,7 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Order> AddInclude(IQueryable<Order> query, OrderSearchObject search)
         {
-            query = query.Include(x => x.OrderItems);
+            query = query.Include(x => x.OrderItems).ThenInclude(oi => oi.Product);
             if (search.IncludeClient)
             {
                 query = query.Include(x => x.Client);
@@ -142,7 +147,7 @@ namespace Infrastructure.Data.Repositories
                 .Include(o => o.Client)
                 .Include(o => o.DeliveryMethod)
                 .Include(o => o.Address)
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
                 .SingleOrDefaultAsync(x => x.Id == id);
 
             return entity;

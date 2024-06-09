@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late UserProvider _userProvider;
   final _formKey = GlobalKey<FormBuilderState>();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   User? _user;
   bool isLoading = true;
@@ -38,6 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _user = userData;
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -119,7 +126,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     FormBuilderTextField(
                       name: 'phoneNumber',
                       decoration: const InputDecoration(
-                          labelText: 'Phone Number (optional)'),
+                        labelText: 'Phone Number (optional)',
+                        hintText: ('e.g. 061 234 456'),
+                      ),
+                      inputFormatters: [
+                        PhoneInputFormatter(
+                          defaultCountryCode: 'BA',
+                          allowEndlessPhone: false,
+                        )
+                      ],
                     ),
                     const SizedBox(
                       height: 5,

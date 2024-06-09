@@ -1,15 +1,14 @@
-import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+
 import 'package:barbershop_mobile/screens/appointments_list_screen.dart';
 import 'package:barbershop_mobile/screens/news_list_screen.dart';
 import 'package:barbershop_mobile/screens/products_list_screen.dart';
 import 'package:barbershop_mobile/screens/profile_screen.dart';
-import 'package:barbershop_mobile/screens/reviews_list_screen.dart';
 
 class Navigation extends StatefulWidget {
   static const routeName = '/home';
 
-  const Navigation({Key? key}) : super(key: key);
+  const Navigation({super.key});
 
   @override
   State<Navigation> createState() => _NavigationState();
@@ -22,7 +21,6 @@ class _NavigationState extends State<Navigation> {
     const NewsListScreen(),
     const AppointmentsListScreen(),
     const ProductsListScreen(),
-    const ReviewsListScreen(),
     const ProfileScreen(),
   ];
 
@@ -30,7 +28,6 @@ class _NavigationState extends State<Navigation> {
     Icons.home,
     Icons.calendar_today,
     Icons.shopping_cart,
-    Icons.reviews,
     Icons.person,
   ];
 
@@ -38,7 +35,6 @@ class _NavigationState extends State<Navigation> {
     "News",
     "Appointments",
     "Shop",
-    "Reviews",
     "Profile",
   ];
 

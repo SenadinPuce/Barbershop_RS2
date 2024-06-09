@@ -7,7 +7,7 @@ namespace Infrastructure.Data
         public DateTime StartTime { get; set; }
         public int BarberId { get; set; }
         public int ClientId { get; set; }
-
+        public string Status { get; set; }
         public virtual List<int> ServiceIds { get; set; }
     }
 }

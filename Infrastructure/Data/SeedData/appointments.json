@@ -1,6 +1,44 @@
 [
   {
-    "StartTime": "2024-05-14T09:00:00",
+    "StartTime": "2024-06-01T09:00:00",
+    "BarberId": 2,
+    "ClientId": 1,
+    "ServiceIds": [
+      1,
+      2
+    ],
+    "Status": "Completed"
+  },
+  {
+    "StartTime": "2024-06-01T13:00:00",
+    "BarberId": 2,
+    "ClientId": 1,
+    "ServiceIds": [
+      2,
+      3
+    ],
+    "Status": "Completed"
+  },
+  {
+    "StartTime": "2024-06-02T09:30:00",
+    "BarberId": 3,
+    "ClientId": 1,
+    "ServiceIds": [
+      4
+    ],
+    "Status": "Completed"
+  },
+  {
+    "StartTime": "2024-06-03T14:00:00",
+    "BarberId": 3,
+    "ClientId": 1,
+    "ServiceIds": [
+      5
+    ],
+    "Status": "Completed"
+  },
+  {
+    "StartTime": "2024-06-09T09:00:00",
     "BarberId": 2,
     "ClientId": 1,
     "ServiceIds": [
@@ -8,7 +46,7 @@
     ]
   },
   {
-    "StartTime": "2024-05-14T10:00:00",
+    "StartTime": "2024-06-10T10:00:00",
     "BarberId": 3,
     "ClientId": 1,
     "ServiceIds": [
@@ -16,7 +54,7 @@
     ]
   },
   {
-    "StartTime": "2024-05-15T11:00:00",
+    "StartTime": "2024-06-11T11:00:00",
     "BarberId": 2,
     "ClientId": 1,
     "ServiceIds": [
@@ -24,7 +62,7 @@
     ]
   },
   {
-    "StartTime": "2024-05-15T12:00:00",
+    "StartTime": "2024-06-12T12:00:00",
     "BarberId": 3,
     "ClientId": 1,
     "ServiceIds": [
@@ -32,7 +70,7 @@
     ]
   },
   {
-    "StartTime": "2024-05-15T13:00:00",
+    "StartTime": "2024-06-13T13:00:00",
     "BarberId": 2,
     "ClientId": 1,
     "ServiceIds": [
@@ -40,7 +78,7 @@
     ]
   },
   {
-    "StartTime": "2024-05-15T14:00:00",
+    "StartTime": "2024-07-15T14:00:00",
     "BarberId": 2,
     "ClientId": 1,
     "ServiceIds": [

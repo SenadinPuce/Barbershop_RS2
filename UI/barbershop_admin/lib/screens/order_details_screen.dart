@@ -114,7 +114,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             enabled: false,
           ),
           style: const TextStyle(color: Colors.black),
-          initialValue: widget.order?.clientUsername,
+          initialValue: widget.order?.clientFullName,
         )),
         const SizedBox(
           width: 8,

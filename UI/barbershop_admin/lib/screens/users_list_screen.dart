@@ -2,7 +2,6 @@
 
 import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart';
@@ -19,7 +18,7 @@ class UsersListScreen extends StatefulWidget {
 class _UsersListScreenState extends State<UsersListScreen> {
   late UserProvider _userProvider;
   List<User>? users;
-  TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -42,6 +41,12 @@ class _UsersListScreenState extends State<UsersListScreen> {
       users = data;
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -146,13 +151,6 @@ class _UsersListScreenState extends State<UsersListScreen> {
                 columns: const [
                   DataColumn(
                     label: Expanded(
-                      child: Text('ID',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          softWrap: true),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Expanded(
                       child: Text('First Name',
                           style: TextStyle(fontWeight: FontWeight.bold),
                           softWrap: true),
@@ -210,7 +208,6 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     .map(
                       (User u) => DataRow(
                         cells: [
-                          DataCell(Text(u.id.toString())),
                           DataCell(Text(u.firstName.toString())),
                           DataCell(Text(u.lastName.toString())),
                           DataCell(u.photo != ""

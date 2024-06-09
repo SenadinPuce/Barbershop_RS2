@@ -23,7 +23,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   late ProductBrandProvider _productBrandProvider;
   late ProductTypeProvider _productTypeProvider;
   List<Product>? products;
-  TextEditingController _productNameController = TextEditingController();
+  final TextEditingController _productNameController = TextEditingController();
   List<ProductBrand>? _productBrandsList;
   int? _selectedBrandId;
   List<ProductType>? _productTypesList;
@@ -72,6 +72,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
       products = productData;
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _productNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -288,11 +294,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               columns: const [
                 DataColumn(
                   label: Expanded(
-                      child: Text('ID',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ),
-                DataColumn(
-                  label: Expanded(
                     child: Text('Name',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
@@ -336,7 +337,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ],
               rows: (products ?? [])
                   .map((Product p) => DataRow(cells: [
-                        DataCell(Text(p.id.toString())),
                         DataCell(Text(p.name.toString())),
                         DataCell(Text(formatNumber(p.price))),
                         DataCell(Text(p.productBrand.toString())),

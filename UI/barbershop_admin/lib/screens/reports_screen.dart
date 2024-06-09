@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/barbers_report_screen.dart';
-import '../widgets/master_screen.dart';
 import '../widgets/orders_report_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -19,6 +18,12 @@ class _ReportsScreenState extends State<ReportsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,7 +56,10 @@ class _ReportsScreenState extends State<ReportsScreen>
           padding: const EdgeInsets.all(20),
           child: TabBarView(
             controller: _tabController,
-            children: const [BarbersReportScreen(), OrdersReportScreen()],
+            children: const [
+              BarbersReportScreen(),
+              OrdersReportScreen(),
+            ],
           ),
         ))
       ],
