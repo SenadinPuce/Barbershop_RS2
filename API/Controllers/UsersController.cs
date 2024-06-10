@@ -34,9 +34,9 @@ namespace API.Controllers
                 query = query.Where(u => u.UserRoles.Any(ur => ur.Role.Name == search.RoleName));
             }
 
-            if (!string.IsNullOrWhiteSpace(search.Username))
+            if (!string.IsNullOrWhiteSpace(search.FTS))
             {
-                query = query.Where(u => u.UserName.Contains(search.Username));
+                query = query.Where(u => u.FirstName.Contains(search.FTS) || u.LastName.Contains(search.FTS));
             }
 
             if (search.PageIndex.HasValue == true && search.PageSize.HasValue == true)
@@ -116,7 +116,7 @@ namespace API.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            
+
             if (!string.IsNullOrEmpty(update.Password))
             {
                 var removePasswordResult = await _userManager.RemovePasswordAsync(user);

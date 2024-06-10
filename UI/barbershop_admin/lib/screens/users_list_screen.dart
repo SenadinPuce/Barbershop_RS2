@@ -18,7 +18,7 @@ class UsersListScreen extends StatefulWidget {
 class _UsersListScreenState extends State<UsersListScreen> {
   late UserProvider _userProvider;
   List<User>? users;
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   bool isLoading = true;
 
   @override
@@ -32,7 +32,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
     var data = await _userProvider.getUsers(
       filter: {
-        'username': _usernameController.text,
+        'FTS': _nameController.text,
         'roleName': 'Barber',
       },
     );
@@ -45,7 +45,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -72,12 +72,12 @@ class _UsersListScreenState extends State<UsersListScreen> {
       children: [
         Expanded(
           child: TextFormField(
-            decoration: const InputDecoration(
-              labelText: "Username",
-              hintText: "Enter username",
+            decoration:  const InputDecoration(
+              labelText: "First name and/or last name",
+              hintText: "Search for barber",
               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
             ),
-            controller: _usernameController,
+            controller: _nameController,
           ),
         ),
         const SizedBox(width: 8),

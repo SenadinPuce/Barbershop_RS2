@@ -1,11 +1,11 @@
-import 'package:barbershop_mobile/models/review.dart';
-import 'package:barbershop_mobile/providers/review_provider.dart';
-import 'package:barbershop_mobile/screens/review_add_screen.dart';
-import 'package:barbershop_mobile/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/review.dart';
+import '../providers/review_provider.dart';
+import '../utils/util.dart';
 import '../widgets/custom_app_bar.dart';
+import 'review_add_screen.dart';
 
 class ReviewsListScreen extends StatefulWidget {
   static const routeName = '/Reviews';
@@ -20,7 +20,10 @@ class ReviewsListScreen extends StatefulWidget {
 class _ReviewsListScreenState extends State<ReviewsListScreen> {
   late ReviewProvider _reviewProvider;
   List<Review>? _reviews;
-  bool isLoading = true;
+  bool _isLoading = true;
+
+  double _averageRating = 0.0;
+  Map<int, int> _starCounts = {};
 
   @override
   void initState() {
@@ -31,12 +34,31 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
   Future<void> loadData() async {
     _reviewProvider = context.read<ReviewProvider>();
 
-    var reviewsData = await _reviewProvider.get(filter: {'barberId': widget.barberId});
+    var reviewsData = await _reviewProvider.get(
+      filter: {
+        'barberId': widget.barberId,
+      },
+    );
 
     setState(() {
       _reviews = reviewsData;
-      isLoading = false;
+      _isLoading = false;
+      _calculateRatings();
     });
+  }
+
+  void _calculateRatings() {
+    if (_reviews == null || _reviews!.isEmpty) return;
+
+    int totalRating = 0;
+    _starCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+
+    for (var review in _reviews!) {
+      totalRating += review.rating!;
+      _starCounts[review.rating!] = (_starCounts[review.rating!] ?? 0) + 1;
+    }
+
+    _averageRating = totalRating / _reviews!.length;
   }
 
   @override
@@ -49,13 +71,15 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
+            _buildAverageRating(),
+            _buildStarCounts(),
             _buildView(),
             const SizedBox(
               height: 80,
             )
           ],
         )),
-        if (isLoading)
+        if (_isLoading)
           const Center(
             child: CircularProgressIndicator(),
           ),
@@ -66,12 +90,14 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReviewAddScreen(barberId: widget.barberId,),
+              builder: (context) => ReviewAddScreen(
+                barberId: widget.barberId,
+              ),
             ),
           );
 
           setState(() {
-            isLoading = true;
+            _isLoading = true;
           });
           loadData();
         },
@@ -97,8 +123,55 @@ class _ReviewsListScreenState extends State<ReviewsListScreen> {
     );
   }
 
+  Widget _buildAverageRating() {
+    if (_isLoading) {
+      return Container();
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Average Rating: ${_averageRating.toStringAsFixed(1)}",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: List.generate(5, (index) {
+                return Icon(
+                  index < _averageRating ? Icons.star : Icons.star_border,
+                  color: const Color.fromRGBO(213, 178, 99, 1),
+                );
+              }),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildStarCounts() {
+    if (_isLoading) {
+      return Container();
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(5, (index) {
+            int star = 5 - index;
+            return Text(
+              "$star stars: ${_starCounts[star] ?? 0}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            );
+          }),
+        ),
+      );
+    }
+  }
+
   Widget _buildView() {
-    if (isLoading) {
+    if (_isLoading) {
       return Container();
     } else {
       return ListView.builder(

@@ -47,6 +47,9 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
     } else if (now.weekday == DateTime.sunday) {
       _selectedDate = now.add(const Duration(days: 1));
     }
+    else {
+      _selectedDate = now;
+    }
 
     _timeSlotProvider = context.read<TimeSlotProvider>();
     _appointmentProvider = context.read<AppointmentProvider>();
@@ -192,7 +195,7 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
       initialDate: _selectedDate,
       firstDate: _selectedDate,
       lastDate: DateTime.now().add(
-        const Duration(days: 365),
+        const Duration(days: 60),
       ),
       selectableDayPredicate: (DateTime date) {
         return date.weekday != DateTime.saturday &&

@@ -26,14 +26,14 @@ class _NavigationState extends State<Navigation> {
 
   final List<IconData> _icons = const [
     Icons.home,
-    Icons.calendar_today,
+    Icons.cut,
     Icons.shopping_cart,
     Icons.person,
   ];
 
   final List<String> _labels = const [
     "News",
-    "Appointments",
+    "Barbers",
     "Shop",
     "Profile",
   ];
