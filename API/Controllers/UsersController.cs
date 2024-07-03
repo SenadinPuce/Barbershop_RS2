@@ -2,6 +2,7 @@ using API.Dtos;
 using API.Errors;
 using AutoMapper;
 using Core.Entities;
+using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -53,26 +54,36 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost()]
-        public async Task<ActionResult<AppUserDto>> Insert(RegisterDto registerDto)
+        public async Task<ActionResult<AppUserDto>> Insert(UserInsertRequest insert)
         {
             var user = new AppUser
             {
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                UserName = registerDto.UserName,
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
-                Photo = registerDto.Photo
+                FirstName = insert.FirstName,
+                LastName = insert.LastName,
+                UserName = insert.UserName,
+                Email = insert.Email,
+                PhoneNumber = insert.PhoneNumber,
+                Photo = insert.Photo
             };
 
-
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, insert.Password);
 
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
-            var roleAddResult = await _userManager.AddToRoleAsync(user, "Barber");
+            if (!string.IsNullOrEmpty(insert.Roles))
+            {
+                var selectedRoles = insert.Roles.Split(",").ToArray();
 
-            if (!roleAddResult.Succeeded) return BadRequest(new ApiResponse(400, "Failed to add to role"));
+                var roleAddResult = await _userManager.AddToRolesAsync(user, selectedRoles);
+
+                if (!roleAddResult.Succeeded) return BadRequest("Failed to add to roles.");
+            }
+            else
+            {
+                var roleAddResult = await _userManager.AddToRoleAsync(user, "Client");
+
+                if (!roleAddResult.Succeeded) return BadRequest("Failed to add to role.");
+            }
 
             return Ok(_mapper.Map<AppUserDto>(user));
         }
@@ -93,51 +104,43 @@ namespace API.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<AppUserDto>> Update(int id, [FromBody] AppUserUpdateRequest update)
+        public async Task<ActionResult<AppUserDto>> Update(int id, [FromBody] UserUpdateRequest update)
         {
-            if (update == null) return BadRequest();
-
-            var user = await _userManager.Users
-           .Include(u => u.UserRoles).ThenInclude(r => r.Role)
+            var user = await _userManager.Users.Include(ur => ur.UserRoles).ThenInclude(r => r.Role)
            .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return NotFound();
 
             _mapper.Map(update, user);
 
+            if (!string.IsNullOrEmpty(update.Roles))
+            {
+                var selectedRoles = update.Roles.Split(",").ToArray();
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiResponse(400));
+                }
+
+                result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiResponse(400));
+                }
+            }
+
             var updateResult = await _userManager.UpdateAsync(user);
 
             if (!updateResult.Succeeded)
             {
-                foreach (var error in updateResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                return BadRequest(ModelState);
-            }
-
-            if (!string.IsNullOrEmpty(update.Password))
-            {
-                var removePasswordResult = await _userManager.RemovePasswordAsync(user);
-                if (!removePasswordResult.Succeeded)
-                {
-                    foreach (var error in removePasswordResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return BadRequest(ModelState);
-                }
-
-                var addPasswordResult = await _userManager.AddPasswordAsync(user, update.Password);
-                if (!addPasswordResult.Succeeded)
-                {
-                    foreach (var error in addPasswordResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return BadRequest(ModelState);
-                }
+                return BadRequest(new ApiResponse(400));
             }
 
             return Ok(_mapper.Map<AppUserDto>(user));

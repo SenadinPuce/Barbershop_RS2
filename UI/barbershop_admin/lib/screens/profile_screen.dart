@@ -1,3 +1,4 @@
+import 'package:barbershop_admin/providers/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -17,12 +18,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late UserProvider _userProvider;
+  late AccountProvider _accountProvider;
   final _formKey = GlobalKey<FormBuilderState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   User? _user;
-  bool isLoading = true;
-  bool isFormEdited = false;
+  bool _isLoading = true;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -32,12 +34,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> loadData() async {
     _userProvider = context.read<UserProvider>();
+    _accountProvider = context.read<AccountProvider>();
 
     var userData = await _userProvider.getById(Authorization.id!);
 
     setState(() {
       _user = userData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -58,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -72,11 +75,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'username': _user!.username ?? '',
                   'email': _user!.email ?? '',
                   'phoneNumber': _user!.phoneNumber ?? '',
-                },
-                onChanged: () {
-                  setState(() {
-                    isFormEdited = true;
-                  });
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -210,18 +208,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
           minimumSize: const Size(double.infinity, 45),
           backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
         ),
-        onPressed: isFormEdited
-            ? () async {
+        onPressed: _isSending
+            ? null
+            : () async {
                 try {
                   if (_formKey.currentState?.saveAndValidate() == true) {
+                    setState(() {
+                      _isSending = true;
+                    });
                     var request = Map.from(_formKey.currentState!.value);
 
                     if (_passwordController.text.isNotEmpty) {
                       request['password'] = _passwordController.text;
                     }
 
-                    await _userProvider.update(Authorization.id!, request);
+                    await _accountProvider.update(request: request);
 
+                    setState(() {
+                      _isSending = false;
+                    });
+
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Row(
                         children: [
@@ -244,7 +253,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ));
                   }
-                } on Exception catch (e) {
+                } on Exception {
+                  setState(() {
+                    _isSending = false;
+                  });
+                  ScaffoldMessenger.of(context).clearSnackBars();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: const Row(
@@ -272,12 +285,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 }
-              }
-            : null,
-        child: const Text(
-          'Save changes',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
+              },
+        child: _isSending
+            ? const SizedBox(
+                height: 16,
+                width: 16,
+                child: CircularProgressIndicator(),
+              )
+            : const Text(
+                'Save changes',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
       ),
     );
   }

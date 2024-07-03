@@ -18,9 +18,9 @@ namespace API.Extensions
         public static async Task<AppUser> FindUserByClaimsPrincipleAsync(
            this UserManager<AppUser> userManager, ClaimsPrincipal user)
         {
-            var userName = user.FindFirstValue(ClaimTypes.Name);
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return await userManager.Users.SingleOrDefaultAsync(x => x.UserName == userName);
+            return await userManager.Users.SingleOrDefaultAsync(x => x.Id == int.Parse(userId));
         }
     }
 }

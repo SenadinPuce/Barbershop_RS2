@@ -1,24 +1,24 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:provider/provider.dart';
 
 import 'package:barbershop_admin/providers/news_provider.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:barbershop_admin/widgets/CustomPhotoFormField.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:provider/provider.dart';
 
 import '../models/news.dart';
 
 class NewsDetailsScreen extends StatefulWidget {
-  News? news;
-  NewsDetailsScreen({
-    Key? key,
+  final News? news;
+  const NewsDetailsScreen({
+    super.key,
     this.news,
-  }) : super(key: key);
+  });
 
   @override
   State<NewsDetailsScreen> createState() => _NewsDetailsScreenState();
@@ -31,6 +31,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
   File? _image;
   String? _base64Image;
   News? _editedNews;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -139,13 +140,15 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
-          onPressed: () {
-            if (_editedNews != null) {
-              Navigator.of(context).pop(true);
-            } else {
-              Navigator.of(context).pop(false);
-            }
-          },
+          onPressed: _isSending
+              ? null
+              : () {
+                  if (_editedNews != null) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }
+                },
           child: const Text(
             "Close",
           ),
@@ -154,55 +157,75 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
           width: 8,
         ),
         ElevatedButton(
-          onPressed: () async {
-            if (_formKey.currentState?.saveAndValidate() == true) {
-              try {
-                var request = Map.from(_formKey.currentState!.value);
+          onPressed: _isSending
+              ? null
+              : () async {
+                  if (_formKey.currentState?.saveAndValidate() == true) {
+                    try {
+                      setState(() {
+                        _isSending = true;
+                      });
 
-                request['photo'] = _base64Image;
+                      var request = Map.from(_formKey.currentState!.value);
 
-                if (widget.news == null) {
-                  request['authorId'] = Authorization.id;
-                  _editedNews = await _newsProvider.insert(request: request);
-                } else {
-                  _editedNews = await _newsProvider.update(
-                    widget.news!.id!,
-                    request,
-                  );
-                }
+                      request['photo'] = _base64Image;
 
-                Navigator.of(context).pop(true);
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
+                      if (widget.news == null) {
+                        request['authorId'] = Authorization.id;
+                        _editedNews =
+                            await _newsProvider.insert(request: request);
+                      } else {
+                        _editedNews = await _newsProvider.update(
+                          widget.news!.id!,
+                          request,
+                        );
+                      }
+
+                      if (!context.mounted) return;
+
+                      Navigator.of(context).pop(true);
+                    } catch (e) {
+                      setState(() {
+                        _isSending = false;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to save news. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
                         ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Failed to save news. Please try again.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text("Save changes"),
+                      );
+                    }
+                  }
+                },
+          child: _isSending
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(),
+                )
+              : const Text("Save changes"),
         )
       ],
     );

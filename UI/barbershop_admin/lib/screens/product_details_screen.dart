@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -18,16 +16,16 @@ import '../widgets/CustomPhotoFormField.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const routeName = '/product-details';
-  Product? product;
-  List<ProductBrand>? productBrands;
-  List<ProductType>? productTypes;
+  final Product? product;
+  final List<ProductBrand>? productBrands;
+  final List<ProductType>? productTypes;
 
-  ProductDetailsScreen({
-    Key? key,
+  const ProductDetailsScreen({
+    super.key,
     this.product,
     this.productBrands,
     this.productTypes,
-  }) : super(key: key);
+  });
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -41,7 +39,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   List<ProductType>? _productTypesList;
   File? _image;
   String? _base64Image;
-  Product? editedProduct;
+  Product? _editedProduct;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -120,8 +119,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.match(
-                      r'^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,4})?$',
-                      errorText: 'Enter a valid decimal number'),
+                    r'^\d{1,3}(?:[ ,]?\d{3})*(\.\d{1,2})?$',
+                    errorText: 'Enter a valid decimal number',
+                  ),
                 ]),
                 decoration: const InputDecoration(labelText: 'Price'),
               ),
@@ -230,13 +230,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
-          onPressed: () {
-            if (editedProduct != null) {
-              Navigator.of(context).pop(true);
-            } else {
-              Navigator.of(context).pop(false);
-            }
-          },
+          onPressed: _isSending
+              ? null
+              : () {
+                  if (_editedProduct != null) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }
+                },
           child: const Text(
             "Close",
           ),
@@ -245,55 +247,74 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           width: 8,
         ),
         ElevatedButton(
-          onPressed: () async {
-            if (_formKey.currentState?.saveAndValidate() == true) {
-              try {
-                var request = Map.from(_formKey.currentState!.value);
+          onPressed: _isSending
+              ? null
+              : () async {
+                  if (_formKey.currentState?.saveAndValidate() == true) {
+                    try {
+                      setState(() {
+                        _isSending = true;
+                      });
+                      var request = Map.from(_formKey.currentState!.value);
 
-                request['photo'] = _base64Image;
+                      request['photo'] = _base64Image;
+                      request['price'] =
+                          request['price'].toString().replaceAll(' ', '');
 
-                if (widget.product == null) {
-                  editedProduct =
-                      await _productProvider.insert(request: request);
-                } else {
-                  editedProduct = await _productProvider.update(
-                    widget.product!.id!,
-                    request,
-                  );
-                }
+                      if (widget.product == null) {
+                        _editedProduct =
+                            await _productProvider.insert(request: request);
+                      } else {
+                        _editedProduct = await _productProvider.update(
+                          widget.product!.id!,
+                          request,
+                        );
+                      }
 
-                Navigator.of(context).pop(true);
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop(true);
+                    } catch (e) {
+                      setState(() {
+                        _isSending = false;
+                      });       
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to save product. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
                         ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Failed to save product. Please try again.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text("Save changes"),
+                      );
+                    }
+                  }
+                },
+          child: _isSending
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(),
+                )
+              : const Text("Save changes"),
         )
       ],
     );

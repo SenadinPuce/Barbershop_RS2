@@ -1,10 +1,8 @@
-// ignore_for_file: prefer_final_fields, unused_field
 import 'dart:convert';
 import 'package:barbershop_admin/helpers/constants.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   String _endpoint = "";
@@ -150,8 +148,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else if (response.statusCode == 500) {
       throw Exception("Internal server error: ${response.body}");
     } else {
-      print("Error response: ${response.statusCode}");
-      print("Response body: ${response.body}");
       throw Exception("Something bad happened, please try again");
     }
   }

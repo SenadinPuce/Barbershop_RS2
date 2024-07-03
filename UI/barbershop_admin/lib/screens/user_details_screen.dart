@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,12 +13,12 @@ import '../models/user.dart';
 import '../widgets/CustomPhotoFormField.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  User? user;
+  final User? user;
 
-  UserDetailsScreen({
-    Key? key,
+  const UserDetailsScreen({
+    super.key,
     this.user,
-  }) : super(key: key);
+  });
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
@@ -34,7 +32,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   String? _base64Image;
   late UserProvider _userProvider;
   bool _isPasswordVisible = false;
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final List<String> _allRoles = ['Client', 'Barber', 'Admin'];
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -50,6 +50,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       "username": widget.user?.username,
       "email": widget.user?.email,
       "phoneNumber": widget.user?.phoneNumber,
+      "roles": widget.user?.roles ?? <String>[]
     };
 
     _userProvider = context.read<UserProvider>();
@@ -98,6 +99,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       key: _formKey,
       initialValue: _initialValue,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const SizedBox(height: 15),
+        const Text(
+          "User data",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         Row(
           children: [
             Expanded(
@@ -158,9 +164,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 50,
-        ),
         Row(
           children: [
             Expanded(
@@ -199,65 +202,89 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           ],
         ),
         if (widget.user == null)
-          const SizedBox(
-            height: 50,
-          ),
-        if (widget.user == null)
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: FormBuilderTextField(
-                  onChanged: (value) {
-                    setState(() {
-                      _passwordController.text = value!;
-                    });
-                  },
-                  name: "password",
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormBuilderTextField(
+                      onChanged: (value) {
                         setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
+                          _passwordController.text = value!;
                         });
                       },
+                      name: "password",
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      obscureText: !_isPasswordVisible,
+                      controller: _passwordController,
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.minLength(4),
+                      ]),
                     ),
                   ),
-                  obscureText: !_isPasswordVisible,
-                  controller: _passwordController,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(4),
-                  ]),
-                ),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                child: FormBuilderTextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm password',
+                  const SizedBox(
+                    width: 8,
                   ),
-                  obscureText: true,
-                  name: "confirmPassword",
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.minLength(4),
-                    FormBuilderValidators.equal(
-                      _passwordController.text,
-                      errorText: 'Passwords do not match',
+                  Expanded(
+                    child: FormBuilderTextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm password',
+                      ),
+                      obscureText: true,
+                      name: "confirmPassword",
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.minLength(4),
+                        FormBuilderValidators.equal(
+                          _passwordController.text,
+                          errorText: 'Passwords do not match',
+                        ),
+                      ]),
                     ),
-                  ]),
-                ),
-              )
+                  )
+                ],
+              ),
             ],
           ),
+        const SizedBox(
+          height: 30,
+        ),
+        const Text(
+          "User roles",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        FormBuilderCheckboxGroup(
+            name: 'roles',
+            validator: (value) =>
+                value!.isEmpty ? 'Please select at least one role' : null,
+            wrapSpacing: 30,
+            options: _allRoles
+                .map((role) => FormBuilderFieldOption(
+                      value: role,
+                      child: Text(role),
+                    ))
+                .toList())
       ]),
     );
   }
@@ -267,66 +294,87 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
-          onPressed: () {
-            if (_editedUser != null) {
-              Navigator.of(context).pop(true);
-            } else {
-              Navigator.of(context).pop(false);
-            }
-          },
+          onPressed: _isSending
+              ? null
+              : () {
+                  if (_editedUser != null) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }
+                },
           child: const Text("Close"),
         ),
         const SizedBox(
           width: 8,
         ),
         ElevatedButton(
-          onPressed: () async {
-            if (_formKey.currentState?.saveAndValidate() == true) {
-              var request = Map.from(_formKey.currentState!.value);
+          onPressed: _isSending
+              ? null
+              : () async {
+                  if (_formKey.currentState?.saveAndValidate() == true) {
+                    setState(() {
+                      _isSending = true;
+                    });
+                    var request = Map.from(_formKey.currentState!.value);
 
-              request['photo'] = _base64Image;
-              request['password'] = _passwordController.text;
+                    request['photo'] = _base64Image;
+                    request['password'] = _passwordController.text;
+                    request['roles'] = request['roles'].join(',');
 
-              try {
-                if (widget.user == null) {
-                  _editedUser = await _userProvider.insert(request: request);
-                } else {
-                  _editedUser =
-                      await _userProvider.update(widget.user!.id!, request);
-                }
+                    try {
+                      if (widget.user == null) {
+                        _editedUser =
+                            await _userProvider.insert(request: request);
+                      } else {
+                        _editedUser = await _userProvider.update(
+                            widget.user!.id!, request);
+                      }
+                      if (!context.mounted) return;
 
-                Navigator.of(context).pop(true);
-              } on Exception {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
+                      Navigator.of(context).pop(true);
+                    } on Exception {
+                      setState(() {
+                        _isSending = false;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to save user. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
                         ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Failed to save user. Please try again.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text("Save changes"),
+                      );
+                    }
+                  }
+                },
+          child: _isSending
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(),
+                )
+              : const Text("Save changes"),
         ),
       ],
     );

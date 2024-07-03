@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:barbershop_admin/models/service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/service.dart';
 import '../providers/service_provider.dart';
 import '../utils/util.dart';
 import 'service_details_screen.dart';
@@ -17,9 +15,9 @@ class ServicesListScreen extends StatefulWidget {
 
 class _ServicesListScreenState extends State<ServicesListScreen> {
   late ServiceProvider _serviceProvider;
-  List<Service>? services;
+  List<Service>? _services;
   final TextEditingController _serviceNameController = TextEditingController();
-  bool isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -34,8 +32,8 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
         .get(filter: {'name': _serviceNameController.text});
 
     setState(() {
-      services = servicesData;
-      isLoading = false;
+      _services = servicesData;
+      _isLoading = false;
     });
   }
 
@@ -81,7 +79,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
             ),
             onPressed: () async {
               setState(() {
-                isLoading = true;
+                _isLoading = true;
               });
               loadServices();
             },
@@ -94,11 +92,14 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
             backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
           onPressed: () async {
-            isLoading = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ServiceDetailsScreen()));
-            if (isLoading) {
+            _isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const ServiceDetailsScreen()));
+            if (_isLoading) {
               setState(() {});
               loadServices();
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: const Row(
                   children: [
@@ -122,14 +123,14 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
               ));
             }
           },
-          child: const Text("Add new service"),
+          child: const Text("Add service"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -186,7 +187,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                     ),
                   )),
                 ],
-                rows: (services ?? [])
+                rows: (_services ?? [])
                     .map((Service s) => DataRow(cells: [
                           DataCell(Text(s.name.toString())),
                           DataCell(Text(formatNumber(s.price))),
@@ -218,13 +219,16 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
   }
 
   void _editService(Service s) async {
-    isLoading = await Navigator.of(context).push(MaterialPageRoute(
+    _isLoading = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ServiceDetailsScreen(
               service: s,
             )));
-    if (isLoading) {
+    if (_isLoading) {
       setState(() {});
       loadServices();
+
+      if (!context.mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Row(
           children: [
@@ -270,8 +274,10 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                       await _serviceProvider.delete(s.id!);
 
                       setState(() {
-                        services?.removeWhere((element) => element.id == s.id);
+                        _services?.removeWhere((element) => element.id == s.id);
                       });
+
+                      if (!context.mounted) return;
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: const Row(

@@ -1,10 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:barbershop_admin/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/user.dart';
+import '../providers/user_provider.dart';
 import '../utils/util.dart';
 import 'user_details_screen.dart';
 
@@ -17,29 +15,28 @@ class UsersListScreen extends StatefulWidget {
 
 class _UsersListScreenState extends State<UsersListScreen> {
   late UserProvider _userProvider;
-  List<User>? users;
+  List<User>? _users;
   final TextEditingController _nameController = TextEditingController();
-  bool isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadUsers();
+    _loadUsers();
   }
 
-  Future<void> loadUsers() async {
+  Future<void> _loadUsers() async {
     _userProvider = context.read<UserProvider>();
 
-    var data = await _userProvider.getUsers(
+    var usersData = await _userProvider.getUsers(
       filter: {
         'FTS': _nameController.text,
-        'roleName': 'Barber',
       },
     );
 
     setState(() {
-      users = data;
-      isLoading = false;
+      _users = usersData;
+      _isLoading = false;
     });
   }
 
@@ -72,7 +69,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
       children: [
         Expanded(
           child: TextFormField(
-            decoration:  const InputDecoration(
+            decoration: const InputDecoration(
               labelText: "First name and/or last name",
               hintText: "Search for barber",
               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -83,8 +80,10 @@ class _UsersListScreenState extends State<UsersListScreen> {
         const SizedBox(width: 8),
         ElevatedButton(
           onPressed: () async {
-            isLoading = true;
-            loadUsers();
+            setState(() {
+              _isLoading = true;
+            });
+            _loadUsers();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color.fromRGBO(213, 178, 99, 1),
@@ -99,11 +98,14 @@ class _UsersListScreenState extends State<UsersListScreen> {
             backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
           onPressed: () async {
-            isLoading = await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => UserDetailsScreen()));
-            if (isLoading) {
+            _isLoading = await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const UserDetailsScreen()));
+            if (_isLoading) {
               setState(() {});
-              loadUsers();
+              _loadUsers();
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: const Row(
                   children: [
@@ -127,14 +129,14 @@ class _UsersListScreenState extends State<UsersListScreen> {
               ));
             }
           },
-          child: const Text("Add new barber"),
+          child: const Text("Add user"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -166,6 +168,15 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   DataColumn(
                     label: Expanded(
                       child: Text(
+                        'Roles',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        softWrap: true,
+                      ),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Expanded(
+                      child: Text(
                         'Photo',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -181,9 +192,10 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   ),
                   DataColumn(
                     label: Expanded(
-                      child: Text('Phone Number',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          softWrap: true),
+                      child: Text(
+                        'Phone number',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                   DataColumn(
@@ -204,36 +216,51 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     ),
                   )),
                 ],
-                rows: (users ?? [])
+                rows: (_users ?? [])
                     .map(
                       (User u) => DataRow(
                         cells: [
                           DataCell(Text(u.firstName.toString())),
                           DataCell(Text(u.lastName.toString())),
-                          DataCell(u.photo != ""
-                              ? Container(
-                                  width: 70,
-                                  height: 70,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2, horizontal: 0),
-                                  child: imageFromBase64String(u.photo!),
-                                )
-                              : const Text("")),
+                          DataCell(
+                              Text(u.roles!.map((role) => role).join(', '))),
+                          DataCell(
+                            Container(
+                              width: 70,
+                              height: 70,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: u.photo != null
+                                    ? imageFromBase64String(u.photo!)
+                                    : Image.asset(
+                                        'assets/images/profile.png',
+                                        fit: BoxFit.fill,
+                                      ),
+                              ),
+                            ),
+                          ),
                           DataCell(Text(u.email.toString())),
                           DataCell(Text(u.phoneNumber.toString())),
                           DataCell(IconButton(
                               icon: const Icon(Icons.edit_document),
                               color: const Color.fromRGBO(84, 181, 166, 1),
                               onPressed: () async {
-                                isLoading = await Navigator.of(context)
+                                _isLoading = await Navigator.of(context)
                                     .push(MaterialPageRoute(
                                         builder: (context) => UserDetailsScreen(
                                               user: u,
                                             )));
-                                if (isLoading) {
-                                  setState(() {
-                                    loadUsers();
-                                  });
+                                if (_isLoading) {
+                                  setState(() {});
+                                  _loadUsers();
+
+                                  if (!context.mounted) return;
+
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: const Row(
@@ -299,8 +326,10 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     await _userProvider.delete(u.id!);
 
                     setState(() {
-                      users?.removeWhere((element) => element.id == u.id);
+                      _users?.removeWhere((element) => element.id == u.id);
                     });
+
+                    if (!context.mounted) return;
 
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Row(

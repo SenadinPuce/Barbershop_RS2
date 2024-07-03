@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:barbershop_admin/helpers/constants.dart';
+import 'package:barbershop_admin/models/user.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,7 @@ class AccountProvider with ChangeNotifier {
       Authorization.id = data['id'];
       Authorization.username = data['username'];
       Authorization.email = data['email'];
-      Authorization.role = data['role'];
+      Authorization.roles = List<String>.from(data['roles']);
       Authorization.token = data['token'];
     } else {
       throw Exception("Login failed");
@@ -36,10 +37,17 @@ class AccountProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
+    String token = Authorization.token ?? "";
+
     final headers = {
       'accept': 'text/plain',
       'Content-Type': 'application/json',
     };
+
+    if (token.isNotEmpty) {
+      String jwtAuth = "Bearer $token";
+      headers['Authorization'] = jwtAuth;
+    }
 
     return headers;
   }
@@ -58,6 +66,44 @@ class AccountProvider with ChangeNotifier {
       return true;
     } else {
       throw Exception("Registration failed");
+    }
+  }
+
+  Future<void> update({required dynamic request}) async {
+    var uri = Uri.parse('${apiUrl}account');
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+
+      Authorization.id = data['id'];
+      Authorization.username = data['username'];
+      Authorization.email = data['email'];
+      Authorization.roles = List<String>.from(data['roles']);
+      Authorization.token = data['token'];
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
+  bool isValidResponse(http.Response response) {
+    if (response.statusCode < 299) {
+      return true;
+    } else if (response.statusCode == 401) {
+      throw Exception("Unauthorized");
+    } else if (response.statusCode == 400) {
+      throw Exception("Bad request: ${response.body}");
+    } else if (response.statusCode == 403) {
+      throw Exception("Forbidden method: ${response.body}");
+    } else if (response.statusCode == 404) {
+      throw Exception("Not found: ${response.body}");
+    } else if (response.statusCode == 500) {
+      throw Exception("Internal server error: ${response.body}");
+    } else {
+      throw Exception("Something bad happened, please try again");
     }
   }
 }

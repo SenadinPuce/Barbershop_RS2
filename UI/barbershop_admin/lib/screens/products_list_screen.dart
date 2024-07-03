@@ -1,7 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/brand.dart';
 import '../models/product.dart';
 import '../models/type.dart';
@@ -29,7 +28,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   List<ProductType>? _productTypesList;
   int? _selectedTypeId;
   String? _sortBy;
-  bool isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -70,7 +69,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
     setState(() {
       products = productData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -221,7 +220,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         ElevatedButton(
           onPressed: () async {
             setState(() {
-              isLoading = true;
+              _isLoading = true;
             });
             loadProducts();
           },
@@ -238,15 +237,18 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
           onPressed: () async {
-            isLoading = await Navigator.of(context).push(MaterialPageRoute(
+            _isLoading = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ProductDetailsScreen(
                       productBrands: _productBrandsList,
                       productTypes: _productTypesList,
                     )));
 
-            if (isLoading == true) {
+            if (_isLoading) {
               setState(() {});
               loadProducts();
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: const Row(
                   children: [
@@ -270,14 +272,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ));
             }
           },
-          child: const Text("Add new product"),
+          child: const Text("Add product"),
         ),
       ],
     );
   }
 
   Widget _buildDataListView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -341,13 +343,21 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         DataCell(Text(formatNumber(p.price))),
                         DataCell(Text(p.productBrand.toString())),
                         DataCell(Text(p.productType.toString())),
-                        DataCell(p.photo != ""
+                        DataCell(p.photo != null
                             ? Container(
                                 width: 70,
                                 height: 70,
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 0),
-                                child: imageFromBase64String(p.photo!),
+                                  vertical: 2,
+                                  horizontal: 0,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: imageFromBase64String(p.photo!),
+                                ),
                               )
                             : const Text("")),
                         DataCell(IconButton(
@@ -375,15 +385,18 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
   }
 
   void _editProduct(Product p) async {
-    isLoading = await Navigator.of(context).push(MaterialPageRoute(
+    _isLoading = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ProductDetailsScreen(
               product: p,
               productBrands: _productBrandsList,
               productTypes: _productTypesList,
             )));
-    if (isLoading == true) {
+    if (_isLoading) {
       setState(() {});
       loadProducts();
+
+      if (!context.mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Row(
           children: [
@@ -432,6 +445,8 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                     setState(() {
                       products?.removeWhere((element) => element.id == p.id);
                     });
+
+                    if (!context.mounted) return;
 
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Row(

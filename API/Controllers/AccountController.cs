@@ -8,6 +8,7 @@ using Core.Models.UpsertObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -79,7 +80,7 @@ namespace API.Controllers
                 Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
-                Role = roles[0],
+                Roles = roles.ToList(),
                 Token = await _tokenService.CreateToken(user)
             };
         }
@@ -110,13 +111,76 @@ namespace API.Controllers
 
             if (!roleAddResult.Succeeded) return BadRequest(new ApiResponse(400, "Failed to add to role"));
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             return new AuthorizationDto
             {
                 Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
+                Roles = roles.ToList(),
                 Token = await _tokenService.CreateToken(user)
             };
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<AuthorizationDto>> Update([FromBody] UserUpdateDto update)
+        {
+            if (update == null) return BadRequest();
+
+            var user = await _userManager.FindUserByClaimsPrincipleAsync(User);
+
+            if (user == null) return NotFound();
+
+            _mapper.Map(update, user);
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                foreach (var error in updateResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            if (!string.IsNullOrEmpty(update.Password))
+            {
+                var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+                if (!removePasswordResult.Succeeded)
+                {
+                    foreach (var error in removePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, update.Password);
+                if (!addPasswordResult.Succeeded)
+                {
+                    foreach (var error in addPasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var authorizationDto = new AuthorizationDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Roles = roles.ToList(),
+                Token = await _tokenService.CreateToken(user)
+            };
+
+            return Ok(authorizationDto);
         }
 
         [HttpGet("userNameExists")]

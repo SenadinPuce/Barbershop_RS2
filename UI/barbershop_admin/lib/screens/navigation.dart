@@ -36,10 +36,10 @@ class _NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
 
   final List<NavigationItem> _navigationItems = [
-    if (Authorization.role == "Admin")
+    if (Authorization.roles!.contains("Admin"))
       NavigationItem(
         icon: const Icon(Icons.group),
-        label: "Barbers",
+        label: "Users",
         widget: const UsersListScreen(),
       ),
     NavigationItem(
@@ -67,7 +67,7 @@ class _NavigationState extends State<Navigation> {
       label: "News",
       widget: const NewsListScreen(),
     ),
-    if (Authorization.role == "Admin")
+    if (Authorization.roles!.contains("Admin"))
       NavigationItem(
         icon: const Icon(Icons.bar_chart),
         label: "Reports",

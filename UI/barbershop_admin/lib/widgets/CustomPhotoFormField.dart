@@ -27,8 +27,8 @@ class CustomPhotoFormField extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 250,
-              height: 250,
+              width: 200,
+              height: 200,
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 border:
@@ -69,7 +69,7 @@ class CustomPhotoFormField extends StatelessWidget {
                     true); 
               },
               child: Container(
-                width: 250,
+                width: 200,
                 padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   border:

@@ -1,5 +1,3 @@
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
@@ -22,7 +20,9 @@ namespace API.Helpers
             CreateMap<AddressDto, Address>().ReverseMap();
             CreateMap<AppUser, AppUserDto>()
             .ForMember(d => d.Roles, opt => opt.MapFrom(s => s.UserRoles.Select(ur => ur.Role.Name).ToList()));
-            CreateMap<AppUserUpdateRequest, AppUser>();
+            CreateMap<UserUpdateDto, AppUser>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
+            CreateMap<UserUpdateRequest, AppUser>();
             CreateMap<ServiceUpsertObject, Service>();
             CreateMap<Service, ServiceDto>();
             CreateMap<AppointmentInsertObject, Appointment>();

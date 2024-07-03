@@ -8,7 +8,7 @@ class Authorization {
   static int? id;
   static String? username;
   static String? email;
-  static String? role;
+  static List<String>? roles;
   static String? token;
 }
 
@@ -23,8 +23,12 @@ String toTitleCase(String text) {
   }).join(' ');
 }
 
-Image imageFromBase64String(String base64Image) {
-  return Image.memory(base64Decode(base64Image), fit: BoxFit.fill, gaplessPlayback: true,);
+Image imageFromBase64String(String base64Image, {BoxFit boxFit = BoxFit.fill}) {
+  return Image.memory(
+    base64Decode(base64Image),
+    fit: BoxFit.fill,
+    gaplessPlayback: true,
+  );
 }
 
 String formatNumber(dynamic value) {
@@ -33,7 +37,8 @@ String formatNumber(dynamic value) {
   if (value == null) {
     return "";
   }
-  return f.format(value);
+  String formattedValue = f.format(value);
+  return formattedValue.replaceAll(',', ' ');
 }
 
 String getDate(DateTime? value) {

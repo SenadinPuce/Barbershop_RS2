@@ -1,8 +1,8 @@
-import 'package:barbershop_admin/providers/news_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/news.dart';
+import '../providers/news_provider.dart';
 import '../utils/util.dart';
 import 'news_details_screen.dart';
 
@@ -16,8 +16,8 @@ class NewsListScreen extends StatefulWidget {
 class _NewsListScreenState extends State<NewsListScreen> {
   late NewsProvider _newsProvider;
   final TextEditingController _newsTitleController = TextEditingController();
-  List<News>? news;
-  bool isLoading = true;
+  List<News>? _news;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -32,8 +32,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
         filter: {'title': _newsTitleController.text, 'includeAuthor': true});
 
     setState(() {
-      news = newsData;
-      isLoading = false;
+      _news = newsData;
+      _isLoading = false;
     });
   }
 
@@ -80,7 +80,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
             ),
             onPressed: () async {
               setState(() {
-                isLoading = true;
+                _isLoading = true;
               });
               loadNews();
             },
@@ -93,11 +93,14 @@ class _NewsListScreenState extends State<NewsListScreen> {
             backgroundColor: const Color.fromRGBO(84, 181, 166, 1),
           ),
           onPressed: () async {
-            isLoading = await Navigator.of(context).push(
+            _isLoading = await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => NewsDetailsScreen()));
-            if (isLoading) {
+            if (_isLoading) {
               setState(() {});
               loadNews();
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: const Row(
                   children: [
@@ -128,7 +131,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
   }
 
   Widget _buildDataListView() {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -187,16 +190,21 @@ class _NewsListScreenState extends State<NewsListScreen> {
                     ),
                   )),
                 ],
-                rows: (news ?? [])
+                rows: (_news ?? [])
                     .map((News n) => DataRow(cells: [
                           DataCell(Text(n.title.toString())),
-                          DataCell(n.photo != ""
+                          DataCell(n.photo != null
                               ? Container(
                                   width: 70,
                                   height: 70,
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 2, horizontal: 0),
-                                  child: imageFromBase64String(n.photo!),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: imageFromBase64String(n.photo!)),
                                 )
                               : const Text("")),
                           DataCell(Text(formatDate(n.createdDateTime))),
@@ -227,13 +235,16 @@ class _NewsListScreenState extends State<NewsListScreen> {
   }
 
   void _editNews(News n) async {
-    isLoading = await Navigator.of(context).push(MaterialPageRoute(
+    _isLoading = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => NewsDetailsScreen(
               news: n,
             )));
-    if (isLoading == true) {
+    if (_isLoading == true) {
       setState(() {});
       loadNews();
+
+      if (!context.mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Row(
           children: [
@@ -280,8 +291,10 @@ class _NewsListScreenState extends State<NewsListScreen> {
                     await _newsProvider.delete(n.id!);
 
                     setState(() {
-                      news?.removeWhere((element) => element.id == n.id);
+                      _news?.removeWhere((element) => element.id == n.id);
                     });
+
+                    if (!context.mounted) return;
 
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Row(

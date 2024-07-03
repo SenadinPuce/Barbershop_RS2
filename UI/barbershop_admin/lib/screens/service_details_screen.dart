@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -9,11 +8,12 @@ import '../providers/service_provider.dart';
 import '../utils/util.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
-  Service? service;
-  ServiceDetailsScreen({
-    Key? key,
+  final Service? service;
+
+  const ServiceDetailsScreen({
+    super.key,
     this.service,
-  }) : super(key: key);
+  });
 
   @override
   State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
@@ -23,7 +23,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late ServiceProvider _serviceProvider;
-  Service? editedService;
+  Service? _editedService;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -121,63 +122,85 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
-          onPressed: () {
-            if (editedService != null) {
-              Navigator.of(context).pop(true);
-            } else {
-              Navigator.of(context).pop(false);
-            }
-          },
+          onPressed: _isSending
+              ? null
+              : () {
+                  if (_editedService != null) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }
+                },
           child: const Text("Close"),
         ),
         const SizedBox(
           width: 8,
         ),
         ElevatedButton(
-          onPressed: () async {
-            if (_formKey.currentState?.saveAndValidate() == true) {
-              var request = Map.from(_formKey.currentState!.value);
+          onPressed: _isSending
+              ? null
+              : () async {
+                  if (_formKey.currentState?.saveAndValidate() == true) {
+                    setState(() {
+                      _isSending = true;
+                    });
 
-              try {
-                if (widget.service == null) {
-                  editedService =
-                      await _serviceProvider.insert(request: request);
-                } else {
-                  editedService = await _serviceProvider.update(
-                      widget.service!.id!, request);
-                }
-                Navigator.of(context).pop(true);
-              } on Exception {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
+                    var request = Map.from(_formKey.currentState!.value);
+
+                    try {
+                      if (widget.service == null) {
+                        _editedService =
+                            await _serviceProvider.insert(request: request);
+                      } else {
+                        _editedService = await _serviceProvider.update(
+                            widget.service!.id!, request);
+                      }
+
+                      if (!context.mounted) return;
+
+                      Navigator.of(context).pop(true);
+                    } on Exception {
+                      setState(() {
+                        _isSending = false;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 8.0),
+                              Text(
+                                'Failed to save service. Please try again.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: Colors.red,
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            textColor: Colors.white,
+                          ),
                         ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Failed to save service. Please try again.',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      label: 'Dismiss',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      },
-                      textColor: Colors.white,
-                    ),
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text("Save changes"),
+                      );
+                    }
+                  }
+                },
+          child: _isSending
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(),
+                )
+              : const Text("Save changes"),
         ),
       ],
     );
