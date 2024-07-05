@@ -1,7 +1,6 @@
 using AutoMapper;
 using Core;
 using Core.Entities;
-using AppointmentBarberService = Core.Entities.AppointmentService;
 using Core.Interfaces;
 using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
@@ -23,119 +22,75 @@ namespace Infrastructure.Data.Repositories
             _messageProducer = messageProducer;
         }
 
-
-
-        public override async Task<Appointment> Update(int id, AppointmentUpdateObject update)
-        {
-            var appointment = await _context.Appointments
-                .FirstOrDefaultAsync(a => a.Id == id);
-
-            if (update.Status == "Completed" && appointment.StartTime >= DateTime.Now)
-            {
-                return appointment;
-            }
-
-            _mapper.Map(update, appointment);
-
-            await _context.SaveChangesAsync();
-
-            return appointment;
-        }
-
         public override async Task<Appointment> Insert(AppointmentInsertObject insert)
         {
             var appointment = new Appointment
             {
-                StartTime = insert.StartTime,
-                BarberId = insert.BarberId,
+                TermId = insert.TermId,
                 ClientId = insert.ClientId,
-                AppointmentServices = new List<AppointmentBarberService>()
+                ServiceId = insert.ServiceId
             };
-
-            foreach (var serviceId in insert.ServiceIds)
-            {
-                Service service = await _context.Services.FindAsync(serviceId);
-
-                if (service != null)
-                {
-                    var appointmentService = new AppointmentBarberService
-                    {
-                        Appointment = appointment,
-                        ServiceId = service.Id,
-                        Service = service
-                    };
-                    appointment.AppointmentServices.Add(appointmentService);
-                }
-            }
 
             _context.Appointments.Add(appointment);
 
+            var term = await _context.Terms.Include(t => t.Barber).FirstOrDefaultAsync(t => t.Id == insert.TermId);
+            var user = await _context.Users.FindAsync(insert.ClientId);
+            var service = await _context.Services.FindAsync(insert.ServiceId);
+
+            term.IsBooked = true;
+
             await _context.SaveChangesAsync();
 
-            var user = await _context.Users.FindAsync(insert.ClientId);
-            var barber = await _context.Users.FindAsync(insert.BarberId);
 
             var message = new AppointmentMessage
             {
                 AppointmentId = appointment.Id,
                 ClientEmail = user.Email,
-                Service = string.Join(", ", appointment.AppointmentServices.Select(x => x.Service.Name)),
-                BarberFullName = $"{barber.FirstName} {barber.LastName}",
-                DateTime = appointment.StartTime.ToString("dd MMMM, yyyy HH:mm'h'")
+                Service = service.Name,
+                BarberFullName = $"{term.Barber.FirstName} {term.Barber.LastName}",
+                Date = term.Date.ToString("dd MMMM yyyy"),
+                Time = term.StartTime.ToString("HH:mm")
             };
             _messageProducer.SendMessage(message);
 
             return appointment;
         }
 
+        public override IQueryable<Appointment> AddInclude(IQueryable<Appointment> query, AppointmentSearchObject search)
+        {
+            if (search.IncludeClient)
+                query = query.Include(a => a.Client);
+            if (search.IncludeService)
+                query = query.Include(a => a.Service);
+            if (search.IncludeTerm)
+                query = query.Include(a => a.Term);
+            return query;
+        }
+
         public override IQueryable<Appointment> AddFilter(IQueryable<Appointment> query, AppointmentSearchObject search)
         {
-            if (search.ClientId.HasValue && search.ClientId.Value > 0)
+            if (search.IsCanceled.HasValue)
             {
-                query = query.Where(a => a.ClientId == search.ClientId && a.StartTime >= DateTime.Now);
-
-
+                query = query.Where(a => a.IsCanceled == search.IsCanceled.Value);
             }
-            if (search.BarberId.HasValue && search.BarberId.Value > 0)
+            if (search.BarberId.HasValue)
             {
-                query = query.Where(a => a.BarberId == search.BarberId);
+                query = query.Where(a => a.Term.BarberId == search.BarberId);
+            }
+            if (search.Date.HasValue)
+            {
+                query = query.Where(a => a.ReservationDate.Date == search.Date.Value.Date);
             }
             if (search.DateFrom.HasValue)
             {
-                query = query.Where(a => a.StartTime.Date >= search.DateFrom.Value.Date);
+                query = query.Where(a => a.ReservationDate.Date >= search.DateFrom.Value.Date);
             }
             if (search.DateTo.HasValue)
             {
-                query = query.Where(a => a.StartTime.Date <= search.DateTo.Value.Date);
-            }
-            if (!string.IsNullOrWhiteSpace(search.Status))
-            {
-                var appointmentStatus = (AppointmentStatus)Enum.Parse(typeof(AppointmentStatus), search.Status, ignoreCase: true);
-                query = query.Where(a => a.Status == appointmentStatus);
+                query = query.Where(a => a.ReservationDate.Date <= search.DateTo.Value.Date);
             }
 
             return query;
         }
-
-        public override IQueryable<Appointment> AddInclude(IQueryable<Appointment> query, AppointmentSearchObject search)
-        {
-            if (search.IncludeBarber)
-            {
-                query = query.Include(a => a.Barber);
-            }
-
-            if (search.IncludeClient)
-            {
-                query = query.Include(a => a.Client);
-            }
-
-            if (search.IncludeServices)
-            {
-                query = query.Include(a => a.AppointmentServices).ThenInclude(b => b.Service);
-            }
-
-            return query;
-        }
-
     }
 }

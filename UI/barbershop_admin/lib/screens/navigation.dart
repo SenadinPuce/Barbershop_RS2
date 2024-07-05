@@ -3,6 +3,7 @@ import 'package:barbershop_admin/screens/login_screen.dart';
 import 'package:barbershop_admin/screens/news_list_screen.dart';
 import 'package:barbershop_admin/screens/products_list_screen.dart';
 import 'package:barbershop_admin/screens/profile_screen.dart';
+import 'package:barbershop_admin/screens/terms_list_screen.dart';
 import 'package:barbershop_admin/screens/users_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -44,13 +45,13 @@ class _NavigationState extends State<Navigation> {
       ),
     NavigationItem(
       icon: const Icon(Icons.calendar_today),
-      label: "Appointments",
-      widget: const AppointmentsListScreen(),
+      label: "Terms",
+      widget: const TermsListScreen(),
     ),
     NavigationItem(
-      icon: const Icon(Icons.list),
-      label: "Orders",
-      widget: const OrdersListScreen(),
+      icon: const Icon(Icons.event),
+      label: "Appointments",
+      widget: const AppointmentsListScreen(),
     ),
     NavigationItem(
       icon: const Icon(Icons.category),
@@ -66,6 +67,11 @@ class _NavigationState extends State<Navigation> {
       icon: const Icon(Icons.newspaper),
       label: "News",
       widget: const NewsListScreen(),
+    ),
+    NavigationItem(
+      icon: const Icon(Icons.list),
+      label: "Orders",
+      widget: const OrdersListScreen(),
     ),
     if (Authorization.roles!.contains("Admin"))
       NavigationItem(

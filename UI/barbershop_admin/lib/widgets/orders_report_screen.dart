@@ -31,10 +31,6 @@ class _OrdersReportScreenState extends State<OrdersReportScreen> {
   void initState() {
     super.initState();
     _orderProvider = context.read<OrderProvider>();
-
-    DateTime now = DateTime.now();
-    _selectedDateFrom = DateTime(now.year, now.month, 1);
-    _selectedDateTo = now;
   }
 
   Future<void> _loadOrders() async {

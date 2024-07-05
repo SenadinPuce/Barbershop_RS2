@@ -7,7 +7,5 @@ namespace Core.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int DurationInMinutes { get; set; }
-
-        public virtual List<AppointmentService> AppointmentServices { get; set; }
     }
 }

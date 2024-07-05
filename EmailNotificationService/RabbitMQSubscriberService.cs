@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using EasyNetQ;
+﻿using EasyNetQ;
 using Core;
-using System;
 using System.Net;
 using System.Net.Mail;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class RabbitMQSubscriberService : BackgroundService
 {
-	private readonly  IBus _bus;
+	private readonly IBus _bus;
 
 	public RabbitMQSubscriberService(IBus bus)
 	{
@@ -60,7 +55,8 @@ public class RabbitMQSubscriberService : BackgroundService
 					  $"Appointment Details:\n" +
 					  $"Service: {appointment.Service}\n" +
 					  $"Barber: {appointment.BarberFullName}\n" +
-					  $"Date and Time: {appointment.DateTime}");
+					  $"Date: {appointment.Date}\n" +
+					  $"Time: {appointment.Time}\n\n");
 
 			await client.SendMailAsync(message);
 			Console.WriteLine("Email notification sent successfully.");

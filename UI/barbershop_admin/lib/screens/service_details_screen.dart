@@ -47,7 +47,11 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [_buildForm(), const SizedBox(height: 20), _buildButtons()],
+          children: [
+            _buildForm(),
+            const SizedBox(height: 20),
+            _buildButtons(),
+          ],
         ),
       ),
     );

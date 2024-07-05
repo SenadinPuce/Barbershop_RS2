@@ -1,0 +1,86 @@
+[
+    {
+        "BarberId": 2,
+        "Date": "2024-07-12T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 2,
+        "Date": "2024-07-12T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-13T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": false
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-13T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 2,
+        "Date": "2024-07-14T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": false
+    },
+    {
+        "BarberId": 2,
+        "Date": "2024-07-14T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-15T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": false
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-15T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 2,
+        "Date": "2024-07-16T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": false
+    },
+    {
+        "BarberId": 2,
+        "Date": "2024-07-16T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-17T00:00:00",
+        "StartTime": "09:00:00",
+        "EndTime": "09:20:00",
+        "IsBooked": false
+    },
+    {
+        "BarberId": 3,
+        "Date": "2024-07-17T00:00:00",
+        "StartTime": "10:00:00",
+        "EndTime": "10:20:00",
+        "IsBooked": true
+    }
+]

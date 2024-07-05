@@ -26,7 +26,7 @@ namespace Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<News> News { get; set; }
-        public DbSet<AppointmentService> AppointmentServices { get; set; }
+        public DbSet<Term> Terms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

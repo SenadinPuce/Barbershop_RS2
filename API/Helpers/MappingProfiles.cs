@@ -28,10 +28,12 @@ namespace API.Helpers
             CreateMap<AppointmentInsertObject, Appointment>();
             CreateMap<AppointmentUpdateObject, Appointment>();
             CreateMap<Appointment, AppointmentDto>()
-                .ForMember(d => d.BarberFullName, o => o.MapFrom(s => s.Barber.FirstName + ' ' + s.Barber.LastName))
-                .ForMember(d => d.ClientFullName, o => o.MapFrom(s => s.Client.FirstName + ' ' + s.Client.LastName))
-                .ForMember(d => d.Services, o => o.MapFrom(o => o.AppointmentServices.Select(y => y.Service)))
-                .ForMember(d => d.EndTime, o => o.MapFrom(src => CalculateEndTime(src)));
+          .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => $"{src.Client.FirstName} {src.Client.LastName}"))
+          .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name))
+          .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Service.Price))
+          .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Term.Date))
+          .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Term.StartTime))
+          .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.Term.EndTime));
             CreateMap<Order, OrderDto>()
                 .ForMember(d => d.ClientFullName, o => o.MapFrom(s => s.Client.FirstName + ' ' + s.Client.LastName))
                 .ForMember(d => d.ClientEmail, o => o.MapFrom(s => s.Client.Email))
@@ -50,17 +52,8 @@ namespace API.Helpers
             CreateMap<ReviewUpsertObject, Review>();
             CreateMap<DeliveryMethod, DeliveryMethodDto>();
             CreateMap<DeliveryMethodUpsertObject, DeliveryMethod>();
-        }
-
-        private DateTime CalculateEndTime(Appointment appointment)
-        {
-            int totalDuration = 0;
-
-            foreach (var appointmentService in appointment.AppointmentServices)
-            {
-                totalDuration += appointmentService.Service.DurationInMinutes;
-            }
-            return appointment.StartTime.AddMinutes(totalDuration);
+            CreateMap<TermUpsertObject, Term>();
+            CreateMap<Term, TermDto>().ForMember(d => d.BarberName, o => o.MapFrom(s => s.Barber.FirstName + ' ' + s.Barber.LastName));
         }
     }
 }

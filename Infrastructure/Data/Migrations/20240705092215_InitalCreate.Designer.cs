@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(BarbershopContext))]
-    [Migration("20240609130316_DatabaseSchema")]
-    partial class DatabaseSchema
+    [Migration("20240705092215_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,41 +193,30 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BarberId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BarberId");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("Appointments");
-                });
-
-            modelBuilder.Entity("Core.Entities.AppointmentService", b =>
-                {
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
-                    b.HasKey("AppointmentId", "ServiceId");
+                    b.Property<int?>("TermId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("AppointmentServices");
+                    b.HasIndex("TermId");
+
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Core.Entities.News", b =>
@@ -483,6 +472,36 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Services");
                 });
 
+            modelBuilder.Entity("Core.Entities.Term", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BarberId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsBooked")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarberId");
+
+                    b.ToTable("Terms");
+                });
+
             modelBuilder.Entity("Core.Entities.AppUser", b =>
                 {
                     b.HasOne("Core.Entities.Address", "Address")
@@ -514,40 +533,27 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.Appointment", b =>
                 {
-                    b.HasOne("Core.Entities.AppUser", "Barber")
-                        .WithMany()
-                        .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Barber");
-
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("Core.Entities.AppointmentService", b =>
-                {
-                    b.HasOne("Core.Entities.Appointment", "Appointment")
-                        .WithMany("AppointmentServices")
-                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Service", "Service")
-                        .WithMany("AppointmentServices")
+                        .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Appointment");
+                    b.HasOne("Core.Entities.Term", "Term")
+                        .WithMany()
+                        .HasForeignKey("TermId");
+
+                    b.Navigation("Client");
 
                     b.Navigation("Service");
+
+                    b.Navigation("Term");
                 });
 
             modelBuilder.Entity("Core.Entities.News", b =>
@@ -645,6 +651,17 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("Core.Entities.Term", b =>
+                {
+                    b.HasOne("Core.Entities.AppUser", "Barber")
+                        .WithMany()
+                        .HasForeignKey("BarberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
+                });
+
             modelBuilder.Entity("Core.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -655,19 +672,9 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("Core.Entities.Appointment", b =>
-                {
-                    b.Navigation("AppointmentServices");
-                });
-
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("Core.Entities.Service", b =>
-                {
-                    b.Navigation("AppointmentServices");
                 });
 #pragma warning restore 612, 618
         }

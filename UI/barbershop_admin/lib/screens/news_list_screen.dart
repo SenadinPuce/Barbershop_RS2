@@ -94,7 +94,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
           ),
           onPressed: () async {
             _isLoading = await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => NewsDetailsScreen()));
+                MaterialPageRoute(builder: (context) => const NewsDetailsScreen()));
             if (_isLoading) {
               setState(() {});
               loadNews();
@@ -124,7 +124,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
               ));
             }
           },
-          child: const Text("Add new news"),
+          child: const Text("Add news"),
         ),
       ],
     );

@@ -161,43 +161,22 @@ namespace Infrastructure.Data
                 context.Orders.AddRange(orders);
             }
 
+            if (!context.Terms.Any())
+            {
+                var termsData = File.ReadAllText(path + @"/Data/SeedData/terms.json");
+                var terms = JsonSerializer.Deserialize<List<Term>>(termsData);
+                context.Terms.AddRange(terms);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
+            }
+
             if (!context.Appointments.Any())
             {
                 var appointmentsData = File.ReadAllText(path + @"/Data/SeedData/appointments.json");
-                var appointments = JsonSerializer.Deserialize<List<AppointmentModel>>(appointmentsData);
-
-                foreach (var appointmentData in appointments)
-                {
-                    var appointment = new Appointment
-                    {
-                        StartTime = appointmentData.StartTime,
-                        BarberId = appointmentData.BarberId,
-                        ClientId = appointmentData.ClientId,
-                        AppointmentServices = new List<AppointmentService>()
-                    };
-
-                    if (appointmentData.Status == "Completed")
-                        appointment.Status = AppointmentStatus.Completed;
-
-                    foreach (var serviceId in appointmentData.ServiceIds)
-                    {
-                        Service service = await context.Services.FindAsync(serviceId);
-
-                        if (service != null)
-                        {
-                            var appointmentService = new AppointmentService
-                            {
-                                Appointment = appointment,
-                                ServiceId = service.Id,
-                                Service = service
-                            };
-                            appointment.AppointmentServices.Add(appointmentService);
-                        }
-
-                    }
-                    context.Appointments.Add(appointment);
-                }
-
+                var appointments = JsonSerializer.Deserialize<List<Appointment>>(appointmentsData);
+                context.Appointments.AddRange(appointments);
             }
 
 

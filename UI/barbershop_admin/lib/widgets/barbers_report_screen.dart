@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -40,10 +39,6 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     _userProvider = context.read<UserProvider>();
 
     _loadBarbers();
-
-    DateTime now = DateTime.now();
-    _selectedDateFrom = DateTime(now.year, now.month, 1);
-    _selectedDateTo = now;
   }
 
   Future<void> _loadBarbers() async {
@@ -61,7 +56,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
       'dateFrom': _selectedDateFrom,
       'dateTo': _selectedDateTo,
       'barberId': _selectedBarber?.id,
-      'status': 'Completed'
+      'isCanceled': false,
     });
 
     setState(() {
@@ -96,7 +91,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                   style: pw.TextStyle(font: font, fontSize: 10),
                 ),
                 pw.Text(
-                  'Number of Completed Appointments: ${appointments?.length ?? 0}',
+                  'Number of Booked Appointments: ${appointments?.length ?? 0}',
                   style: pw.TextStyle(font: font, fontSize: 10),
                 ),
                 pw.Text(
@@ -164,14 +159,14 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Number of Completed Appointments: ${appointments?.length ?? 0}',
+                    'Number of Booked Appointments: ${appointments?.length ?? 0}',
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Minutes Worked: $getNumberOfMinutesWorked',
+                    'Duration of Work: $getNumberOfMinutesWorked minutes',
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -181,7 +176,7 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
                     height: 16,
                   ),
                   Text(
-                    'Total Income Made: $_totalIncome \$',
+                    'Total Income: $_totalIncome \$',
                     style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -326,26 +321,19 @@ class _BarbersReportScreenState extends State<BarbersReportScreen> {
     if (appointments == null) {
       return 0;
     }
-
-    return appointments!
-        .map<int>((appointment) =>
-            appointment.services?.fold<int>(
-                0,
-                (previousValue, service) =>
-                    previousValue + (service.durationInMinutes ?? 0)) ??
-            0)
-        .fold<int>(0, (previousValue, element) => previousValue + element);
+    return appointments!.map<int>((appointment) {
+      final startTime = DateFormat.Hm().parse(appointment.startTime!);
+      final endTime = DateFormat.Hm().parse(appointment.endTime!);
+      return endTime.difference(startTime).inMinutes;
+    }).fold(0, (previousValue, element) => previousValue + element);
   }
 
   double get _totalIncome {
     if (appointments == null) {
       return 0.0;
     }
-
     return appointments!
-        .map<double>((appointment) => appointment.services!
-            .map<double>((service) => service.price ?? 0.0)
-            .fold(0, (previousValue, element) => previousValue + element))
-        .fold(0, (previousValue, element) => previousValue + element);
+        .map<double>((appointment) => appointment.servicePrice ?? 0.0)
+        .fold(0.0, (previousValue, element) => previousValue + element);
   }
 }

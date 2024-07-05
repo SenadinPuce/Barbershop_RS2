@@ -1,10 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Core.Models.InsertObjects
 {
     public class AppointmentInsertObject
     {
-        public DateTime StartTime { get; set; }
-        public int BarberId { get; set; }
+        [Required]
         public int ClientId { get; set; }
-        public List<int> ServiceIds { get; set; }
+
+        [Required]
+        public int TermId { get; set; }
+
+        [Required]
+        public int ServiceId { get; set; }
     }
 }

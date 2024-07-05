@@ -1,32 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
-
-import 'service.dart';
 
 part 'appointment.g.dart';
 
 @JsonSerializable()
 class Appointment {
   int? id;
-  DateTime? startTime;
-  DateTime? endTime;
-  String? status;
-  int? barberId;
-  String? barberFullName;
   int? clientId;
-  String? clientFullName;
-  List<Service>? services;
+  String? clientName;
+  int? termId;
+  DateTime? date;
+  String? startTime;
+  String? endTime;
+  int? serviceId;
+  String? serviceName;
+  double? servicePrice;
+  DateTime? reservationDate;
+  bool? isCanceled;
 
   Appointment({
     this.id,
+    this.clientId,
+    this.clientName,
+    this.termId,
+    this.date,
     this.startTime,
     this.endTime,
-    this.status,
-    this.barberId,
-    this.barberFullName,
-    this.clientId,
-    this.clientFullName,
-    this.services,
+    this.serviceId,
+    this.serviceName,
+    this.servicePrice,
+    this.reservationDate,
+    this.isCanceled,
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json) =>
