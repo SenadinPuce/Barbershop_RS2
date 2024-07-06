@@ -25,5 +25,4 @@ Map<String, dynamic> _$TermToJson(Term instance) => <String, dynamic>{
       'startTime': instance.startTime,
       'endTime': instance.endTime,
       'isBooked': instance.isBooked,
-
     };

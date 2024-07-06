@@ -23,8 +23,8 @@ namespace Infrastructure.Services
 
         public async Task<CustomerPaymentDto> CreateOrUpdatePaymentIntent(PaymentUpsertObject upsert)
         {
-            StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
-
+            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeSecretKey") ?? _config["StripeSettings:SecretKey"];
+            
             Order order = null;
 
             if (!string.IsNullOrWhiteSpace(upsert.PaymentIntentId))

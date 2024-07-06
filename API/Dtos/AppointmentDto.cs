@@ -5,6 +5,7 @@ namespace API.Dtos
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string ClientName { get; set; }
+        public string BarberName { get; set; }
         public int TermId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }

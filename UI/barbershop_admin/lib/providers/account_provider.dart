@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:barbershop_admin/helpers/constants.dart';
-import 'package:barbershop_admin/models/user.dart';
 import 'package:barbershop_admin/utils/util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -37,12 +36,12 @@ class AccountProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    String token = Authorization.token ?? "";
-
     final headers = {
       'accept': 'text/plain',
       'Content-Type': 'application/json',
     };
+
+    String token = Authorization.token ?? "";
 
     if (token.isNotEmpty) {
       String jwtAuth = "Bearer $token";

@@ -3,6 +3,7 @@ namespace Core.Models.SearchObjects
     public class AppointmentSearchObject : BaseSearchObject
     {
         public int? BarberId { get; set; }
+        public int? ClientId { get; set; }
         public DateTime? Date { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }

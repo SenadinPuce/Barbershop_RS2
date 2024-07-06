@@ -13,10 +13,12 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IProductService _service;
+        private readonly IProductRecommendationService _productRecommendationService;
 
-        public ProductsController(IProductService service, IMapper mapper)
+        public ProductsController(IProductService service, IMapper mapper, IProductRecommendationService productRecommendationService)
             : base(service, mapper)
         {
+            _productRecommendationService = productRecommendationService;
             _service = service;
             _mapper = mapper;
 
@@ -25,7 +27,7 @@ namespace API.Controllers
         [HttpGet("{id}/recommend")]
         public List<ProductDto> Recommend(int id)
         {
-            return _mapper.Map<List<ProductDto>>(_service.Recommend(id));
+            return _mapper.Map<List<ProductDto>>(_productRecommendationService.Recommend(id));
         }
     }
 

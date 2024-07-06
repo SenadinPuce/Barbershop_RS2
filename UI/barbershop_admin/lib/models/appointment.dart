@@ -7,6 +7,7 @@ class Appointment {
   int? id;
   int? clientId;
   String? clientName;
+  String? barberName;
   int? termId;
   DateTime? date;
   String? startTime;
@@ -21,6 +22,7 @@ class Appointment {
     this.id,
     this.clientId,
     this.clientName,
+    this.barberName,
     this.termId,
     this.date,
     this.startTime,

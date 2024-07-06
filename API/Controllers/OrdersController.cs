@@ -1,6 +1,5 @@
 using API.Dtos;
 using API.Errors;
-using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
@@ -8,7 +7,6 @@ using Core.Interfaces;
 using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
-using Core.Models.UpsertObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,18 +23,7 @@ namespace API.Controllers
             // _userManager = userManager;
             _service = service;
         }
-
-        // [HttpPost]
-        // public async Task<ActionResult<Order>> CreateOrder(OrderUpsertObject request)
-        // {
-        //     var user = await _userManager.FindUserByClaimsPrincipleAsync(User);
-
-        //     var order = await _service.CreateOrderAsync(user.Id, request);
-
-        //     if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
-
-        //     return Ok(order);
-        // }
+  
 
         [HttpPut("update-status/{id}")]
         public async Task<ActionResult<OrderDto>> UpdateOrderStatus(int id, [FromBody] string status)

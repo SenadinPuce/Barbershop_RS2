@@ -8,7 +8,7 @@ namespace Core.Entities
         public string Photo { get; set; }
         public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
         
-        public int AuthorId { get; set; }
+        public int? AuthorId { get; set; }
         public virtual AppUser Author { get; set; }
     }
 }

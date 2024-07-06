@@ -1,14 +1,14 @@
-import 'package:barbershop_mobile/providers/payment_provider.dart';
-import 'package:barbershop_mobile/providers/reservation_provider.dart';
-import 'package:barbershop_mobile/providers/time_slot_provider.dart';
-import 'package:barbershop_mobile/screens/cart_screen.dart';
-import 'package:barbershop_mobile/screens/navigation.dart';
-import 'package:barbershop_mobile/screens/news_details_screen.dart';
-import 'package:barbershop_mobile/utils/constants.dart';
+import 'package:barbershop_mobile/providers/term_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'package:barbershop_mobile/providers/payment_provider.dart';
+import 'package:barbershop_mobile/screens/cart_screen.dart';
+import 'package:barbershop_mobile/screens/navigation.dart';
+import 'package:barbershop_mobile/screens/news_details_screen.dart';
+import 'package:barbershop_mobile/utils/constants.dart';
 
 import 'providers/account_provider.dart';
 import 'providers/appointment_provider.dart';
@@ -22,7 +22,7 @@ import 'providers/product_type_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/service_provider.dart';
 import 'providers/user_provider.dart';
-import 'screens/appointments_list_screen.dart';
+import 'screens/barbers_list_screen.dart';
 import 'screens/news_list_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
@@ -41,7 +41,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => NewsProvider()),
       ChangeNotifierProvider(create: (_) => AppointmentProvider()),
       ChangeNotifierProvider(create: (_) => ServiceProvider()),
-      ChangeNotifierProvider(create: (_) => ProductProvider()),
+    ChangeNotifierProvider(create: (_) => ProductProvider()),
       ChangeNotifierProvider(create: (_) => ProductTypeProvider()),
       ChangeNotifierProvider(create: (_) => ProductBrandProvider()),
       ChangeNotifierProvider(create: (_) => ReviewProvider()),
@@ -50,8 +50,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => DeliveryMethodProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
-      ChangeNotifierProvider(create: (_) => ReservationProvider()),
-      ChangeNotifierProvider(create: (_) => TimeSlotProvider()),
+      ChangeNotifierProvider(create: (_) => TermProvider()),
     ],
     child: const MyApp(),
   ));
@@ -60,7 +59,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,9 +82,9 @@ class MyApp extends StatelessWidget {
           RegisterScreen.routeName: (context) => const RegisterScreen(),
           Navigation.routeName: (context) => const Navigation(),
           NewsListScreen.routeName: (context) => const NewsListScreen(),
-          NewsDetailsScreen.routeName: (context) => NewsDetailsScreen(),
-          AppointmentsListScreen.routeName: (context) =>
-              const AppointmentsListScreen(),
+          NewsDetailsScreen.routeName: (context) => const NewsDetailsScreen(),
+          BarbersListScreen.routeName: (context) =>
+              const BarbersListScreen(),
           UserAppointmentsScreen.routeName: (context) =>
               const UserAppointmentsScreen(),
           ProductsListScreen.routeName: (context) => const ProductsListScreen(),

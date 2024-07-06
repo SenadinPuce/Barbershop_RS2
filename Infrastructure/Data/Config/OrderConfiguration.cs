@@ -16,9 +16,9 @@ namespace Infrastructure.Data.Config
                 );
             builder.Property(o => o.Subtotal).HasColumnType("decimal(18,2)");
 
-            builder.HasMany(o => o.OrderItems).WithOne(oi => oi.Order).HasForeignKey(oi => oi.OrderId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(o => o.Client).WithMany().HasForeignKey(o => o.ClientId).OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(o => o.Address).WithOne().HasForeignKey<Order>(o => o.AddressId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(o => o.OrderItems).WithOne(oi => oi.Order).HasForeignKey(oi => oi.OrderId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(o => o.Client).WithMany().HasForeignKey(o => o.ClientId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.HasOne(o => o.Address).WithOne().HasForeignKey<Order>(o => o.AddressId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

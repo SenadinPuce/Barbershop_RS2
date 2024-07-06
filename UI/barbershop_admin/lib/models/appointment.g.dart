@@ -10,6 +10,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
       id: json['id'] as int?,
       clientId: json['clientId'] as int?,
       clientName: json['clientName'] as String?,
+      barberName: json['barberName'] as String?,
       termId: json['termId'] as int?,
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
@@ -29,6 +30,7 @@ Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
       'id': instance.id,
       'clientId': instance.clientId,
       'clientName': instance.clientName,
+      'barberName': instance.barberName,
       'termId': instance.termId,
       'date': instance.date?.toIso8601String(),
       'startTime': instance.startTime,

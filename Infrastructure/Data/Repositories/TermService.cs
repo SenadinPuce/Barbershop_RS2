@@ -51,6 +51,10 @@ namespace Infrastructure.Data.Repositories
 
         public override IQueryable<Term> AddFilter(IQueryable<Term> query, TermSearchObject search)
         {
+            if (search.IsBooked.HasValue)
+            {
+                query = query.Where(t => t.IsBooked == search.IsBooked);
+            }
             if (search.BarberId.HasValue)
             {
                 query = query.Where(t => t.BarberId == search.BarberId);

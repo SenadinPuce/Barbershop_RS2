@@ -137,6 +137,7 @@ class _ReviewAddScreenState extends State<ReviewAddScreen> {
 
               await _reviewProvider.insert(request: request);
 
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                     backgroundColor: Colors.green,

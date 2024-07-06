@@ -190,7 +190,7 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsCanceled")
@@ -199,7 +199,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ServiceId")
+                    b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
                     b.Property<int?>("TermId")
@@ -224,7 +224,7 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -282,7 +282,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<int>("DeliveryMethodId")
@@ -420,10 +420,10 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BarberId")
+                    b.Property<int?>("BarberId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClientId")
+                    b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
@@ -477,7 +477,7 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BarberId")
+                    b.Property<int?>("BarberId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -532,15 +532,11 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Core.Entities.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceId");
 
                     b.HasOne("Core.Entities.Term", "Term")
                         .WithMany()
@@ -557,9 +553,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.AppUser", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
@@ -569,14 +563,12 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.Address", "Address")
                         .WithOne()
                         .HasForeignKey("Core.Entities.OrderAggregate.Order", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Core.Entities.OrderAggregate.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
@@ -596,7 +588,7 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Core.Entities.OrderAggregate.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Product", "Product")
@@ -633,15 +625,11 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.AppUser", "Barber")
                         .WithMany()
-                        .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("BarberId");
 
                     b.HasOne("Core.Entities.AppUser", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.Navigation("Barber");
 
@@ -652,9 +640,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.AppUser", "Barber")
                         .WithMany()
-                        .HasForeignKey("BarberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BarberId");
 
                     b.Navigation("Barber");
                 });

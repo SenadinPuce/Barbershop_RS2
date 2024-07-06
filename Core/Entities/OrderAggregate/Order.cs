@@ -20,7 +20,7 @@ namespace Core.Entities.OrderAggregate
 
 		public int Id { get; set; }
 		public string OrderNumber { get; set; }
-		public int ClientId { get; set; }
+		public int? ClientId { get; set; }
 		public virtual AppUser Client { get; set; }
 		public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 		public int AddressId { get; set; }

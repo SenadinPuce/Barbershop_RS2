@@ -1,5 +1,4 @@
 using API.Errors;
-using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
@@ -35,6 +34,7 @@ namespace API.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
             services.AddScoped<ITermService, TermService>();
+            services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

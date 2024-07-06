@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:barbershop_mobile/providers/cart_provider.dart';
 import 'package:barbershop_mobile/providers/product_provider.dart';
 import 'package:barbershop_mobile/utils/util.dart';
@@ -9,11 +8,11 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  Product? product;
-  ProductDetailsScreen({
-    Key? key,
+  final Product? product;
+  const ProductDetailsScreen({
+    super.key,
     this.product,
-  }) : super(key: key);
+  });
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();

@@ -1,6 +1,7 @@
 using API.Extensions;
 using API.Middleware;
 using Core.Entities;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,16 +40,18 @@ var services = scope.ServiceProvider;
 var context = services.GetRequiredService<BarbershopContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+var productRecommendationService = services.GetRequiredService<IProductRecommendationService>();
 var logger = services.GetRequiredService<ILogger<Program>>();
 
 try
 {
     await context.Database.MigrateAsync();
     await BarbershopContextSeed.SeedAsync(context, userManager, roleManager);
+    productRecommendationService.TrainModel();
 }
 catch (Exception ex)
 {
-    logger.LogError(ex.Message, "An error occured during migrations");
+    logger.LogError(ex.Message, "An error occured during migrations or model training.");
 }
 
 app.Run();

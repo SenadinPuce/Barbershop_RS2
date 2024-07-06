@@ -8,31 +8,36 @@ part of 'appointment.dart';
 
 Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
       id: json['id'] as int?,
-      startTime: json['startTime'] == null
-          ? null
-          : DateTime.parse(json['startTime'] as String),
-      endTime: json['endTime'] == null
-          ? null
-          : DateTime.parse(json['endTime'] as String),
-      durationInMinutes: json['durationInMinutes'] as int?,
-      status: json['status'] as String?,
-      barberId: json['barberId'] as int?,
-      barberFullName: json['barberFullName'] as String?,
       clientId: json['clientId'] as int?,
-      services: (json['services'] as List<dynamic>?)
-          ?.map((e) => Service.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      clientName: json['clientName'] as String?,
+      barberName: json['barberName'] as String?,
+      termId: json['termId'] as int?,
+      date:
+          json['date'] == null ? null : DateTime.parse(json['date'] as String),
+      startTime: json['startTime'] as String?,
+      endTime: json['endTime'] as String?,
+      serviceId: json['serviceId'] as int?,
+      serviceName: json['serviceName'] as String?,
+      servicePrice: (json['servicePrice'] as num?)?.toDouble(),
+      reservationDate: json['reservationDate'] == null
+          ? null
+          : DateTime.parse(json['reservationDate'] as String),
+      isCanceled: json['isCanceled'] as bool?,
     );
 
 Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'startTime': instance.startTime?.toIso8601String(),
-      'endTime': instance.endTime?.toIso8601String(),
-      'durationInMinutes': instance.durationInMinutes,
-      'status': instance.status,
-      'barberId': instance.barberId,
-      'barberFullName': instance.barberFullName,
       'clientId': instance.clientId,
-      'services': instance.services,
+      'clientName': instance.clientName,
+      'barberName': instance.barberName,
+      'termId': instance.termId,
+      'date': instance.date?.toIso8601String(),
+      'startTime': instance.startTime,
+      'endTime': instance.endTime,
+      'serviceId': instance.serviceId,
+      'serviceName': instance.serviceName,
+      'servicePrice': instance.servicePrice,
+      'reservationDate': instance.reservationDate?.toIso8601String(),
+      'isCanceled': instance.isCanceled,
     };

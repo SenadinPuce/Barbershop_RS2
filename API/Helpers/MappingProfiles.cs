@@ -29,6 +29,7 @@ namespace API.Helpers
             CreateMap<AppointmentUpdateObject, Appointment>();
             CreateMap<Appointment, AppointmentDto>()
           .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => $"{src.Client.FirstName} {src.Client.LastName}"))
+          .ForMember(dest => dest.BarberName, opt => opt.MapFrom(src => $"{src.Term.Barber.FirstName} {src.Term.Barber.LastName}"))
           .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.Name))
           .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.Service.Price))
           .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Term.Date))
@@ -54,6 +55,7 @@ namespace API.Helpers
             CreateMap<DeliveryMethodUpsertObject, DeliveryMethod>();
             CreateMap<TermUpsertObject, Term>();
             CreateMap<Term, TermDto>().ForMember(d => d.BarberName, o => o.MapFrom(s => s.Barber.FirstName + ' ' + s.Barber.LastName));
+            CreateMap<AppUser, BarberDto>();
         }
     }
 }

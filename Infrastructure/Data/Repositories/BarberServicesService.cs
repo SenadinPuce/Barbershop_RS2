@@ -22,5 +22,17 @@ namespace Infrastructure.Data.Repositories
 
             return query;
         }
+
+        public override Task<Service> Delete(int id)
+        {
+            var appointments = _context.Appointments.Where(a => a.ServiceId == id).ToList();
+
+            foreach (var appointment in appointments)
+            {
+                appointment.ServiceId = null;
+            }
+
+            return base.Delete(id);
+        }
     }
 }

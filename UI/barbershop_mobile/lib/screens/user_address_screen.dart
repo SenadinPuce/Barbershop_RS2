@@ -1,12 +1,11 @@
-import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/address.dart';
 import '../providers/account_provider.dart';
+import '../widgets/custom_app_bar.dart';
 
 class UserAddressScreen extends StatefulWidget {
   const UserAddressScreen({super.key});
@@ -19,8 +18,8 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
   late AccountProvider _accountProvider;
   final _formKey = GlobalKey<FormBuilderState>();
   Address? _address;
-  bool isLoading = true;
-  bool isFormEdited = false;
+  bool _isLoading = true;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -35,7 +34,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
 
     setState(() {
       _address = addressData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -52,7 +51,7 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
               child: Column(children: [if (_address != null) _buildView()]),
             ),
           ),
-          if (isLoading)
+          if (_isLoading)
             const Center(
               child: CircularProgressIndicator(),
             )
@@ -71,11 +70,6 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
           'city': _address!.city ?? '',
           'state': _address!.state ?? '',
           'zipCode': _address!.zipCode ?? '',
-        },
-        onChanged: () {
-          setState(() {
-            isFormEdited = true;
-          });
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -147,28 +141,58 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         ),
-        onPressed: isFormEdited
-            ? () async {
+        onPressed: _isSending
+            ? null
+            : () async {
                 if (_formKey.currentState?.saveAndValidate() == true) {
-                  var request = Map.from(_formKey.currentState!.value);
+                  try {
+                    setState(() {
+                      _isSending = true;
+                    });
+                    var request = Map.from(_formKey.currentState!.value);
 
-                  await _accountProvider.updateAddress(request);
+                    await _accountProvider.updateAddress(request);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        backgroundColor: Colors.green,
-                        showCloseIcon: true,
-                        closeIconColor: Colors.white,
-                        duration: Duration(seconds: 1),
-                        content: Text('Delivery address updated successfully')),
-                  );
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          backgroundColor: Colors.green,
+                          showCloseIcon: true,
+                          closeIconColor: Colors.white,
+                          duration: Duration(seconds: 1),
+                          content:
+                              Text('Delivery address updated successfully.')),
+                    );
+                    setState(() {
+                      _isSending = false;
+                    });
+                  } on Exception {
+                    setState(() {
+                      _isSending = false;
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          backgroundColor: Colors.red,
+                          showCloseIcon: true,
+                          closeIconColor: Colors.white,
+                          duration: Duration(seconds: 1),
+                          content: Text(
+                              'Failed to update delivery address. Please try again.')),
+                    );
+                  }
                 }
-              }
-            : null,
-        child: const Text(
-          'Save changes',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
+              },
+        child: _isSending
+            ? const SizedBox(
+                height: 16,
+                width: 16,
+                child: CircularProgressIndicator(),
+              )
+            : const Text(
+                'Save changes',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
       ),
     );
   }

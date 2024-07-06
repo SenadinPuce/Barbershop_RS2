@@ -149,8 +149,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else if (response.statusCode == 500) {
       throw Exception("Internal server error: ${response.body}");
     } else {
-      print("Error response: ${response.statusCode}");
-      print("Response body: ${response.body}");
       throw Exception("Something bad happened, please try again");
     }
   }

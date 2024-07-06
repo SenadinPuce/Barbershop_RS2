@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:barbershop_mobile/screens/appointments_list_screen.dart';
+import 'package:barbershop_mobile/screens/barbers_list_screen.dart';
 import 'package:barbershop_mobile/screens/news_list_screen.dart';
 import 'package:barbershop_mobile/screens/products_list_screen.dart';
 import 'package:barbershop_mobile/screens/profile_screen.dart';
@@ -19,7 +19,7 @@ class _NavigationState extends State<Navigation> {
 
   final List<Widget> _screens = [
     const NewsListScreen(),
-    const AppointmentsListScreen(),
+    const BarbersListScreen(),
     const ProductsListScreen(),
     const ProfileScreen(),
   ];

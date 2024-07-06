@@ -1,28 +1,26 @@
 import 'dart:convert';
 
-import 'package:barbershop_mobile/models/user.dart';
-import 'package:barbershop_mobile/providers/reservation_provider.dart';
-import 'package:barbershop_mobile/providers/user_provider.dart';
-import 'package:barbershop_mobile/screens/reviews_list_screen.dart';
-import 'package:barbershop_mobile/screens/services_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user.dart';
+import '../providers/user_provider.dart';
 import '../widgets/custom_app_bar.dart';
+import 'reviews_list_screen.dart';
+import 'terms_list_screen.dart';
 
-class AppointmentsListScreen extends StatefulWidget {
-  static const routeName = '/appointments';
-  const AppointmentsListScreen({super.key});
+class BarbersListScreen extends StatefulWidget {
+  static const routeName = '/barbers';
+  const BarbersListScreen({super.key});
 
   @override
-  State<AppointmentsListScreen> createState() => _AppointmentsListScreen();
+  State<BarbersListScreen> createState() => _BarbersListScreen();
 }
 
-class _AppointmentsListScreen extends State<AppointmentsListScreen> {
+class _BarbersListScreen extends State<BarbersListScreen> {
   late UserProvider _userProvider;
-  late ReservationProvider _reservationProvider;
   List<User>? _barbers;
-  bool isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -32,14 +30,14 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
 
   Future<void> loadData() async {
     _userProvider = context.read<UserProvider>();
-    _reservationProvider = context.read<ReservationProvider>();
 
-    var barbersData = await _userProvider
-        .get(filter: {'roleName': 'Barber'}, extraRoute: "users-with-roles");
+    var barbersData = await _userProvider.get(
+      extraRoute: "get-barbers",
+    );
 
     setState(() {
       _barbers = barbersData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -59,7 +57,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
             )
           ],
         )),
-        if (isLoading)
+        if (_isLoading)
           const Center(
             child: CircularProgressIndicator(),
           ),
@@ -80,7 +78,7 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
   }
 
   Widget _buildView() {
-    if (isLoading) {
+    if (_isLoading) {
       return Container();
     } else {
       if (_barbers != null && _barbers!.isNotEmpty) {
@@ -153,12 +151,12 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                       minimumSize: const Size(double.infinity, 45),
                       elevation: 3),
                   onPressed: () async {
-                    _reservationProvider.barberId = b.id;
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ServicesList(),
+                        builder: (context) => TermsListScreen(
+                          barberId: b.id,
+                        ),
                       ),
                     );
                   },
@@ -178,12 +176,12 @@ class _AppointmentsListScreen extends State<AppointmentsListScreen> {
                       minimumSize: const Size(double.infinity, 45),
                       elevation: 3),
                   onPressed: () async {
-                    _reservationProvider.barberId = b.id;
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ReviewsListScreen(barberId: b.id!,),
+                        builder: (context) => ReviewsListScreen(
+                          barberId: b.id!,
+                        ),
                       ),
                     );
                   },

@@ -1,18 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:barbershop_mobile/models/news.dart';
 import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 
 class NewsDetailsScreen extends StatelessWidget {
   static const routeName = '/news-details';
 
-  News? news;
+  final News? news;
 
-  NewsDetailsScreen({
-    Key? key,
+  const NewsDetailsScreen({
+    super.key,
     this.news,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

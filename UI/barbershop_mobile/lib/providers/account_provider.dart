@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 
 import '../models/address.dart';
@@ -103,15 +104,50 @@ class AccountProvider with ChangeNotifier {
 
     final body = jsonEncode(update);
 
-    final response = await http?.put(uri, headers: headers, body: body);
+    final response = await http!.put(uri, headers: headers, body: body);
 
-    if (response?.statusCode == 200) {
-      Address address = Address.fromJson(jsonDecode(response!.body));
-      return address;
-    } else if (response?.statusCode == 400) {
-      throw Exception("Problem updating the address");
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return Address.fromJson(data);
     } else {
       throw Exception("Failed to update address");
+    }
+  }
+
+  Future<void> update({required dynamic request}) async {
+    var uri = Uri.parse('${apiUrl}account');
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http!.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+
+      Authorization.id = data['id'];
+      Authorization.username = data['username'];
+      Authorization.email = data['email'];
+      Authorization.token = data['token'];
+    } else {
+      throw Exception("Unknown error");
+    }
+  }
+
+  bool isValidResponse(Response response) {
+    if (response.statusCode < 299) {
+      return true;
+    } else if (response.statusCode == 401) {
+      throw Exception("Unauthorized");
+    } else if (response.statusCode == 400) {
+      throw Exception("Bad request: ${response.body}");
+    } else if (response.statusCode == 403) {
+      throw Exception("Forbidden method: ${response.body}");
+    } else if (response.statusCode == 404) {
+      throw Exception("Not found: ${response.body}");
+    } else if (response.statusCode == 500) {
+      throw Exception("Internal server error: ${response.body}");
+    } else {
+      throw Exception("Something bad happened, please try again");
     }
   }
 }

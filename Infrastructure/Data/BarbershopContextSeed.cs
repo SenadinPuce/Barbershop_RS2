@@ -18,6 +18,10 @@ namespace Infrastructure.Data
                 var brandsData = File.ReadAllText(path + @"/Data/SeedData/brands.json");
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
                 context.ProductBrands.AddRange(brands);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.ProductTypes.Any())
@@ -25,6 +29,10 @@ namespace Infrastructure.Data
                 var typesData = File.ReadAllText(path + @"/Data/SeedData/types.json");
                 var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
                 context.ProductTypes.AddRange(types);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Products.Any())
@@ -32,6 +40,10 @@ namespace Infrastructure.Data
                 var productsData = File.ReadAllText(path + @"/Data/SeedData/products.json");
                 var products = JsonSerializer.Deserialize<List<Product>>(productsData);
                 context.Products.AddRange(products);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.DeliveryMethods.Any())
@@ -39,6 +51,10 @@ namespace Infrastructure.Data
                 var deliveryData = File.ReadAllText(path + @"/Data/SeedData/delivery.json");
                 var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
                 context.DeliveryMethods.AddRange(methods);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Services.Any())
@@ -46,6 +62,10 @@ namespace Infrastructure.Data
                 var servicesData = File.ReadAllText(path + @"/Data/SeedData/services.json");
                 var services = JsonSerializer.Deserialize<List<Service>>(servicesData);
                 context.Services.AddRange(services);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Addresses.Any())
@@ -53,6 +73,10 @@ namespace Infrastructure.Data
                 var addressesData = File.ReadAllText(path + @"/Data/SeedData/addresses.json");
                 var addresses = JsonSerializer.Deserialize<List<Address>>(addressesData);
                 context.Addresses.AddRange(addresses);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             // Users seed
@@ -127,6 +151,10 @@ namespace Infrastructure.Data
                     if (user.UserName == "barber1" || user.UserName == "barber2") await userManager.AddToRoleAsync(user, "Barber");
                     if (user.UserName == "desktop") await userManager.AddToRoleAsync(user, "Admin");
                 }
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Reviews.Any())
@@ -134,6 +162,10 @@ namespace Infrastructure.Data
                 var reviewsData = File.ReadAllText(path + @"/Data/SeedData/reviews.json");
                 var reviews = JsonSerializer.Deserialize<List<Review>>(reviewsData);
                 context.Reviews.AddRange(reviews);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.News.Any())
@@ -141,6 +173,10 @@ namespace Infrastructure.Data
                 var newsData = File.ReadAllText(path + @"/Data/SeedData/news.json");
                 var news = JsonSerializer.Deserialize<List<News>>(newsData);
                 context.News.AddRange(news);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Orders.Any())
@@ -159,6 +195,10 @@ namespace Infrastructure.Data
                 orders.Find(o => o.PaymentIntentId == "payment_intent_10").Status = OrderStatus.PaymentFailed;
 
                 context.Orders.AddRange(orders);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
             if (!context.Terms.Any())
@@ -177,10 +217,14 @@ namespace Infrastructure.Data
                 var appointmentsData = File.ReadAllText(path + @"/Data/SeedData/appointments.json");
                 var appointments = JsonSerializer.Deserialize<List<Appointment>>(appointmentsData);
                 context.Appointments.AddRange(appointments);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
             }
 
 
-            if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
+
         }
     }
 }

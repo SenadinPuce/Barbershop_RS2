@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ReservationSuccessScreen extends StatelessWidget {
   const ReservationSuccessScreen({super.key});
 
@@ -28,6 +27,13 @@ class ReservationSuccessScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
+                  const Text(
+                    'Check "Profile > My Appointments" to view details.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 45),

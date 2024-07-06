@@ -6,6 +6,5 @@ namespace Core.Interfaces
 {
     public interface IProductService : ICRUDService<Product, ProductSearchObject, ProductUpsertObject, ProductUpsertObject>
     {
-        List<Product> Recommend(int id);
     }
 }

@@ -49,7 +49,7 @@ namespace Infrastructure.Data.Repositories
                 Service = service.Name,
                 BarberFullName = $"{term.Barber.FirstName} {term.Barber.LastName}",
                 Date = term.Date.ToString("dd MMMM yyyy"),
-                Time = term.StartTime.ToString("HH:mm")
+                Time = term.StartTime.ToString(@"hh\:mm"),
             };
             _messageProducer.SendMessage(message);
 
@@ -63,7 +63,7 @@ namespace Infrastructure.Data.Repositories
             if (search.IncludeService)
                 query = query.Include(a => a.Service);
             if (search.IncludeTerm)
-                query = query.Include(a => a.Term);
+                query = query.Include(a => a.Term).ThenInclude(t => t.Barber);
             return query;
         }
 
@@ -76,6 +76,10 @@ namespace Infrastructure.Data.Repositories
             if (search.BarberId.HasValue)
             {
                 query = query.Where(a => a.Term.BarberId == search.BarberId);
+            }
+            if (search.ClientId.HasValue)
+            {
+                query = query.Where(a => a.ClientId == search.ClientId);
             }
             if (search.Date.HasValue)
             {

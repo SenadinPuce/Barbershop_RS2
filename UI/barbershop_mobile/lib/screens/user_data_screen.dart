@@ -1,12 +1,14 @@
-import 'package:barbershop_mobile/models/user.dart';
-import 'package:barbershop_mobile/providers/user_provider.dart';
-import 'package:barbershop_mobile/utils/util.dart';
-import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
+import 'package:barbershop_mobile/providers/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+
+import 'package:barbershop_mobile/models/user.dart';
+import 'package:barbershop_mobile/providers/user_provider.dart';
+import 'package:barbershop_mobile/utils/util.dart';
+import 'package:barbershop_mobile/widgets/custom_app_bar.dart';
 
 class UserDataScreen extends StatefulWidget {
   const UserDataScreen({super.key});
@@ -17,12 +19,13 @@ class UserDataScreen extends StatefulWidget {
 
 class _UserDataScreenState extends State<UserDataScreen> {
   late UserProvider _userProvider;
+  late AccountProvider _accountProvider;
   final _formKey = GlobalKey<FormBuilderState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   User? _user;
-  bool isLoading = true;
-  bool isFormEdited = false;
+  bool _isLoading = true;
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -32,12 +35,13 @@ class _UserDataScreenState extends State<UserDataScreen> {
 
   Future<void> loadData() async {
     _userProvider = context.read<UserProvider>();
+    _accountProvider = context.read<AccountProvider>();
 
     var userData = await _userProvider.getById(Authorization.id!);
 
     setState(() {
       _user = userData;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -55,7 +59,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
             ),
           ),
         ),
-        if (isLoading)
+        if (_isLoading)
           const Center(
             child: CircularProgressIndicator(),
           ),
@@ -72,11 +76,6 @@ class _UserDataScreenState extends State<UserDataScreen> {
         'username': _user!.username ?? '',
         'email': _user!.email ?? '',
         'phoneNumber': _user!.phoneNumber ?? '',
-      },
-      onChanged: () {
-        setState(() {
-          isFormEdited = true;
-        });
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,29 +192,59 @@ class _UserDataScreenState extends State<UserDataScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         ),
-        onPressed: isFormEdited
-            ? () async {
+        onPressed: _isSending
+            ? null
+            : () async {
                 if (_formKey.currentState?.saveAndValidate() == true) {
-                  var request = Map.from(_formKey.currentState!.value);
+                  try {
+                    setState(() {
+                      _isSending = true;
+                    });
 
-                  await _userProvider.update(Authorization.id!,
-                      request: request);
+                    var request = Map.from(_formKey.currentState!.value);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    await _accountProvider.update(request: request);
+
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
                         backgroundColor: Colors.green,
                         showCloseIcon: true,
                         closeIconColor: Colors.white,
                         duration: Duration(seconds: 1),
-                        content: Text('Personal data updated successfully')),
-                  );
+                        content: Text('Personal data updated successfully.'),
+                      ),
+                    );
+                    setState(() {
+                      _isSending = false;
+                    });
+                  } on Exception {
+                    setState(() {
+                      _isSending = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          backgroundColor: Colors.red,
+                          showCloseIcon: true,
+                          closeIconColor: Colors.white,
+                          duration: Duration(seconds: 1),
+                          content: Text(
+                              'Failed to update personal data. Please try again.')),
+                    );
+                  }
                 }
-              }
-            : null,
-        child: const Text(
-          'Save changes',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
+              },
+        child: _isSending
+            ? const SizedBox(
+                height: 16,
+                width: 16,
+                child: CircularProgressIndicator(),
+              )
+            : const Text(
+                'Save changes',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
       ),
     );
   }

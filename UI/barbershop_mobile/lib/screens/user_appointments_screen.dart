@@ -27,8 +27,11 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
   Future<void> loadData() async {
     _appointmentProvider = context.read<AppointmentProvider>();
 
-    var appointmentsData = await _appointmentProvider
-        .get(filter: {'clientId': Authorization.id, 'status': 'Reserved'});
+    var appointmentsData = await _appointmentProvider.get(filter: {
+      'clientId': Authorization.id,
+      'isCanceled': 'false',
+      'dateFrom': DateTime.now()
+    });
 
     setState(() {
       _appointments = appointmentsData;
@@ -105,7 +108,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    formatDate(a?.startTime) ?? '',
+                    formatDate(a?.date) ?? '',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -123,7 +126,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    '${formatTime(a?.startTime)} - ${formatTime(a?.endTime)}',
+                    '${a?.startTime} - ${a?.endTime}',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -141,7 +144,7 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     width: 15,
                   ),
                   Text(
-                    a?.barberFullName ?? '',
+                    a?.barberName ?? '',
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -155,18 +158,11 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     Icons.cut,
                     color: Colors.black,
                   ),
-                  const SizedBox(
-                    width: 15,
+                  const SizedBox(width: 15),
+                  Text(
+                    a?.serviceName ?? '',
+                    style: const TextStyle(fontSize: 17),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: a!.services!.map((service) {
-                      return Text(
-                        '${service.name} - ${service.price} \$',
-                        style: const TextStyle(fontSize: 17),
-                      );
-                    }).toList(),
-                  )
                 ],
               ),
               const SizedBox(
@@ -216,7 +212,9 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                     );
 
                     if (confirmCancel == true) {
-                      Map request = {"Status": "Canceled"};
+                      Map request = {
+                        "isCanceled": true,
+                      };
 
                       await _appointmentProvider.update(a!.id!,
                           request: request);
@@ -225,6 +223,8 @@ class _UserAppointmentsScreenState extends State<UserAppointmentsScreen> {
                         _appointments?.removeWhere(
                             (appointment) => appointment.id == a.id);
                       });
+
+                      if (!context.mounted) return;
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

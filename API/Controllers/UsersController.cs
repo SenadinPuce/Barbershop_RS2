@@ -5,6 +5,7 @@ using Core.Entities;
 using Core.Models.InsertObjects;
 using Core.Models.SearchObjects;
 using Core.Models.UpdateObjects;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,15 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
-        public UsersController(UserManager<AppUser> userManager, IMapper mapper)
+        private readonly BarbershopContext _context;
+        public UsersController(UserManager<AppUser> userManager, IMapper mapper, BarbershopContext context)
         {
+            _context = context;
             _mapper = mapper;
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users-with-roles")]
         public async Task<ActionResult<IReadOnlyList<AppUserDto>>> GetUsersWithRoles([FromQuery] UserSearchObject search)
         {
@@ -50,6 +54,18 @@ namespace API.Controllers
             var userDtos = _mapper.Map<List<AppUserDto>>(users);
 
             return Ok(userDtos);
+        }
+
+        [HttpGet("get-barbers")]
+        public async Task<ActionResult<IReadOnlyList<BarberDto>>> GetBarbers()
+        {
+            var query = _userManager.Users.Where(u => u.UserRoles.Any(ur => ur.Role.Name == "Barber"));
+
+            var barbers = await query.Include(u => u.UserRoles).ThenInclude(r => r.Role).ToListAsync();
+
+            var barberDtos = _mapper.Map<List<BarberDto>>(barbers);
+
+            return Ok(barberDtos);
         }
 
         [Authorize(Roles = "Admin")]
@@ -157,6 +173,49 @@ namespace API.Controllers
                 return NotFound(new ApiResponse(404, "User not found"));
             }
 
+            var appointments = await _context.Appointments.Where(a => a.ClientId == user.Id).ToListAsync();
+            foreach (var appointment in appointments)
+            {
+                appointment.ClientId = null;
+            }
+            var terms = await _context.Terms.Where(a => a.BarberId == user.Id).ToListAsync();
+            foreach (var term in terms)
+            {
+                term.BarberId = null;
+            }
+
+            var reviews = await _context.Reviews.Where(r => r.ClientId == user.Id || r.BarberId == user.Id).ToListAsync();
+            foreach (var review in reviews)
+            {
+                if (review.ClientId == user.Id)
+                {
+                    review.ClientId = null;
+                }
+                if (review.BarberId == user.Id)
+                {
+                    review.BarberId = null;
+                }
+            }
+
+            var news = await _context.News.Where(r => r.AuthorId == user.Id).ToListAsync();
+            foreach (var item in news)
+            {
+                if (item.AuthorId == user.Id)
+                {
+                    item.AuthorId = null;
+                }
+            }
+
+            var orders = await _context.Orders.Where(r => r.ClientId == user.Id).ToListAsync();
+            foreach (var order in orders)
+            {
+                if (order.ClientId == user.Id)
+                {
+                    order.ClientId = null;
+                }
+
+            }
+
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -165,5 +224,7 @@ namespace API.Controllers
 
             return Ok(new ApiResponse(200, "User deleted successfully"));
         }
+
+
     }
 }
