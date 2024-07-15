@@ -27,6 +27,7 @@ namespace Infrastructure.Data
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Term> Terms { get; set; }
+        public DbSet<FITPasos> Pasosi { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -8,4 +8,8 @@ class UserProvider extends BaseProvider<User> {
   User fromJson(item) {
     return User.fromJson(item);
   }
+
+   Future<List<User>> getUsers({dynamic filter}) async {
+    return await get(filter: filter, extraRoute: "users-with-roles");
+  }
 }

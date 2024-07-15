@@ -1,0 +1,33 @@
+[
+    {
+        "KorisnikId": 1,
+        "DatumIzdavanje": "2021-01-01T00:00:00",
+        "DatumeVazenja": "2022-01-01T00:00:00",
+        "IsValid": true
+    },
+    {
+        "KorisnikId": 1,
+        "DatumIzdavanje": "2021-01-01T00:00:00",
+        "DatumeVazenja": "2022-01-01T00:00:00",
+        "IsValid": true
+    },
+    {
+        "KorisnikId": 1,
+        "DatumIzdavanje": "2021-01-01T00:00:00",
+        "DatumeVazenja": "2022-01-01T00:00:00",
+        "IsValid": true
+    },
+    {
+        "KorisnikId": 1,
+        "DatumIzdavanje": "2021-01-01T00:00:00",
+        "DatumeVazenja": "2022-01-01T00:00:00",
+        "IsValid": true
+    },
+    {
+        "KorisnikId": 1,
+        "DatumIzdavanje": "2021-01-01T00:00:00",
+        "DatumeVazenja": "2022-01-01T00:00:00",
+        "IsValid": false
+    }
+]
+

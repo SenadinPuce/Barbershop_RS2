@@ -35,6 +35,7 @@ namespace API.Extensions
             services.AddScoped<IMessageProducer, MessageProducer>();
             services.AddScoped<ITermService, TermService>();
             services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
+            services.AddScoped<IFITPasosService, FITPasosService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<ApiBehaviorOptions>(options =>

@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/screens/fit_pasosi_screen.dart';
 import 'package:barbershop_mobile/screens/login_screen.dart';
 import 'package:barbershop_mobile/screens/user_address_screen.dart';
 import 'package:barbershop_mobile/screens/user_data_screen.dart';
@@ -128,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         ListTile(
           leading:
-              const Icon(Icons.history, color: Color.fromRGBO(213, 178, 99, 1)),
+              const Icon(Icons.document_scanner, color: Color.fromRGBO(213, 178, 99, 1)),
           title: const Text("Order History",
               style: TextStyle(color: Colors.black)),
           subtitle: const Text("View your past orders",
@@ -140,6 +141,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => const UserOrdersScreen(),
+              ),
+            );
+          },
+        ),
+          const Divider(
+          thickness: 1.5,
+        ),
+        ListTile(
+          leading:
+              const Icon(Icons.history, color: Color.fromRGBO(213, 178, 99, 1)),
+          title: const Text("FIT pasosi",
+              style: TextStyle(color: Colors.black)),
+          subtitle: const Text("Pogledajte pasose",
+              style: TextStyle(color: Colors.black54)),
+          trailing: const Icon(Icons.arrow_forward,
+              color: Color.fromRGBO(57, 131, 120, 1)),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FITPasosiScreen(),
               ),
             );
           },
