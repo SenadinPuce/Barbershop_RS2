@@ -1,3 +1,4 @@
+import 'package:barbershop_mobile/providers/fit_pasos_provider.dart';
 import 'package:barbershop_mobile/providers/term_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -51,6 +52,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => DeliveryMethodProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
       ChangeNotifierProvider(create: (_) => TermProvider()),
+      ChangeNotifierProvider(create: (_) => FITPasosProvider()),
     ],
     child: const MyApp(),
   ));

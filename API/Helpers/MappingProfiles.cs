@@ -56,6 +56,13 @@ namespace API.Helpers
             CreateMap<TermUpsertObject, Term>();
             CreateMap<Term, TermDto>().ForMember(d => d.BarberName, o => o.MapFrom(s => s.Barber.FirstName + ' ' + s.Barber.LastName));
             CreateMap<AppUser, BarberDto>();
+
+            CreateMap<FITPasos, FITPasosDto>()
+                .ForMember(d => d.Ime, opt => opt.MapFrom(s => s.Korisnik.FirstName))
+                .ForMember(d => d.Prezime, opt => opt.MapFrom(s => s.Korisnik.LastName))
+                .ForMember(d => d.DatumVazenja, opt => opt.MapFrom(s => s.DatumeVazenja));
+            CreateMap<FITPasosUpsertObject, FITPasos>()
+            .ForMember(d => d.DatumeVazenja, opt => opt.MapFrom(s => s.DatumVazenja));
         }
     }
 }

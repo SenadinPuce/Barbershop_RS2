@@ -223,6 +223,17 @@ namespace Infrastructure.Data
                 }
             }
 
+             if (!context.Pasosi.Any())
+            {
+                var pasosiData = File.ReadAllText(path + @"/Data/SeedData/pasosi.json");
+                var pasosi = JsonSerializer.Deserialize<List<FITPasos>>(pasosiData);
+                context.Pasosi.AddRange(pasosi);
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
+                }
+            }
+
 
 
         }
